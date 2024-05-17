@@ -1,0 +1,1 @@
+ErgopriceURL = "https://api.ergexplorer.com/tokens/getErgPrice"
