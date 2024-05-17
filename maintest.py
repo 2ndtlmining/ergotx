@@ -1,5 +1,5 @@
 import requests
-from apidata import ErgopriceURL
+from apidata import ErgopriceURL, Blocks500URL, Blocks220URL
 
 def get_and_print_rounded_price():
     try:
@@ -13,3 +13,12 @@ def get_and_print_rounded_price():
 
 # Run the function
 get_and_print_rounded_price()
+
+# Fetch data from the API
+response = requests.get(Blocks500URL)
+data = response.json()
+
+# Calculate the sum of all transaction counts
+total_transactions = sum(block["transactionsCount"] for block in data["items"])
+
+print(f"Total Transaction Count today: {total_transactions}")
