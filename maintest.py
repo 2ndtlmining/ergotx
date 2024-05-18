@@ -49,6 +49,7 @@ def get_timestamp_from_api():
         data = response.json()
         timestamp = data["items"][0]["timestamp"]
         latestblockheight = data["items"][0]["height"]
+        mineraddress = data["items"][0]["minerAddress"]
         readable_timestamp = datetime.fromtimestamp(timestamp / 1000).strftime("%Y-%m-%d %H:%M:%S")
         current_time = datetime.now()
         time_difference = current_time - datetime.fromtimestamp(timestamp / 1000)
