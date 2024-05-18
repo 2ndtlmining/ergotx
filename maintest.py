@@ -48,12 +48,14 @@ def get_timestamp_from_api():
         response.raise_for_status()
         data = response.json()
         timestamp = data["items"][0]["timestamp"]
+        latestblockheight = data["items"][0]["height"]
         readable_timestamp = datetime.fromtimestamp(timestamp / 1000).strftime("%Y-%m-%d %H:%M:%S")
+        current_time = datetime.now()
+        time_difference = current_time - datetime.fromtimestamp(timestamp / 1000)
+        minutes, seconds = divmod(time_difference.total_seconds(), 60)
+        print(f"Time since {latestblockheight} {readable_timestamp}: {int(minutes)}m {int(seconds)}s")
         return readable_timestamp
     except (requests.exceptions.RequestException, KeyError, IndexError) as e:
         print(f"Error: {e}")
         return None
-
-readable_timestamp = get_timestamp_from_api()
-if readable_timestamp is not None:
-    print("Readable Timestamp:", readable_timestamp)
+get_timestamp_from_api()
