@@ -1,4 +1,4 @@
-import requests
+import requests, json
 from apidata import ErgopriceURL, Blocks500URL, Blocks220URL, Latestblock
 from datetime import datetime
 
@@ -49,14 +49,27 @@ def get_timestamp_from_api():
         data = response.json()
         timestamp = data["items"][0]["timestamp"]
         latestblockheight = data["items"][0]["height"]
-        mineraddress = data["items"][0]["minerAddress"]
+        mineraddress = data["items"][0]["miner"]["address"]
         readable_timestamp = datetime.fromtimestamp(timestamp / 1000).strftime("%Y-%m-%d %H:%M:%S")
         current_time = datetime.now()
         time_difference = current_time - datetime.fromtimestamp(timestamp / 1000)
         minutes, seconds = divmod(time_difference.total_seconds(), 60)
         print(f"Time since {latestblockheight} {readable_timestamp}: {int(minutes)}m {int(seconds)}s")
+        
+        # Load the address book data
+        with open('address_book.json') as f:
+            address_book = json.load(f)
+        
+        # Check if the miner address is in the address book
+        if mineraddress in address_book:
+            description = address_book[mineraddress]
+            print(f"The block was mined by {description}")
+        else:
+            print(f"The block was mined by {mineraddress}")
+        
         return readable_timestamp
     except (requests.exceptions.RequestException, KeyError, IndexError) as e:
         print(f"Error: {e}")
         return None
+
 get_timestamp_from_api()
