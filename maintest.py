@@ -63,32 +63,51 @@ def run_avg_hashrate_calculation():
 
 run_avg_hashrate_calculation()
 
+def get_latest_block():
+    try:
+        response = requests.get(Latestblock)
+        response.raise_for_status()
+        data = response.json()
+        latest_block = data["items"][0]["height"]
+        return latest_block
+    except (requests.exceptions.RequestException, ValueError, KeyError, IndexError) as e:
+        print(f"Error while getting latest block: {e}")
+        return None
+get_latest_block()
+
+def get_miner_address_from_api():
+    try:
+        response = requests.get(Latestblock)
+        response.raise_for_status()
+        data = response.json()
+        miner_address = data["items"][0]["miner"]["address"]
+        with open('address_book.json') as f:
+            address_book = json.load(f)
+        
+        if miner_address in address_book:
+            description = address_book[miner_address]
+            return description
+        else:
+            return miner_address
+        
+    except (requests.exceptions.RequestException, KeyError, IndexError) as e:
+        print(f"Error: {e}")
+        return None
+
+get_miner_address_from_api()
+
 def get_timestamp_from_api():
     try:
         response = requests.get(Latestblock)
         response.raise_for_status()
         data = response.json()
         timestamp = data["items"][0]["timestamp"]
-        latestblockheight = data["items"][0]["height"]
-        mineraddress = data["items"][0]["miner"]["address"]
         readable_timestamp = datetime.fromtimestamp(timestamp / 1000).strftime("%Y-%m-%d %H:%M:%S")
         current_time = datetime.now()
         time_difference = current_time - datetime.fromtimestamp(timestamp / 1000)
         minutes, seconds = divmod(time_difference.total_seconds(), 60)
-        print(f"Time since {latestblockheight} {readable_timestamp}: {int(minutes)}m {int(seconds)}s")
-        
-        # Load the address book data
-        with open('address_book.json') as f:
-            address_book = json.load(f)
-        
-        # Check if the miner address is in the address book
-        if mineraddress in address_book:
-            description = address_book[mineraddress]
-            print(f"The block was mined by {description}")
-            return description
-        else:
-            print(f"The block was mined by {mineraddress}")
-            return mineraddress
+        print(f"Time since {readable_timestamp}: {int(minutes)}m {int(seconds)}s")
+    
         
         return readable_timestamp
     except (requests.exceptions.RequestException, KeyError, IndexError) as e:
