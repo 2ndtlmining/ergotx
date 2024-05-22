@@ -41,27 +41,18 @@ def calculate_total_hashrate(api_url):
         print(f"Error while calculating total data: {e}")
         return None
 
-def run_total_transaction_calculation():
-    # Calculate total transactions for the last 720 blocks
+def calculate_transaction_and_hashrate():
     total_transactions_500 = calculate_total_transactions(Blocks500URL)
     total_transactions_220 = calculate_total_transactions(Blocks220URL)
+    total_transactions_combined = total_transactions_500 + total_transactions_220 if total_transactions_500 is not None and total_transactions_220 is not None else None
 
-    if total_transactions_500 is not None and total_transactions_220 is not None:
-        total_transactions_combined = total_transactions_500 + total_transactions_220
-        return total_transactions_combined
-    
-run_total_transaction_calculation()
-
-def run_avg_hashrate_calculation():
     total_difficulty_500 = calculate_total_hashrate(Blocks500URL)
     total_difficulty_220 = calculate_total_hashrate(Blocks220URL)
+    average_hashrate = ((total_difficulty_500 + total_difficulty_220)/(24*60*60))/1000000000000 if total_difficulty_500 is not None and total_difficulty_220 is not None else None
 
-    if total_difficulty_500 is not None and total_difficulty_220 is not None:
-        # Calculate hashrate by taking difficulty in the last 24 hours and dividing by 10^12 and showing in Terrahash TH
-        average_hashrate = ((total_difficulty_500 + total_difficulty_220)/(24*60*60))/1000000000000
-        return average_hashrate
+    return total_transactions_combined, average_hashrate
 
-run_avg_hashrate_calculation()
+total_transactions_combined, average_hashrate = calculate_transaction_and_hashrate()
 
 def get_data_from_api(Latestblock):
     try:
