@@ -1,3 +1,7 @@
+export type SortDirection = "asc" | "desc";
+
+export type VoidCallack<T> = (payload: T) => void;
+
 export interface ErgoTransactionInput {
   id: string;
   value: number;
