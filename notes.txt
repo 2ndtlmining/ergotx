@@ -1,0 +1,40 @@
+repeatedly call API:
+    calculate delta
+    emit events (new tx, new block)
+
+on tx:
+    update person
+
+on block:
+    update bus
+
+
+API:
+
+get mempool
+
+    http://213.239.193.208:9053/transactions/unconfirmed?limit=90&offset=0
+
+    https://api.ergoplatform.com/transactions/unconfirmed?limit=8&sortBy=size&sortDirection=desc
+    sortBy:
+        creationtimestamp
+        size
+
+    a few, 20-30 tx at most
+
+get confirmed blocks
+
+    http://213.239.193.208:9053/blocks?limit=50&offset=0
+    returns the blocks (well, only block ids) starting at the given offset, so this call actually returns the very first 50 blocks in the blockchain
+
+    https://api.ergoplatform.com/api/v1/blocks?limit=2&offset=0&sortBy=blockcoins&sortDirection=desc
+
+    sortBy:
+        blockcoins
+        blockfee
+        difficulty
+        height
+        minerreward
+        size
+        timestamp
+        transactionscount
