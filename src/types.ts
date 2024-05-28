@@ -2,14 +2,14 @@ export type SortDirection = "asc" | "desc";
 
 export type VoidCallack<T> = (payload: T) => void;
 
-export interface ErgoTransactionInput {
+export interface TransactionInput {
   id: string;
   value: number;
   index: number;
   address: string;
 }
 
-export interface ErgoTransactionOutput {
+export interface TransactionOutput {
   id: string;
   value: number;
   index: number;
@@ -18,10 +18,10 @@ export interface ErgoTransactionOutput {
 
 export interface Transaction {
   id: string;
-  inputs: ErgoTransactionInput[];
-  outputs: ErgoTransactionOutput[];
-  creationTimestamp: number;
-  size: number;
+  inputs: TransactionInput[];
+  outputs: TransactionOutput[];
+  // creationTimestamp: number;
+  // size: number;
 }
 
 export interface Block {
@@ -38,4 +38,15 @@ export interface Block {
   size: number;
   difficulty: number;
   minerReward: number;
+}
+
+export interface BlockTransaction {
+  id: string;
+  inputs: TransactionInput[];
+  outputs: TransactionOutput[];
+  // timestamp: number;
+}
+
+export interface BlockWithTransactions extends Block {
+  transactions: BlockTransaction[];
 }

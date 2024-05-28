@@ -5,7 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ergo Tx</title>
   </head>
+
   <body>
+    <h2>Mempool</h2>
+    <p>Count: <span id="mempool-count">0</span></p>
+
+    <!-- prettier-ignore-start -->
+    <pre><code id="mempool"></code></pre>
+    <!-- prettier-ignore-end -->
+
+    <h2>Lastest Block</h2>
+
+    <!-- prettier-ignore-start -->
+    <pre><code id="latest-block"></code></pre>
+    <!-- prettier-ignore-end -->
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

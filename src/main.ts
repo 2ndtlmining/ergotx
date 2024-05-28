@@ -1,5 +1,12 @@
 import ky, { type KyInstance } from "ky";
-import { Block, SortDirection, Transaction, VoidCallack } from "./types";
+import {
+  Block,
+  BlockTransaction,
+  BlockWithTransactions,
+  SortDirection,
+  Transaction,
+  VoidCallack
+} from "./types";
 
 class ApiService {
   private kyInstance: KyInstance;
@@ -16,12 +23,18 @@ class ApiService {
   // sortDirection: SortDirection
   public async getUnconfirmedTransactions() {
     const limit = 500;
+    const offset = 0;
     const sortBy = "size";
     const sortDirection = "desc";
 
     let result = await this.kyInstance
       .get("transactions/unconfirmed", {
-        searchParams: { limit, sortBy, sortDirection }
+        searchParams: {
+          limit,
+          offset,
+          sortBy,
+          sortDirection
+        }
       })
       .json<{ items: Transaction[] }>();
 
@@ -36,7 +49,12 @@ class ApiService {
   ) {
     let result = await this.kyInstance
       .get("api/v1/blocks", {
-        searchParams: { limit, offset, sortBy, sortDirection }
+        searchParams: {
+          limit,
+          offset,
+          sortBy,
+          sortDirection
+        }
       })
       .json<{ items: Block[] }>();
 
@@ -51,13 +69,21 @@ class ApiService {
   public async getBlocksAbove(height: number) {
     return await this._getBlocks(100, height, "height", "asc");
   }
+
+  public async getBlockTransactions(blockId: string) {
+    let result = await this.kyInstance
+      .get("api/v1/blocks/" + blockId)
+      .json<{ block: { blockTransactions: BlockTransaction[] } }>();
+
+    return result.block.blockTransactions;
+  }
 }
 
 class UpdateService {
   private api: ApiService;
 
   private callbackTx!: VoidCallack<Transaction[]>;
-  private callbackBlock!: VoidCallack<Block>;
+  private callbackBlock!: VoidCallack<BlockWithTransactions>;
 
   private lastConfirmedBlockHeight = -1;
 
@@ -68,29 +94,36 @@ class UpdateService {
     this.api = new ApiService();
   }
 
-  public apply(): this {
+  public start() {
     if (this.taskId === -1) this.destroy();
 
     this.taskId = setInterval(async () => {
-      this._updateBlocks();
-      this._updateTransactions();
+      await this._updateBlocks();
+      await this._updateTransactions();
     }, this.TASK_INTERVAL_MS);
+  }
 
-    return this;
+  private async _emitBlock(block: Block) {
+    let transactions = await this.api.getBlockTransactions(block.id);
+
+    this.callbackBlock({
+      ...block,
+      transactions
+    });
   }
 
   private async _updateBlocks() {
     if (this.lastConfirmedBlockHeight === -1) {
       let block = await this.api.getLatestBlock();
       this.lastConfirmedBlockHeight = block.height;
-      this.callbackBlock(block);
+      this._emitBlock(block);
     } else {
       let blocks = await this.api.getBlocksAbove(this.lastConfirmedBlockHeight);
 
       // TODO: implement some form of events queue
       for (const block of blocks) {
-        this.callbackBlock(block);
         this.lastConfirmedBlockHeight = block.height;
+        this._emitBlock(block);
       }
     }
   }
@@ -113,24 +146,73 @@ class UpdateService {
   }
 
   // Called when a new block is successfully mined
-  public onNewBlock(callbackBlock: VoidCallack<Block>): this {
+  public onNewBlock(callbackBlock: VoidCallack<BlockWithTransactions>): this {
     this.callbackBlock = callbackBlock;
     return this;
   }
 }
 
-async function main() {
-  // let txs = await Api.getUnconfirmedTransactions(100, "size", "asc");
-  // console.log(txs);
+class Application {
+  private updateService: UpdateService;
 
-  let updateService = new UpdateService()
-    .onUnconfirmedTransactions(transactions => {
-      console.log("Found new txs: ", transactions.length);
-    })
-    .onNewBlock(block => {
-      console.log("Found new block at height: ", block.height);
-    })
-    .apply();
+  private mempool: Transaction[];
+  private latestBlock: Block | null;
+
+  constructor() {
+    this.mempool = [];
+    this.latestBlock = null;
+
+    this.updateService = new UpdateService()
+      .onUnconfirmedTransactions(transactions => {
+        console.log("Found new txs: ", transactions.length);
+        let changed = false;
+        for (const candidTransaction of transactions) {
+          let existing = this.mempool.find(
+            tx => tx.id === candidTransaction.id
+          );
+          if (existing) continue;
+
+          this.mempool.push(candidTransaction);
+          changed = true;
+        }
+
+        if (changed) this._repaint();
+      })
+      .onNewBlock(block => {
+        console.log("Found new block at height: ", block.height);
+
+        let { transactions, ...blockWithoutTxs } = block;
+
+        for (let blockTx of transactions) {
+          let existingIndex = this.mempool.findIndex(
+            tx => tx.id === blockTx.id
+          );
+
+          if (existingIndex === -1) continue;
+
+          this.mempool.splice(existingIndex, 1);
+        }
+
+        this.latestBlock = blockWithoutTxs;
+        this._repaint();
+      });
+
+    this.updateService.start();
+  }
+
+  private _repaint() {
+    let htmlMempoolCount = document.getElementById("mempool-count")!;
+    let htmlMempoolTxs = document.getElementById("mempool")!;
+    let htmlLatestBlock = document.getElementById("latest-block")!;
+
+    htmlMempoolCount.innerText = this.mempool.length.toString();
+    htmlMempoolTxs.innerText = this.mempool.map(tx => tx.id).join("\n");
+    htmlLatestBlock.innerText = JSON.stringify(this.latestBlock, null, 2);
+  }
+}
+
+async function main() {
+  let app = new Application();
 }
 
 main();
