@@ -40,42 +40,33 @@ get confirmed blocks
         transactionscount
 
 
+ <h2>Mempool</h2>
+<p>Count: <span id="mempool-count">0</span></p>
 
-Take the string 'a,a,b,a,b$'
-Parse it in shift reduce way using the SLR1 parse table designed today in the class and make its parse tree as well
+<!-- prettier-ignore-start -->
+<pre><code id="mempool"></code></pre>
+<!-- prettier-ignore-end -->
+
+<h2>Lastest Block</h2>
+
+<!-- prettier-ignore-start -->
+<pre><code id="latest-block"></code></pre>
+<!-- prettier-ignore-end -->
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
+TODO:
+
+handle events in queue instead of calling funcions syncrhonomously
+
+
+PLAN:
+
+    when a new transaction comes, animate a circle from one fixed point to a random point
 
 
 
-(0) Z -> S$
-(1) S -> L , S
-(2) S -> L
-(3) L -> a
-(4) L -> b
 
------------------------
-| INPUT => a,a,b,a,b$ |
------------------------
-
-STACK                       Input                   Next action
-$0                          a,a,b,a,b$              S1
-$0a1                        ,a,b,a,b$               R3
-$0L3                        ,a,b,a,b$               S6
-$0L3,6                      a,b,a,b$                S1
-$0L3,6a1                    ,b,a,b$                 R3
-$0L3,6L3                    ,b,a,b$                 S6
-$0L3,6L3,6                  b,a,b$                  S2
-$0L3,6L3,6b2                ,a,b$                   R4
-$0L3,6L3,6L3                ,a,b$                   S6
-$0L3,6L3,6L3,6              a,b$                    S1
-$0L3,6L3,6L3,6a1            ,b$                     R3
-$0L3,6L3,6L3,6L3            ,b$                     S6
-$0L3,6L3,6L3,6L3,6          b$                      S2
-$0L3,6L3,6L3,6L3,6b2        $                       R4
-$0L3,6L3,6L3,6L3,6L3        $                       R2
-$0L3,6L3,6L3,6L3,6S7        $                       R1
-$0L3,6L3,6L3,6S7            $                       R1
-$0L3,6L3,6S7                $                       R1
-$0L3,6S7                    $                       R1
-$0S4                        $                       S5
-$0S4$5                                              Accept
 

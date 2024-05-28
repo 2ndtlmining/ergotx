@@ -18,6 +18,7 @@
   },
   "packageManager": "pnpm@9.1.2",
   "dependencies": {
-    "ky": "^1.2.4"
+    "ky": "^1.2.4",
+    "phaser": "^3.80.1"
   }
 }
