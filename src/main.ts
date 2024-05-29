@@ -95,8 +95,13 @@ class MainScene extends Phaser.Scene {
         }
       })
       .onNewBlock((block) => {
+        console.log("Found block at height: ", block.height);
+
         for (const blockTx of block.transactions) {
-          let existingIndex = this.mempool.findIndex(tx => tx.id === blockTx.id)
+          let existingIndex = this.mempool.findIndex(tx => {
+            console.log(tx.id, blockTx.id);
+            return tx.id === blockTx.id;
+          })
 
           if (existingIndex === -1)
             continue;
@@ -134,6 +139,7 @@ class MainScene extends Phaser.Scene {
   }
 
   deleteTransaction(index: number) {
+    console.log("Deleting tx", index);
     let person = this.persons[index];
     person.destroy();
     this.mempool.splice(index, 1);

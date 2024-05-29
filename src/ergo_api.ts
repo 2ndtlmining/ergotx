@@ -72,7 +72,7 @@ class ApiService {
 
   public async getBlockTransactions(blockId: string) {
     let result = await this.kyInstance
-      .get("api/v1/blocks/" + blockId)
+      .get("api/v1/blocks/" + blockId, { retry: 3 })
       .json<{ block: { blockTransactions: BlockTransaction[] } }>();
 
     return result.block.blockTransactions;
@@ -167,17 +167,17 @@ export class UpdateService {
 
 //     this.updateService = new UpdateService()
 //       .onUnconfirmedTransactions(transactions => {
-        // console.log("Found new txs: ", transactions.length);
-        // let changed = false;
-        // for (const candidTransaction of transactions) {
-        //   let existing = this.mempool.find(
-        //     tx => tx.id === candidTransaction.id
-        //   );
-        //   if (existing) continue;
+// console.log("Found new txs: ", transactions.length);
+// let changed = false;
+// for (const candidTransaction of transactions) {
+//   let existing = this.mempool.find(
+//     tx => tx.id === candidTransaction.id
+//   );
+//   if (existing) continue;
 
-        //   this.mempool.push(candidTransaction);
-        //   changed = true;
-        // }
+//   this.mempool.push(candidTransaction);
+//   changed = true;
+// }
 
 //         if (changed) this._repaint();
 //       })
