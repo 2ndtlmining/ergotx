@@ -28,7 +28,7 @@ class Person {
   ) {
     this.scene = scene;
     this.target = target;
-    this.start = start;
+    this.start = start.clone();
     this.waitingZone = waitingZone;
 
     this.personState = "lining";
@@ -49,12 +49,12 @@ class Person {
   }
 
   shouldStop(): boolean {
-    let distance = Math.Distance.BetweenPoints(
-      this.nodeBody.position,
-      this.target
-    );
-    const tolerance = this.moveSpeed / 5;
-    return distance <= tolerance;
+    let a = this.start.clone().subtract(this.target);
+    let b = new Math.Vector2()
+      .setFromObject(this.nodeBody.position)
+      .subtract(this.target);
+
+    return a.dot(b) <= 0;
   }
 
   update(time: number) {
@@ -70,6 +70,7 @@ class Person {
       this.personState = "walking";
       let targetPoint = this.waitingZone.getRandomPoint();
 
+      this.start.setFromObject(this.nodeBody.position);
       this.target.set(targetPoint.x, targetPoint.y);
       this.scene.physics.moveTo(
         this.node,
@@ -104,7 +105,6 @@ class MainScene extends Phaser.Scene {
 
   init() {
     this.mempool = [];
-    // this.persons = [];
 
     let canvasSize = {
       w: +this.game.config.width,
@@ -126,10 +126,11 @@ class MainScene extends Phaser.Scene {
     // this.initClickToAddPerson();
   }
 
-  // initClickToAddPerson() {
-  //   this.input.on(Input.Events.POINTER_DOWN, () => {
-  //   });
-  // }
+  initClickToAddPerson() {
+    this.input.on(Input.Events.POINTER_DOWN, () => {
+      this.addTx({ id: "d", inputs: [], outputs: [] }, 0);
+    });
+  }
 
   initUpdateService() {
     this.updateService = new UpdateService()
@@ -161,13 +162,7 @@ class MainScene extends Phaser.Scene {
       if (index === -1) {
         // We create this entry with age -1 so that later when all the transactions' ages
         // are incremented then this gets set to 0
-        let person = this.createNewPerson();
-        this.mempool.push({
-          age: -1,
-          person,
-          tx: candidTx
-        });
-        person.init();
+        this.addTx(candidTx, -1);
       } else {
         // This transaction is already in the mempool.
         // We have to reset its age. Similar to above, we
@@ -202,6 +197,16 @@ class MainScene extends Phaser.Scene {
         0x435153
       )
       .setOrigin(0, 0);
+  }
+
+  addTx(tx: Transaction, age: number) {
+    let person = this.createNewPerson();
+    this.mempool.push({
+      age,
+      person,
+      tx
+    });
+    person.init();
   }
 
   update(time: number, _delta: number): void {
