@@ -1,91 +1,78 @@
 import "./global.css";
 
-import Phaser, { Geom, Math } from "phaser";
+import Phaser, { Geom, Math, Scene, Input } from "phaser";
 
 import { UpdateService } from "./ergo_api";
 import { Transaction } from "./types";
 
 const { Rectangle } = Geom;
 
-class Person {}
+class Person {
+  private scene: Scene;
+
+  private moveState: "moving" | "idle" = "idle";
+  private start: Math.Vector2;
+  private target: Math.Vector2;
+  private moveSpeed = 100;
+
+  private node: Phaser.GameObjects.GameObject;
+  private nodeBody: Phaser.Physics.Arcade.Body;
+
+  constructor(scene: Scene, start: Math.Vector2, target: Math.Vector2) {
+    this.scene = scene;
+    this.start = start;
+    this.target = target;
+
+    // scene.add.circle(this.target.x, this.target.y, 20, 0xfff0ff);
+
+    this.node = scene.add.circle(start.x, start.y, 20, 0xff00ff);
+    this.nodeBody = scene.physics.add.existing(this.node).body as any;
+
+    this.moveState = "moving";
+    scene.physics.moveTo(this.node, target.x, target.y, this.moveSpeed);
+  }
+
+  shouldStop(): boolean {
+    let distance = Math.Distance.BetweenPoints(
+      this.nodeBody.position,
+      this.target
+    );
+    const tolerance = this.moveSpeed / 3;
+    return distance <= tolerance;
+  }
+
+  update() {
+    if (this.shouldStop()) {
+      this.nodeBody.stop();
+      this.moveState = "idle";
+    }
+  }
+}
 
 class MainScene extends Phaser.Scene {
-  private updateService: UpdateService;
-  private mempool: Transaction[] = [];
-
-  private speed = 100;
-  private personBody: Phaser.Physics.Arcade.Body;
-
-  private start = new Phaser.Math.Vector2(50, 400);
-  private dest = new Phaser.Math.Vector2(400, 300);
-
-  private distanceText: Phaser.GameObjects.Text;
+  private persons: Person[];
 
   init() {
-    // this.updateService = new UpdateService().onUnconfirmedTransactions(
-    // this.handleUnconfirmedTransactions
-    // );
-    // this.updateService.start();
+    this.persons = [];
   }
 
   create() {
-    this.add.circle(this.dest.x, this.dest.y, 10, 0x00aaf0f);
+    let target = new Math.Vector2(400, 300);
 
-    let person = this.add.circle(this.start.x, this.start.y, 10, 0xff0000);
-    this.physics.add.existing(person);
-    this.personBody = person.body as any;
-    // this.physics.moveToObject(person, this.dest, this.speed);
-
-    let vel = new Phaser.Math.Vector2(
-      this.dest.x - this.start.x,
-      this.dest.y - this.start.y
-    )
-      .normalize()
-      .scale(this.speed);
-
-    this.personBody.setVelocity(vel.x, vel.y);
-
-    this.distanceText = this.add.text(10, 10, "Click to set target", {
-      color: "#00ff00"
+    this.input.on(Input.Events.POINTER_DOWN, (pointer: Input.Pointer) => {
+      let person = new Person(
+        this,
+        new Math.Vector2(pointer.x, pointer.y),
+        target
+      );
+      this.persons.push(person);
     });
   }
 
-  update(_time: number, deltaTime: number) {
-    let distance = Math.Distance.BetweenPoints(this.personBody.position, this.dest);
-
-    this.distanceText.setText(`Distance: ${distance}`);
-
-    if (distance < 20) {
-      this.personBody.stop();
-    }
+  update(time: number, delta: number): void {
+    // this.person.update();
+    this.persons.forEach(p => p.update());
   }
-
-  // update(time, deltaTime) {
-  //   let dir = this.dest.subtract(this.personBody.position).normalize();
-  //   this.personBody.position.add(dir.scale(this.speed * deltaTime));
-  // }
-
-  // private handleUnconfirmedTransactions = (transactions: Transaction[]) => {
-  //   console.log("Found new txs: ", transactions.length);
-  //   for (const candidTransaction of transactions) {
-  //     let existing = this.mempool.find(tx => tx.id === candidTransaction.id);
-  //     if (existing) continue;
-
-  //     this.addTransaction(candidTransaction);
-  //   }
-  // };
-
-  // private addTransaction(transaction: Transaction) {
-  //   this.mempool.push(transaction);
-
-  //   let node = this.add.circle(
-  //     Math.Between(0, +this.game.config.width),
-  //     Math.Between(0, +this.game.config.height),
-  //     10,
-  //     0xfc5603,
-  //     1
-  //   );
-  // }
 }
 
 let game = new Phaser.Game({
