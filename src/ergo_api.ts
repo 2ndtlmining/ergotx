@@ -1,4 +1,5 @@
 import ky, { type KyInstance } from "ky";
+import { setIntervalAsync, clearIntervalAsync, type SetIntervalAsyncTimer } from 'set-interval-async';
 import {
   Block,
   BlockTransaction,
@@ -87,7 +88,7 @@ export class UpdateService {
 
   private lastConfirmedBlockHeight = -1;
 
-  private taskId: number = -1;
+  private taskId: SetIntervalAsyncTimer<any> | null = null;
   private TASK_INTERVAL_MS = 3500;
 
   constructor() {
@@ -98,9 +99,9 @@ export class UpdateService {
   }
 
   public start() {
-    if (this.taskId === -1) this.destroy();
+    this.destroy();
 
-    this.taskId = setInterval(async () => {
+    this.taskId = setIntervalAsync(async () => {
       await this._updateBlocks();
       await this._updateTransactions();
     }, this.TASK_INTERVAL_MS);
@@ -137,7 +138,8 @@ export class UpdateService {
   }
 
   public destroy() {
-    clearInterval(this.taskId);
+    if (this.taskId)
+      clearIntervalAsync(this.taskId);
   }
 
   // Called when a newly seen unconfirmed transaction is found
