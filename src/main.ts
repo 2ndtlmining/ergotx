@@ -75,14 +75,19 @@ class Person {
   }
 }
 
+type MempoolEntry = {
+  age: number;
+  tx: Transaction;
+};
+
 class MainScene extends Phaser.Scene {
-  private persons: Person[];
+  private start: Math.Vector2;
   private waitingZone: Geom.Rectangle;
 
-  private start: Math.Vector2;
-
   private updateService: UpdateService;
-  private mempool: Transaction[];
+
+  private mempool: MempoolEntry[];
+  private persons: Person[];
 
   init() {
     this.mempool = [];
@@ -116,35 +121,62 @@ class MainScene extends Phaser.Scene {
 
   initUpdateService() {
     this.updateService = new UpdateService()
-      .onUnconfirmedTransactions(transactions => {
-        console.log("Found new txs: ", transactions.length);
-        for (const candidTransaction of transactions) {
-          let existing = this.mempool.find(
-            tx => tx.id === candidTransaction.id
-          );
-          if (existing) continue;
-
-          this.addTransaction(candidTransaction);
-        }
-      })
+      .onUnconfirmedTransactions(this.onTransactions)
       .onNewBlock(block => {
         console.log("Found block at height: ", block.height);
 
         for (const blockTx of block.transactions) {
-          let existingIndex = this.mempool.findIndex(tx => {
-            // console.log(tx.id, blockTx.id);
-            return tx.id === blockTx.id;
-          });
+          let existingIndex = this.mempool.findIndex(
+            mtx => mtx.tx.id === blockTx.id
+          );
 
           if (existingIndex === -1) continue;
 
-          // let person = this.persons[]
           this.deleteTransaction(existingIndex);
         }
       });
 
     this.updateService.start();
   }
+
+  onTransactions = (transactions: Transaction[]) => {
+    console.log("Found new txs: ", transactions.length);
+    // for (const candidTransaction of transactions) {
+    //   let existing = this.mempool.find(tx => tx.id === candidTransaction.id);
+    //   if (existing) continue;
+    //   this.addTransaction(candidTransaction);
+    // }
+
+    let existingTxIndices = [] as number[];
+    let newTxs: Transaction[] = [];
+
+    for (let candidTx of transactions) {
+      let index = this.mempool.findIndex(mtx => mtx.tx.id === candidTx.id);
+
+      if (index === -1) {
+        // new
+        newTxs.push(candidTx);
+      } else {
+        // existing
+        existingTxIndices.push(index);
+      }
+    }
+
+    for (let index of existingTxIndices) {
+      this.mempool[index].age = 0;
+    }
+
+    for (let i = 0; i < this.mempool.length; ++i) {
+      if (!existingTxIndices.includes(i)) {
+        this.mempool[i].age++;
+      }
+    }
+
+    for (let tx of newTxs) {
+      // this.mempool.push({ age: 0, tx });
+      this.addTransaction(tx);
+    }
+  };
 
   create() {
     this.add.circle(this.start.x, this.start.y, 8, 0xffffff);
@@ -169,7 +201,7 @@ class MainScene extends Phaser.Scene {
   }
 
   addTransaction(tx: Transaction) {
-    this.mempool.push(tx);
+    this.mempool.push({ age: 0, tx });
     this.addPerson();
   }
 
