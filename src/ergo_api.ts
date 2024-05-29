@@ -1,5 +1,9 @@
 import ky, { type KyInstance } from "ky";
-import { setIntervalAsync, clearIntervalAsync, type SetIntervalAsyncTimer } from 'set-interval-async';
+import {
+  setIntervalAsync,
+  clearIntervalAsync,
+  type SetIntervalAsyncTimer
+} from "set-interval-async";
 import {
   Block,
   BlockTransaction,
@@ -110,10 +114,12 @@ export class UpdateService {
   private async _emitBlock(block: Block) {
     let transactions = await this.api.getBlockTransactions(block.id);
 
-    this.callbackBlock({
-      ...block,
-      transactions
-    });
+    setTimeout(() => {
+      this.callbackBlock({
+        ...block,
+        transactions
+      });
+    }, 0);
   }
 
   private async _updateBlocks() {
@@ -134,12 +140,14 @@ export class UpdateService {
 
   private async _updateTransactions() {
     let txs = await this.api.getUnconfirmedTransactions();
-    if (txs.length > 0) this.callbackTx(txs);
+    if (txs.length > 0)
+      setTimeout(() => {
+        this.callbackTx(txs);
+      }, 0);
   }
 
   public destroy() {
-    if (this.taskId)
-      clearIntervalAsync(this.taskId);
+    if (this.taskId) clearIntervalAsync(this.taskId);
   }
 
   // Called when a newly seen unconfirmed transaction is found

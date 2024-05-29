@@ -6,25 +6,19 @@ import { UpdateService } from "./ergo_api";
 import { Transaction } from "./types";
 
 class Person {
-  private scene: Scene;
 
-  private moveState: "moving" | "idle" = "idle";
-  private start: Math.Vector2;
   private target: Math.Vector2;
-  private moveSpeed = 160;
+  private moveSpeed = 300;
 
   private node: Phaser.GameObjects.GameObject;
   private nodeBody: Phaser.Physics.Arcade.Body;
 
   constructor(scene: Scene, start: Math.Vector2, target: Math.Vector2) {
-    this.scene = scene;
-    this.start = start;
     this.target = target;
 
     this.node = scene.add.circle(start.x, start.y, 20, 0xedae26);
     this.nodeBody = scene.physics.add.existing(this.node).body as any;
 
-    this.moveState = "moving";
     scene.physics.moveTo(this.node, target.x, target.y, this.moveSpeed);
   }
 
@@ -33,14 +27,13 @@ class Person {
       this.nodeBody.position,
       this.target
     );
-    const tolerance = this.moveSpeed / 3;
+    const tolerance = this.moveSpeed / 5;
     return distance <= tolerance;
   }
 
   update() {
     if (this.shouldStop()) {
       this.nodeBody.stop();
-      this.moveState = "idle";
     }
   }
 
@@ -99,7 +92,7 @@ class MainScene extends Phaser.Scene {
 
         for (const blockTx of block.transactions) {
           let existingIndex = this.mempool.findIndex(tx => {
-            console.log(tx.id, blockTx.id);
+            // console.log(tx.id, blockTx.id);
             return tx.id === blockTx.id;
           })
 
