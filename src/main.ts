@@ -6,18 +6,33 @@ import { UpdateService } from "./ergo_api";
 import { Transaction } from "./types";
 
 class Person {
-
-  private target: Math.Vector2;
-  private moveSpeed = 300;
-
   private node: Phaser.GameObjects.GameObject;
   private nodeBody: Phaser.Physics.Arcade.Body;
+  private waitingZone: Geom.Rectangle;
+  private scene: Phaser.Scene;
 
-  constructor(scene: Scene, start: Math.Vector2, target: Math.Vector2) {
+  private moveSpeed = 300;
+  private target: Math.Vector2;
+
+  private walkIntervalMs = 4000;
+  private walkTime = 1000;
+  private lastWalkAt = 0;
+  private personState: "lining" | "idle" | "walking";
+
+  constructor(
+    scene: Scene,
+    start: Math.Vector2,
+    target: Math.Vector2,
+    waitingZone: Geom.Rectangle
+  ) {
+    this.scene = scene;
     this.target = target;
+    this.waitingZone = waitingZone;
 
     this.node = scene.add.circle(start.x, start.y, 20, 0xedae26);
     this.nodeBody = scene.physics.add.existing(this.node).body as any;
+
+    this.personState = "lining";
 
     scene.physics.moveTo(this.node, target.x, target.y, this.moveSpeed);
   }
@@ -31,9 +46,27 @@ class Person {
     return distance <= tolerance;
   }
 
-  update() {
-    if (this.shouldStop()) {
+  update(time: number) {
+    let isIdle = this.personState === "idle";
+    if (!isIdle && this.shouldStop()) {
       this.nodeBody.stop();
+      this.lastWalkAt = time;
+      this.personState = "idle";
+    }
+
+    if (isIdle && time - this.lastWalkAt > this.walkIntervalMs) {
+      this.lastWalkAt = time;
+      this.personState = "walking";
+      let targetPoint = this.waitingZone.getRandomPoint();
+
+      this.target.set(targetPoint.x, targetPoint.y);
+      this.scene.physics.moveTo(
+        this.node,
+        this.target.x,
+        this.target.y,
+        this.moveSpeed,
+        this.walkTime
+      );
     }
   }
 
@@ -59,7 +92,7 @@ class MainScene extends Phaser.Scene {
       w: +this.game.config.width,
       h: +this.game.config.height
     };
-    let waitingZoneWidth = 200;
+    let waitingZoneWidth = 300;
 
     let waitingZone = new Geom.Rectangle(
       canvasSize.w - waitingZoneWidth,
@@ -72,6 +105,13 @@ class MainScene extends Phaser.Scene {
     this.start = new Math.Vector2(150, window.Math.round(canvasSize.h / 2));
 
     this.initUpdateService();
+    // this.initClickToAddPerson();
+  }
+
+  initClickToAddPerson() {
+    this.input.on(Input.Events.POINTER_DOWN, () => {
+      this.addPerson();
+    });
   }
 
   initUpdateService() {
@@ -87,22 +127,20 @@ class MainScene extends Phaser.Scene {
           this.addTransaction(candidTransaction);
         }
       })
-      .onNewBlock((block) => {
+      .onNewBlock(block => {
         console.log("Found block at height: ", block.height);
 
         for (const blockTx of block.transactions) {
           let existingIndex = this.mempool.findIndex(tx => {
             // console.log(tx.id, blockTx.id);
             return tx.id === blockTx.id;
-          })
+          });
 
-          if (existingIndex === -1)
-            continue;
+          if (existingIndex === -1) continue;
 
           // let person = this.persons[]
           this.deleteTransaction(existingIndex);
         }
-
       });
 
     this.updateService.start();
@@ -126,6 +164,10 @@ class MainScene extends Phaser.Scene {
     // });
   }
 
+  update(time: number, _delta: number): void {
+    this.persons.forEach(p => p.update(time));
+  }
+
   addTransaction(tx: Transaction) {
     this.mempool.push(tx);
     this.addPerson();
@@ -145,13 +187,10 @@ class MainScene extends Phaser.Scene {
     let person = new Person(
       this,
       this.start,
-      new Math.Vector2(target.x, target.y)
+      new Math.Vector2(target.x, target.y),
+      this.waitingZone
     );
     this.persons.push(person);
-  }
-
-  update(_time: number, _delta: number): void {
-    this.persons.forEach(p => p.update());
   }
 }
 

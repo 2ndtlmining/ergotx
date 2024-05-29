@@ -67,6 +67,10 @@ PLAN:
     when a new transaction comes, animate a circle from one fixed point to a random point
 
 
+    free walk
+        after every n seconds
 
-
-
+    delete (snap) old transactions
+    add busses
+    add a transaction to bus
+    leave bus
