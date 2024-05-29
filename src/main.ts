@@ -1,11 +1,9 @@
 import "./global.css";
 
-import Phaser, { Geom, Math, Scene, Input } from "phaser";
+import Phaser, { Geom, Math, Scene, Input, Scale } from "phaser";
 
 import { UpdateService } from "./ergo_api";
 import { Transaction } from "./types";
-
-const { Rectangle } = Geom;
 
 class Person {
   private scene: Scene;
@@ -13,7 +11,7 @@ class Person {
   private moveState: "moving" | "idle" = "idle";
   private start: Math.Vector2;
   private target: Math.Vector2;
-  private moveSpeed = 100;
+  private moveSpeed = 160;
 
   private node: Phaser.GameObjects.GameObject;
   private nodeBody: Phaser.Physics.Arcade.Body;
@@ -23,9 +21,7 @@ class Person {
     this.start = start;
     this.target = target;
 
-    // scene.add.circle(this.target.x, this.target.y, 20, 0xfff0ff);
-
-    this.node = scene.add.circle(start.x, start.y, 20, 0xff00ff);
+    this.node = scene.add.circle(start.x, start.y, 20, 0xedae26);
     this.nodeBody = scene.physics.add.existing(this.node).body as any;
 
     this.moveState = "moving";
@@ -51,41 +47,76 @@ class Person {
 
 class MainScene extends Phaser.Scene {
   private persons: Person[];
+  private waitingZone: Geom.Rectangle;
+
+  private start: Math.Vector2;
 
   init() {
     this.persons = [];
+    let canvasSize = {
+      w: +this.game.config.width,
+      h: +this.game.config.height
+    };
+    let waitingZoneWidth = 200;
+
+    let waitingZone = new Geom.Rectangle(
+      canvasSize.w - waitingZoneWidth,
+      0,
+      waitingZoneWidth,
+      canvasSize.h
+    );
+
+    this.waitingZone = Geom.Rectangle.Inflate(waitingZone, -15, -16);
+
+    this.start = new Math.Vector2(150, window.Math.round(canvasSize.h / 2));
   }
 
   create() {
-    let target = new Math.Vector2(400, 300);
+    this.add.circle(this.start.x, this.start.y, 8, 0xffffff);
 
-    this.input.on(Input.Events.POINTER_DOWN, (pointer: Input.Pointer) => {
-      let person = new Person(
-        this,
-        new Math.Vector2(pointer.x, pointer.y),
-        target
-      );
-      this.persons.push(person);
+    this.add
+      .rectangle(
+        this.waitingZone.x,
+        this.waitingZone.y,
+        this.waitingZone.width,
+        this.waitingZone.height,
+        0x435153
+      )
+      .setOrigin(0, 0);
+
+    this.input.on(Input.Events.POINTER_DOWN, () => {
+      this.addPerson();
     });
   }
 
-  update(time: number, delta: number): void {
-    // this.person.update();
+  addPerson() {
+    let target = this.waitingZone.getRandomPoint();
+
+    let person = new Person(
+      this,
+      this.start,
+      new Math.Vector2(target.x, target.y)
+    );
+    this.persons.push(person);
+  }
+
+  update(_time: number, _delta: number): void {
     this.persons.forEach(p => p.update());
   }
 }
 
 let game = new Phaser.Game({
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: 1200,
+  height: window.innerHeight,
+  autoCenter: Scale.Center.CENTER_BOTH,
   scene: MainScene,
   backgroundColor: 0x06303d,
   physics: {
     default: "arcade",
     arcade: {
       gravity: { x: 0, y: 0 },
-      debug: true
+      debug: false
     }
   }
 });
