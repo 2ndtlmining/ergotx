@@ -43,6 +43,10 @@ class Person {
       this.moveState = "idle";
     }
   }
+
+  destroy() {
+    this.node.destroy();
+  }
 }
 
 class MainScene extends Phaser.Scene {
@@ -51,8 +55,13 @@ class MainScene extends Phaser.Scene {
 
   private start: Math.Vector2;
 
+  private updateService: UpdateService;
+  private mempool: Transaction[];
+
   init() {
+    this.mempool = [];
     this.persons = [];
+
     let canvasSize = {
       w: +this.game.config.width,
       h: +this.game.config.height
@@ -67,8 +76,38 @@ class MainScene extends Phaser.Scene {
     );
 
     this.waitingZone = Geom.Rectangle.Inflate(waitingZone, -15, -16);
-
     this.start = new Math.Vector2(150, window.Math.round(canvasSize.h / 2));
+
+    this.initUpdateService();
+  }
+
+  initUpdateService() {
+    this.updateService = new UpdateService()
+      .onUnconfirmedTransactions(transactions => {
+        console.log("Found new txs: ", transactions.length);
+        for (const candidTransaction of transactions) {
+          let existing = this.mempool.find(
+            tx => tx.id === candidTransaction.id
+          );
+          if (existing) continue;
+
+          this.addTransaction(candidTransaction);
+        }
+      })
+      .onNewBlock((block) => {
+        for (const blockTx of block.transactions) {
+          let existingIndex = this.mempool.findIndex(tx => tx.id === blockTx.id)
+
+          if (existingIndex === -1)
+            continue;
+
+          // let person = this.persons[]
+          this.deleteTransaction(existingIndex);
+        }
+
+      });
+
+    this.updateService.start();
   }
 
   create() {
@@ -84,9 +123,21 @@ class MainScene extends Phaser.Scene {
       )
       .setOrigin(0, 0);
 
-    this.input.on(Input.Events.POINTER_DOWN, () => {
-      this.addPerson();
-    });
+    // this.input.on(Input.Events.POINTER_DOWN, () => {
+    //   this.addPerson();
+    // });
+  }
+
+  addTransaction(tx: Transaction) {
+    this.mempool.push(tx);
+    this.addPerson();
+  }
+
+  deleteTransaction(index: number) {
+    let person = this.persons[index];
+    person.destroy();
+    this.mempool.splice(index, 1);
+    this.persons.splice(index, 1);
   }
 
   addPerson() {
