@@ -94,7 +94,8 @@ type MempoolEntry = {
 };
 
 class MainScene extends Phaser.Scene {
-  private start: Math.Vector2;
+  // private start: Math.Vector2;
+  private houses: Math.Vector2[];
   private waitingZone: Geom.Rectangle;
 
   private updateService: UpdateService;
@@ -110,6 +111,9 @@ class MainScene extends Phaser.Scene {
       w: +this.game.config.width,
       h: +this.game.config.height
     };
+
+    this.houses = this.createHouses(canvasSize);
+
     let waitingZoneWidth = 300;
 
     let waitingZone = new Geom.Rectangle(
@@ -120,7 +124,6 @@ class MainScene extends Phaser.Scene {
     );
 
     this.waitingZone = Geom.Rectangle.Inflate(waitingZone, -15, -16);
-    this.start = new Math.Vector2(150, window.Math.round(canvasSize.h / 2));
 
     this.initUpdateService();
     // this.initClickToAddPerson();
@@ -151,6 +154,15 @@ class MainScene extends Phaser.Scene {
       });
 
     this.updateService.start();
+  }
+
+  private createHouses({}: { w: number; h: number }): Math.Vector2[] {
+    // prettier-ignore
+    return [
+      new Math.Vector2(150, 150), new Math.Vector2(350, 150),
+      new Math.Vector2(150, 350), new Math.Vector2(350, 350),
+      new Math.Vector2(150, 550), new Math.Vector2(350, 550),
+    ];
   }
 
   onTransactions = (transactions: Transaction[]) => {
@@ -186,7 +198,14 @@ class MainScene extends Phaser.Scene {
   };
 
   create() {
-    this.add.circle(this.start.x, this.start.y, 8, 0xffffff);
+    // Add houses
+    this.houses.forEach((house, index) => {
+      this.add.circle(house.x, house.y, 6, 0xffffff);
+      this.add.text(house.x, house.y + 35, `House ${index + 1}`, {
+        fontSize: 20,
+        color: "#69f542"
+      }).setOrigin(0.5, 0.5);
+    });
 
     this.add
       .rectangle(
@@ -214,11 +233,14 @@ class MainScene extends Phaser.Scene {
   }
 
   createNewPerson() {
+    let house = randomElem(this.houses);
+
+    let start = house.clone();
     let target = this.waitingZone.getRandomPoint();
 
     let person = new Person(
       this,
-      this.start,
+      start,
       new Math.Vector2(target.x, target.y),
       this.waitingZone
     );
@@ -242,3 +264,7 @@ let _game = new Phaser.Game({
     }
   }
 });
+
+function randomElem<T>(array: T[]): T {
+  return array[window.Math.floor(window.Math.random() * array.length)];
+}
