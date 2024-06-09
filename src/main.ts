@@ -1,6 +1,6 @@
 import "./global.css";
 
-import Phaser, { Geom, Math, Scene, Input, Scale } from "phaser";
+import Phaser, { Geom, Math, Scene, Input, Scale, GameObjects } from "phaser";
 
 import { UpdateService } from "./ergo_api";
 import { Transaction } from "./types";
@@ -8,16 +8,16 @@ import { Transaction } from "./types";
 class Person {
   private node: Phaser.GameObjects.GameObject;
   private nodeBody: Phaser.Physics.Arcade.Body;
-  private waitingZone: Geom.Rectangle;
+  // private waitingZone: Geom.Rectangle;
   private scene: Phaser.Scene;
 
   private moveSpeed = 300;
   private start: Math.Vector2;
   private target: Math.Vector2;
 
-  private walkIntervalMs = 4000;
-  private walkTime = 1000;
-  private lastWalkAt = 0;
+  // private walkIntervalMs = 4000;
+  // private walkTime = 1000;
+  // private lastWalkAt = 0;
   private personState: "lining" | "idle" | "walking";
 
   constructor(
@@ -29,7 +29,7 @@ class Person {
     this.scene = scene;
     this.target = target;
     this.start = start.clone();
-    this.waitingZone = waitingZone;
+    // this.waitingZone = waitingZone;
 
     this.personState = "lining";
   }
@@ -61,25 +61,25 @@ class Person {
     let isIdle = this.personState === "idle";
     if (!isIdle && this.shouldStop()) {
       this.nodeBody.stop();
-      this.lastWalkAt = time;
+      // this.lastWalkAt = time;
       this.personState = "idle";
     }
 
-    if (isIdle && time - this.lastWalkAt > this.walkIntervalMs) {
-      this.lastWalkAt = time;
-      this.personState = "walking";
-      let targetPoint = this.waitingZone.getRandomPoint();
+    // if (isIdle && time - this.lastWalkAt > this.walkIntervalMs) {
+    //   this.lastWalkAt = time;
+    //   this.personState = "walking";
+    //   let targetPoint = this.waitingZone.getRandomPoint();
 
-      this.start.setFromObject(this.nodeBody.position);
-      this.target.set(targetPoint.x, targetPoint.y);
-      this.scene.physics.moveTo(
-        this.node,
-        this.target.x,
-        this.target.y,
-        this.moveSpeed,
-        this.walkTime
-      );
-    }
+    //   this.start.setFromObject(this.nodeBody.position);
+    //   this.target.set(targetPoint.x, targetPoint.y);
+    //   this.scene.physics.moveTo(
+    //     this.node,
+    //     this.target.x,
+    //     this.target.y,
+    //     this.moveSpeed,
+    //     this.walkTime
+    //   );
+    // }
   }
 
   destroy() {
@@ -93,10 +93,41 @@ type MempoolEntry = {
   person: Person;
 };
 
+class Bus {
+  scene: Phaser.Scene;
+  region: Geom.Rectangle;
+  index: number;
+
+  constructor(scene: Scene, index: number, region: Geom.Rectangle) {
+    this.scene = scene;
+    this.index = index;
+    this.region = region;
+  }
+
+  init() {
+    // console.log("addedToScene " + this.index);
+    this.scene.add
+      .rectangle(
+        this.region.x,
+        this.region.y,
+        this.region.width,
+        this.region.height,
+        0x553c69
+      )
+      .setOrigin(0, 0);
+
+    this.scene.add
+      .text(this.region.x + 4, this.region.y + 4, "Bus " + this.index)
+      .setOrigin(0, 0);
+  }
+}
+
 class MainScene extends Phaser.Scene {
   // private start: Math.Vector2;
   private houses: Math.Vector2[];
   private waitingZone: Geom.Rectangle;
+  private busZone: Geom.Rectangle;
+  private buses: Bus[];
 
   private updateService: UpdateService;
 
@@ -112,18 +143,52 @@ class MainScene extends Phaser.Scene {
       h: +this.game.config.height
     };
 
+    /* ============================================== */
+
     this.houses = this.createHouses(canvasSize);
+
+    /* ============================================== */
 
     let waitingZoneWidth = 300;
 
     let waitingZone = new Geom.Rectangle(
-      canvasSize.w - waitingZoneWidth,
+      canvasSize.w - waitingZoneWidth - 300,
       0,
       waitingZoneWidth,
       canvasSize.h
     );
-
     this.waitingZone = Geom.Rectangle.Inflate(waitingZone, -15, -16);
+
+    /* ============================================== */
+
+    this.busZone = Geom.Rectangle.Clone(this.waitingZone).setPosition(
+      this.waitingZone.x + this.waitingZone.width + 25,
+      this.waitingZone.y
+    );
+
+    /* ============================================== */
+
+    // this.buses = [
+    // new Bus(this, 0),
+    // new Bus(this, 1),
+    // new Bus(this, 2),
+    // ];
+    this.buses = [];
+    let spacing = 10;
+    let busHeight = 150;
+
+    for (let i = 0; i < 5; ++i) {
+      let region = new Geom.Rectangle(
+        this.busZone.x,
+        this.busZone.y + i * (busHeight + spacing),
+        this.busZone.width,
+        busHeight
+      );
+
+      this.buses.push(new Bus(this, i, region));
+    }
+
+    /* ============================================== */
 
     this.initUpdateService();
     // this.initClickToAddPerson();
@@ -198,15 +263,6 @@ class MainScene extends Phaser.Scene {
   };
 
   create() {
-    // Add houses
-    this.houses.forEach((house, index) => {
-      this.add.circle(house.x, house.y, 6, 0xffffff);
-      this.add.text(house.x, house.y + 35, `House ${index + 1}`, {
-        fontSize: 20,
-        color: "#69f542"
-      }).setOrigin(0.5, 0.5);
-    });
-
     this.add
       .rectangle(
         this.waitingZone.x,
@@ -216,6 +272,30 @@ class MainScene extends Phaser.Scene {
         0x435153
       )
       .setOrigin(0, 0);
+
+    // this.add
+    //   .rectangle(
+    //     this.busZone.x,
+    //     this.busZone.y,
+    //     this.busZone.width,
+    //     this.busZone.height,
+    //     0x553c69
+    //   )
+    //   .setOrigin(0, 0);
+
+    // Add houses
+    this.houses.forEach((house, index) => {
+      this.add.circle(house.x, house.y, 6, 0xffffff);
+      this.add
+        .text(house.x, house.y + 35, `House ${index + 1}`, {
+          fontSize: 20,
+          color: "#69f542"
+        })
+        .setOrigin(0.5, 0.5);
+    });
+
+    // Add buses
+    this.buses.forEach(bus => bus.init());
   }
 
   addTx(tx: Transaction, age: number) {

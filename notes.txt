@@ -64,16 +64,74 @@ handle events in queue instead of calling funcions syncrhonomously
 
 PLAN:
 
-    when a new transaction comes, animate a circle from one fixed point to a random point
-
-
-    free walk
-        after every n seconds
-
-    delete (snap) old transactions
     add busses
     add a transaction to bus
     leave bus
 
-    //each node has an age
-    //after every
+buses:
+    tx killed:
+        is in waiting zone:
+
+    tx:
+        new txs go to waiting or inside a bus
+        old txs get outside of bus (to waiting) or change bus
+
+    block:
+        These two in parallel
+        |____|extra txs inside top bus (if any) go to waiting or prev bus
+             |waiting txs of this block (if any) go inside top bus
+
+        These two in parallel
+        |____|top bus goes to leaving
+             |prev buses move to forward
+
+
+
+
+(Block[], WaitingTx[]) MakeBlockTemplates(mempool) {
+
+}
+
+enum Location {
+    Home(...),
+    Waiting,
+    Bus(index),
+    Destroy
+}
+
+TxMoveCommand[] TxStateDelta(old, new) {
+    let oldTx = TxLocations(old);
+    let newTx = TxLocations(old);
+
+    let commands = [];
+
+    for tx in newTx + oldTx:
+        let oldLocation;
+        let targetLocation;
+
+        if tx in oldTx:
+                oldLocation = oldTx[tx]
+            else
+                oldLocation = TxHome(tx)
+
+        if tx in newTx:
+            targetLocation = newTx[tx]
+        else
+            targetLocation = DESTROY
+
+        if oldLocation != targetLocation:
+            commands.push({ tx: tx, from: oldLocation, to: targetLocation })
+}
+
+
+void OnTxs(tx: Tx[]) {
+    mempool = CombineMempoolWithAge(mempool, txs) // also sets the appropriate location: Home() or Waiting
+
+    let newBlockTemplates = MakeBlockTemplates(mempool + txs);
+    let commands = TxStateDelta(oldBlockTemplates, newBlockTemplates)
+
+    // each command can be run in parallel
+
+    for cmd in commands:
+        cmd.tx.executeCommand(cmd)
+}
