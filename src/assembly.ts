@@ -38,6 +38,10 @@ export class Assembly {
       yield [tx, { type: "waiting" } as PersonLocation] as const;
     }
   }
+
+  public static empty() {
+    return new Assembly([], []);
+  }
 }
 
 export function AssembleTransactions(
@@ -62,7 +66,6 @@ export function AssembleTransactions(
   return new Assembly(blocks, waiting);
 }
 
-
 function areLocationsEqual(a: PersonLocation, b: PersonLocation) {
   if (a.type !== b.type) return false;
 
@@ -85,23 +88,24 @@ function CalculateHomeId(tx: Transaction) {
   return 0; // Okay for now
 }
 
-
-type MoveCommand = {
-  tx: Transaction,
-  from: PersonLocation,
-  to: PersonLocation,
-};
-
-function* combineGenerators<G, R, T>(...generators: Generator<G, R, T>[]) {
-  let last: R | null = null;
+function* combineGenerators<Y, R, T>(
+  first: Generator<Y, R, T>,
+  ...generators: Generator<Y, R, T>[]
+) {
+  let last = yield* first;
   for (let gen of generators) {
     last = yield* gen;
   }
-
-  return last! as R;
+  return last;
 }
 
-function CalculateMoves(prev: Assembly, next: Assembly) {
+type MoveCommand = {
+  tx: Transaction;
+  from: PersonLocation;
+  to: PersonLocation;
+};
+
+export function CalculateMoves(prev: Assembly, next: Assembly) {
   let commands: MoveCommand[] = [];
 
   for (const [tx] of combineGenerators(prev.iter(), next.iter())) {
@@ -127,31 +131,3 @@ function CalculateMoves(prev: Assembly, next: Assembly) {
 
   return commands;
 }
-
-/*
-
-TxMoveCommand[] TxStateDelta(old, new) {
-    let oldTx = TxLocations(old);
-    let newTx = TxLocations(old);
-
-    let commands = [];
-
-    for tx in newTx + oldTx:
-        let oldLocation;
-        let targetLocation;
-
-        if tx in oldTx:
-                oldLocation = oldTx[tx]
-            else
-                oldLocation = TxHome(tx)
-
-        if tx in newTx:
-            targetLocation = newTx[tx]
-        else
-            targetLocation = DESTROY
-
-        if oldLocation != targetLocation:
-            commands.push({ tx: tx, from: oldLocation, to: targetLocation })
-}
-
-*/

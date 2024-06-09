@@ -4,8 +4,7 @@ import Phaser, { Geom, Math, Scene, Input, Scale, GameObjects } from "phaser";
 
 import { UpdateService } from "./ergo_api";
 import { PersonLocation, Transaction } from "./types";
-
-
+import { AssembleTransactions, Assembly, CalculateMoves } from "./assembly";
 
 class Person {
   private node: Phaser.GameObjects.GameObject;
@@ -21,7 +20,6 @@ class Person {
   // private walkTime = 1000;
   // private lastWalkAt = 0;
   private personState: "lining" | "idle" | "walking";
-
 
   /* ---------------------  */
 
@@ -39,7 +37,7 @@ class Person {
     // this.waitingZone = waitingZone;
 
     this.personState = "lining";
-    this.location = { type: 'waiting' }
+    this.location = { type: "waiting" };
   }
 
   init() {
@@ -140,11 +138,13 @@ class MainScene extends Phaser.Scene {
   private updateService: UpdateService;
 
   private mempool: MempoolEntry[];
+  private assembly: Assembly;
 
   private MAX_TX_AGE = 4;
 
   init() {
     this.mempool = [];
+    this.assembly = Assembly.empty();
 
     let canvasSize = {
       w: +this.game.config.width,
@@ -238,8 +238,10 @@ class MainScene extends Phaser.Scene {
     ];
   }
 
-  onTransactions = (transactions: Transaction[]) => {
+  private onTransactions = (transactions: Transaction[]) => {
     console.log("Found new txs: ", transactions.length);
+
+    let changed = false;
 
     for (let candidTx of transactions) {
       let index = this.mempool.findIndex(mtx => mtx.tx.id === candidTx.id);
@@ -248,6 +250,7 @@ class MainScene extends Phaser.Scene {
         // We create this entry with age -1 so that later when all the transactions' ages
         // are incremented then this gets set to 0
         this.addTx(candidTx, -1);
+        changed = true;
       } else {
         // This transaction is already in the mempool.
         // We have to reset its age. Similar to above, we
@@ -263,11 +266,25 @@ class MainScene extends Phaser.Scene {
       if (entry.age < this.MAX_TX_AGE) {
         newMempool.push(entry);
       } else {
+        changed = true;
         entry.person.destroy();
       }
     }
 
-    this.mempool = newMempool;
+    if (changed) {
+      let newAsembly = AssembleTransactions(
+        newMempool.map(entry => entry.tx),
+        this.buses.length
+      );
+
+      let commands = CalculateMoves(this.assembly, newAsembly);
+      console.log(commands);
+
+      this.assembly = newAsembly;
+      this.mempool = newMempool;
+
+      console.log(newAsembly);
+    }
   };
 
   create() {
