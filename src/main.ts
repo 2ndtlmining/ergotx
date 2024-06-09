@@ -3,7 +3,9 @@ import "./global.css";
 import Phaser, { Geom, Math, Scene, Input, Scale, GameObjects } from "phaser";
 
 import { UpdateService } from "./ergo_api";
-import { Transaction } from "./types";
+import { PersonLocation, Transaction } from "./types";
+
+
 
 class Person {
   private node: Phaser.GameObjects.GameObject;
@@ -20,6 +22,11 @@ class Person {
   // private lastWalkAt = 0;
   private personState: "lining" | "idle" | "walking";
 
+
+  /* ---------------------  */
+
+  private location: PersonLocation;
+
   constructor(
     scene: Scene,
     start: Math.Vector2,
@@ -32,6 +39,7 @@ class Person {
     // this.waitingZone = waitingZone;
 
     this.personState = "lining";
+    this.location = { type: 'waiting' }
   }
 
   init() {

@@ -1,3 +1,5 @@
+import { Math } from "phaser";
+
 export type SortDirection = "asc" | "desc";
 
 export type VoidCallack<T> = (payload: T) => void;
@@ -50,3 +52,12 @@ export interface BlockTransaction {
 export interface BlockWithTransactions extends Block {
   transactions: BlockTransaction[];
 }
+
+/* ====================== */
+export type PersonLocation =
+  | { type: 'waiting' }
+  | { type: 'home', id: number /* index for now */ }
+  | { type: 'bus', index: number }
+  | { type: 'destroy' }
+
+// export type PersonLocationType = PersonLocation['type'];
