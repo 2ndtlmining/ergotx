@@ -104,7 +104,7 @@ export class Person {
         break;
 
       case "destroy":
-        position = new Math.Vector2(1000, 1000);
+        position = new Math.Vector2(1000, -1000);
         break;
     }
 
@@ -270,19 +270,25 @@ class MainScene extends Phaser.Scene {
       .onNewBlock(block => {
         console.log("Found block at height: ", block.height);
 
+        let newMempool = [...this.mempool];
+
         for (const blockTx of block.transactions) {
-          let existingIndex = this.mempool.findIndex(
+          let existingIndex = newMempool.findIndex(
             mtx => mtx.tx.id === blockTx.id
           );
 
           if (existingIndex === -1) continue;
 
-          // this.mempool[existingIndex].person.destroy();
-          let entry = this.mempool.splice(existingIndex, 1)[0];
-          entry.person.setNewLocation({ type: 'destroy' });
+          // newMempool.splice(existingIndex, 1);
+          newMempool[existingIndex] = false as any;
+          // entry.person.setNewLocation({ type: 'destroy' });
 
-          this.assembly = AssembleTransactions(this.mempool, 5);
+          // this.assembly = AssembleTransactions(this.mempool, 5);
         }
+
+        newMempool = newMempool.filter(Boolean);
+
+        this.mempoolUpdated(newMempool);
       });
 
     this.updateService.start();
@@ -298,8 +304,23 @@ class MainScene extends Phaser.Scene {
   }
 
 
-  private mempoolUpdated() {
+  private mempoolUpdated(newMempool: MempoolEntry[]) {
+    let newAsembly = AssembleTransactions(
+      newMempool,
+      this.buses.length
+    );
 
+    let commands = CalculateMoves(this.assembly, newAsembly);
+    // console.log(commands);
+
+    this.assembly = newAsembly;
+    this.mempool = newMempool;
+
+    for (const cmd of commands) {
+      console.log("CMD", cmd.from, cmd.to);
+      // let node = this.mempool.find(entry => entry.tx.id === cmd.tx.id)!;
+      cmd.txEntry.person.setNewLocation(cmd.to);
+    }
   }
 
   private onTransactions = (transactions: Transaction[]) => {
@@ -337,24 +358,7 @@ class MainScene extends Phaser.Scene {
     }
 
     if (changed) {
-      let newAsembly = AssembleTransactions(
-        newMempool,
-        this.buses.length
-      );
-
-      let commands = CalculateMoves(this.assembly, newAsembly);
-      // console.log(commands);
-
-      this.assembly = newAsembly;
-      this.mempool = newMempool;
-
-      for (const cmd of commands) {
-        console.log("CMD", cmd.from, cmd.to);
-        // let node = this.mempool.find(entry => entry.tx.id === cmd.tx.id)!;
-        cmd.txEntry.person.setNewLocation(cmd.to);
-      }
-
-      // console.log(newAsembly);
+      this.mempoolUpdated(newMempool);
     }
   };
 
