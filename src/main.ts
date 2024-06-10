@@ -3,13 +3,18 @@ import "./global.css";
 import Phaser, { Geom, Math, Scene, Input, Scale, GameObjects } from "phaser";
 
 import { UpdateService } from "./ergo_api";
-import { PersonLocation, Transaction } from "./types";
-import { AssembleTransactions, Assembly, CalculateMoves } from "./assembly";
+import { MempoolEntry, PersonLocation, Transaction } from "./types";
+import {
+  AssembleTransactions,
+  Assembly,
+  CalculateHomeId,
+  CalculateMoves
+} from "./assembly";
 
-class Person {
+export class Person {
   private node: Phaser.GameObjects.GameObject;
   private nodeBody: Phaser.Physics.Arcade.Body;
-  // private waitingZone: Geom.Rectangle;
+  private waitingZone: Geom.Rectangle;
   private scene: Phaser.Scene;
 
   private moveSpeed = 300;
@@ -17,41 +22,47 @@ class Person {
   private target: Math.Vector2;
 
   // private walkIntervalMs = 4000;
-  // private walkTime = 1000;
+  private walkTime = 1000;
   // private lastWalkAt = 0;
-  private personState: "lining" | "idle" | "walking";
+  private personState: "idle" | "walking";
 
   /* ---------------------  */
 
   private location: PersonLocation;
 
   constructor(
+    tx: Transaction,
     scene: Scene,
-    start: Math.Vector2,
-    target: Math.Vector2,
+    // start: Math.Vector2,
+    // target: Math.Vector2,
     waitingZone: Geom.Rectangle
   ) {
     this.scene = scene;
-    this.target = target;
-    this.start = start.clone();
-    // this.waitingZone = waitingZone;
+    this.waitingZone = waitingZone;
 
-    this.personState = "lining";
-    this.location = { type: "waiting" };
+    let homeId = CalculateHomeId(tx);
+
+    this.location = { type: "home", id: homeId };
+
+    this.start = this.homePosition(homeId);
+    this.target = new Math.Vector2();
+
   }
 
   init() {
-    this.personState = "lining";
+    this.personState = "idle";
 
     this.node = this.scene.add.circle(this.start.x, this.start.y, 20, 0xedae26);
     this.nodeBody = this.scene.physics.add.existing(this.node).body as any;
 
-    this.scene.physics.moveTo(
-      this.node,
-      this.target.x,
-      this.target.y,
-      this.moveSpeed
-    );
+    this.nodeBody.position.setFromObject(this.start);
+
+    // this.scene.physics.moveTo(
+    //   this.node,
+    //   this.target.x,
+    //   this.target.y,
+    //   this.moveSpeed
+    // );
   }
 
   shouldStop(): boolean {
@@ -63,10 +74,60 @@ class Person {
     return a.dot(b) <= 0;
   }
 
+  private getScene() {
+    return this.scene as MainScene;
+  }
+
+  homePosition(id: number) {
+    return this.getScene().houses[id].clone();
+  }
+
+  setNewLocation(loc: PersonLocation) {
+    this.location = loc;
+    let position: Math.Vector2;
+
+    switch (loc.type) {
+      case "home":
+        position = this.homePosition(loc.id);
+        break;
+
+      case "waiting":
+        position = new Math.Vector2().setFromObject(
+          this.waitingZone.getRandomPoint()
+        );
+        break;
+
+      case "bus":
+        position = new Math.Vector2().setFromObject(
+          this.getScene().buses[loc.index].getLandingPoint()
+        );
+        break;
+
+      case "destroy":
+        position = new Math.Vector2(1000, 1000);
+        break;
+    }
+
+    this.personState = "walking";
+
+    this.start.setFromObject(this.nodeBody.position);
+    this.target = position;
+
+    this.scene.physics.moveTo(
+      this.node,
+      this.target.x,
+      this.target.y,
+      this.moveSpeed,
+      this.walkTime
+    );
+  }
+
   update(time: number) {
     let isIdle = this.personState === "idle";
     if (!isIdle && this.shouldStop()) {
       this.nodeBody.stop();
+      if (this.location.type === 'destroy')
+        this.destroy();
       // this.lastWalkAt = time;
       this.personState = "idle";
     }
@@ -93,25 +154,22 @@ class Person {
   }
 }
 
-type MempoolEntry = {
-  age: number;
-  tx: Transaction;
-  person: Person;
-};
 
 class Bus {
   scene: Phaser.Scene;
-  region: Geom.Rectangle;
-  index: number;
+  public region: Geom.Rectangle;
+  private stayRegion: Geom.Rectangle;
+  public index: number;
 
   constructor(scene: Scene, index: number, region: Geom.Rectangle) {
     this.scene = scene;
     this.index = index;
     this.region = region;
+
+    this.stayRegion = Geom.Rectangle.Inflate(Geom.Rectangle.Clone(region), -100, -100);
   }
 
   init() {
-    // console.log("addedToScene " + this.index);
     this.scene.add
       .rectangle(
         this.region.x,
@@ -126,14 +184,17 @@ class Bus {
       .text(this.region.x + 4, this.region.y + 4, "Bus " + this.index)
       .setOrigin(0, 0);
   }
+
+  public getLandingPoint() {
+    return this.stayRegion.getRandomPoint();
+  }
 }
 
 class MainScene extends Phaser.Scene {
-  // private start: Math.Vector2;
-  private houses: Math.Vector2[];
+  public houses: Math.Vector2[];
   private waitingZone: Geom.Rectangle;
   private busZone: Geom.Rectangle;
-  private buses: Bus[];
+  public buses: Bus[];
 
   private updateService: UpdateService;
 
@@ -176,11 +237,6 @@ class MainScene extends Phaser.Scene {
 
     /* ============================================== */
 
-    // this.buses = [
-    // new Bus(this, 0),
-    // new Bus(this, 1),
-    // new Bus(this, 2),
-    // ];
     this.buses = [];
     let spacing = 10;
     let busHeight = 150;
@@ -221,8 +277,11 @@ class MainScene extends Phaser.Scene {
 
           if (existingIndex === -1) continue;
 
-          this.mempool[existingIndex].person.destroy();
-          this.mempool.splice(existingIndex, 1);
+          // this.mempool[existingIndex].person.destroy();
+          let entry = this.mempool.splice(existingIndex, 1)[0];
+          entry.person.setNewLocation({ type: 'destroy' });
+
+          this.assembly = AssembleTransactions(this.mempool, 5);
         }
       });
 
@@ -236,6 +295,11 @@ class MainScene extends Phaser.Scene {
       new Math.Vector2(150, 350), new Math.Vector2(350, 350),
       new Math.Vector2(150, 550), new Math.Vector2(350, 550),
     ];
+  }
+
+
+  private mempoolUpdated() {
+
   }
 
   private onTransactions = (transactions: Transaction[]) => {
@@ -266,24 +330,31 @@ class MainScene extends Phaser.Scene {
       if (entry.age < this.MAX_TX_AGE) {
         newMempool.push(entry);
       } else {
+        // delete
         changed = true;
-        entry.person.destroy();
+        // entry.person.destroy();
       }
     }
 
     if (changed) {
       let newAsembly = AssembleTransactions(
-        newMempool.map(entry => entry.tx),
+        newMempool,
         this.buses.length
       );
 
       let commands = CalculateMoves(this.assembly, newAsembly);
-      console.log(commands);
+      // console.log(commands);
 
       this.assembly = newAsembly;
       this.mempool = newMempool;
 
-      console.log(newAsembly);
+      for (const cmd of commands) {
+        console.log("CMD", cmd.from, cmd.to);
+        // let node = this.mempool.find(entry => entry.tx.id === cmd.tx.id)!;
+        cmd.txEntry.person.setNewLocation(cmd.to);
+      }
+
+      // console.log(newAsembly);
     }
   };
 
@@ -324,7 +395,7 @@ class MainScene extends Phaser.Scene {
   }
 
   addTx(tx: Transaction, age: number) {
-    let person = this.createNewPerson();
+    let person = this.createNewPerson(tx);
     this.mempool.push({
       age,
       person,
@@ -337,16 +408,12 @@ class MainScene extends Phaser.Scene {
     this.mempool.forEach(mtx => mtx.person.update(time));
   }
 
-  createNewPerson() {
-    let house = randomElem(this.houses);
-
-    let start = house.clone();
-    let target = this.waitingZone.getRandomPoint();
-
+  createNewPerson(tx: Transaction) {
     let person = new Person(
+      tx,
       this,
-      start,
-      new Math.Vector2(target.x, target.y),
+      // start,
+      // new Math.Vector2(target.x, target.y),
       this.waitingZone
     );
 

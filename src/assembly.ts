@@ -1,15 +1,15 @@
-import { PersonLocation, Transaction } from "./types";
+import { MempoolEntry, PersonLocation, Transaction } from "./types";
 
 export class Assembly {
   private _locationMap: Map<string, PersonLocation>;
 
   constructor(
-    public readonly blocks: Array<Transaction[]>,
-    public readonly waiting: Transaction[]
+    public readonly blocks: Array<MempoolEntry[]>,
+    public readonly waiting: MempoolEntry[]
   ) {
     this._locationMap = new Map();
-    for (const [tx, loc] of this.iter()) {
-      this._locationMap.set(tx.id, loc);
+    for (const [txEntry, loc] of this.iter()) {
+      this._locationMap.set(txEntry.tx.id, loc);
     }
   }
 
@@ -45,12 +45,12 @@ export class Assembly {
 }
 
 export function AssembleTransactions(
-  txs: Transaction[],
+  txs: MempoolEntry[],
   maxBlocks: number
 ): Assembly {
   const TX_PER_BLOCK = 5;
 
-  let blocks: Array<Transaction[]> = [];
+  let blocks: Array<MempoolEntry[]> = [];
 
   let i: number;
   for (i = 0; i < txs.length && blocks.length < maxBlocks; i += TX_PER_BLOCK) {
@@ -58,7 +58,7 @@ export function AssembleTransactions(
     blocks.push(chunk);
   }
 
-  let waiting: Transaction[] = [];
+  let waiting: MempoolEntry[] = [];
   for (; i < txs.length; i++) {
     waiting.push(txs[i]);
   }
@@ -84,7 +84,7 @@ function areLocationsEqual(a: PersonLocation, b: PersonLocation) {
   }
 }
 
-function CalculateHomeId(tx: Transaction) {
+export function CalculateHomeId(tx: Transaction) {
   return 0; // Okay for now
 }
 
@@ -99,8 +99,8 @@ function* combineGenerators<Y, R, T>(
   return last;
 }
 
-type MoveCommand = {
-  tx: Transaction;
+export type MoveCommand = {
+  txEntry: MempoolEntry;
   from: PersonLocation;
   to: PersonLocation;
 };
@@ -108,24 +108,24 @@ type MoveCommand = {
 export function CalculateMoves(prev: Assembly, next: Assembly) {
   let commands: MoveCommand[] = [];
 
-  for (const [tx] of combineGenerators(prev.iter(), next.iter())) {
+  for (const [txEntry] of combineGenerators(prev.iter(), next.iter())) {
     let oldLocation: PersonLocation;
     let newLocation: PersonLocation;
 
-    if (prev.containsTx(tx.id)) {
-      oldLocation = prev.getLocation(tx.id);
+    if (prev.containsTx(txEntry.tx.id)) {
+      oldLocation = prev.getLocation(txEntry.tx.id);
     } else {
-      oldLocation = { type: "home", id: CalculateHomeId(tx) };
+      oldLocation = { type: "home", id: CalculateHomeId(txEntry.tx) };
     }
 
-    if (next.containsTx(tx.id)) {
-      newLocation = next.getLocation(tx.id);
+    if (next.containsTx(txEntry.tx.id)) {
+      newLocation = next.getLocation(txEntry.tx.id);
     } else {
       newLocation = { type: "destroy" };
     }
 
     if (!areLocationsEqual(oldLocation, newLocation)) {
-      commands.push({ tx, from: oldLocation, to: newLocation });
+      commands.push({ txEntry, from: oldLocation, to: newLocation });
     }
   }
 

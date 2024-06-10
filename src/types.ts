@@ -1,4 +1,5 @@
 import { Math } from "phaser";
+import type { Person } from './main';
 
 export type SortDirection = "asc" | "desc";
 
@@ -61,3 +62,9 @@ export type PersonLocation =
   | { type: 'destroy' }
 
 // export type PersonLocationType = PersonLocation['type'];
+
+export type MempoolEntry = {
+  age: number;
+  tx: Transaction;
+  person: Person;
+};
