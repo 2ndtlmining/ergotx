@@ -4,11 +4,63 @@ import { Transaction } from "./rv_types";
 // import { Placement } from "./rv_vistypes";
 
 export type Placement =
+  | { type: "not_placed" }
   | { type: "house"; index: number }
   | { type: "waiting" }
-  | { type: "bus"; index: number }
+  | { type: "block"; index: number }
   | { type: "destruction" };
 
+/* ================================== */
+
+interface MempoolNode {
+  // The actual transaction
+  tx: Transaction;
+
+  // Where this transaction currently is in the world
+  placement: Placement;
+
+  // Index of the house this transaction originated from
+  houseIndex: number;
+
+  // Age since last refresh
+  age: number;
+
+  // Is this transaction still a part of mempool or not (either
+  // because it has been included in a block or expired away)
+  alive: boolean;
+}
+
+// It is a combination of excluded (waiting) and included (mined)
+// transactions of the visualization at a given point in time
+export class MempoolAssembly {
+  waiting: MempoolNode[];
+  mined: MempoolNode[][];
+
+  public tick(newTransactions: Transaction[]) {
+
+  }
+
+  public releaseBlock(blockTransactions: Transaction[]) {
+
+  }
+}
+
+/* ================================== */
+
+export interface ReassembleCommand {
+}
+
+
+
+
+
+
+
+
+
+
+/* ================================== */
+/*
 export class WrapSprite {
   protected scene: Scene;
   protected gameObject: Phaser.GameObjects.GameObject;
@@ -72,56 +124,57 @@ export class Person extends WrapSprite {
     );
   }
 }
+   */
 
 /* ========================== */
+{
+  interface House {
+    index: number;
+    name: string;
+  }
 
-interface House {
-  index: number;
-  name: string;
+  class HouseList {
+    private houses: House[] = [];
+
+    constructor() {
+      this.houses = [];
+    }
+
+    public addHouse(name: string) {
+      let index = this.houses.length;
+      this.houses.push({
+        index,
+        name
+      });
+    }
+
+    public getHouses() {
+      return this.houses;
+    }
+
+    public getHouseByIndex(index: number) {
+      return this.houses[index];
+    }
+  }
+
+  class HouseService {
+    private list: HouseList;
+
+    constructor(list: HouseList) {
+      this.list = list;
+    }
+
+    public getHouses() {
+      return this.list.getHouses();
+    }
+
+    public getHouseByIndex(index: number) {
+      return this.list.getHouseByIndex(index);
+    }
+
+    public getHouseForTransaction(tx: Transaction): House {
+      return this.getHouseByIndex(0); // FIXME: Random
+    }
+  }
 }
-
-class HouseList {
-  private houses: House[] = [];
-
-  constructor() {
-    this.houses = [];
-  }
-
-  public addHouse(name: string) {
-    let index = this.houses.length;
-    this.houses.push({
-      index,
-      name
-    });
-  }
-
-  public getHouses() {
-    return this.houses;
-  }
-
-  public getHouseByIndex(index: number) {
-    return this.houses[index];
-  }
-}
-
-class HouseService {
-  private list: HouseList;
-
-  constructor(list: HouseList) {
-    this.list = list;
-  }
-
-  public getHouses() {
-    return this.list.getHouses();
-  }
-
-  public getHouseByIndex(index: number) {
-    return this.list.getHouseByIndex(index);
-  }
-
-  public getHouseForTransaction(tx: Transaction): House {
-    return this.getHouseByIndex(0); // FIXME: Random
-  }
-}
-
 /* ========================== */
