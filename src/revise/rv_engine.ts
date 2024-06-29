@@ -1,33 +1,11 @@
 import Phaser, { Scene } from "phaser";
 import { Transaction } from "./rv_types";
 
-// import { Placement } from "./rv_vistypes";
-
-export type Placement =
-  /* Tx is not currently placed anywhere */
-  // | { type: "not_placed" }
-  // /* Tx is at its house */
-  // | { type: "house" }
-  /* Tx is in waiting zone */
-  | { type: "waiting" }
-  /* Tx is in a block at the given index (from top) */
-  | { type: "block"; index: number }
-  // /* Tx is being destroyed */
-  // | { type: "destruction" };
-
 /* ================================== */
 
-interface MempoolNode {
-  // The actual transaction
-  tx: Transaction;
-
-  // Where this transaction currently is in the world
-  placement: Placement;
-}
-
 interface TxState {
-  // Index of the house this transaction originated from
-  houseIndex: number;
+  // // Index of the house this transaction originated from
+  // houseIndex: number;
 
   // Age since last refresh
   age: number;
@@ -37,39 +15,79 @@ interface TxState {
   alive: boolean;
 }
 
-class TxStateRepo {
-  private txIdToIdentity: Map<string, TxState>;
+class TxStateManager {
+  private txIdToState: Map<string, TxState>;
 
-  public tickAll() {
-    // update age of all
+  public static MAX_AGE = 4;
+
+  constructor() {
+    this.txIdToState = new Map();
   }
 
-  public markSeen(tx: Transaction) {
-    // reset age or create new
+  public incrementAll() {
+    // increment age of all entries
+    this.txIdToState.forEach(state => {
+      state.age++;
+    });
+  }
+
+  public verifyPresence(tx: Transaction) {
+    // reset age, or create a new state
+    let state = this.getState(tx);
+    if (state) {
+      state.age = 0;
+    } else {
+      let insertState: TxState = {
+        age: 0,
+        alive: true
+        // houseIndex: this.houseService.getHouseForTransaction(tx).index
+      };
+    }
+  }
+
+  public getState(tx: Transaction) {
+    return this.txIdToState.get(tx.id);
   }
 
   public remove(tx: Transaction) {
     // remove from state
+    this.txIdToState.delete(tx.id);
   }
+
+  // public forEach(callback: (state: TxState, txId: string) => void) {
+  //   this.txIdToState.forEach(callback);
+  // }
+
+  // public kill(tx: Transaction) {
+  //   // Set alive = false (TODO for garbage collection)
+  //   let state = this.getState(tx);
+  //   if (state) {
+  //     state.alive = false;
+  //   }
+
+  //   // this.txIdToState.forEach(state => {
+  //   //   if (state.age >= TxStateManager.MAX_AGE) {
+  //   //     state.alive = false;
+  //   //   }
+  //   // });
+  // }
 }
 
-// class NodeBuilder {
-//   private houseService: HouseService;
+/* ====================================== */
 
-//   constructor(houseService: HouseService) {
-//     this.houseService = houseService;
-//   }
+type Placement =
+  /* Tx is in waiting zone */
+  | { type: "waiting" }
+  /* Tx is in a block at the given index (from top) */
+  | { type: "block"; index: number };
 
-//   public buildNode(tx: Transaction): MempoolNode {
-//     return {
-//       tx,
-//       placement: { type: "waiting" }, // "waiting" default
-//       houseIndex: this.houseService.getHouseForTransaction(tx).index,
-//       age: 0,
-//       alive: true
-//     };
-//   }
-// }
+interface MempoolNode {
+  // The actual transaction
+  tx: Transaction;
+
+  // Where this transaction currently is in the world
+  placement: Placement;
+}
 
 function Assemble(transactions: Transaction[]): MempoolNode[] {
   const NODES_PER_BLOCK = 5;
@@ -95,12 +113,82 @@ function Assemble(transactions: Transaction[]): MempoolNode[] {
   while (i < transactions.length) {
     nodes.push({
       tx: transactions[i],
-      placement: { type: 'waiting' }
-    })
+      placement: { type: "waiting" }
+    });
   }
 
   return nodes;
 }
+
+/* ====================================== */
+
+class MempoolApp {
+  nodes: MempoolNode[];
+  houseService: HouseService;
+  txStateManager: TxStateManager;
+
+  constructor() {
+    this.nodes = [];
+    this.houseService = new HouseService(this.buildHouseList());
+    this.txStateManager = new TxStateManager();
+  }
+
+  private buildHouseList() {
+    let list = new HouseList();
+    list.addHouse("House A");
+    list.addHouse("House B");
+    list.addHouse("House C");
+    return list;
+  }
+
+  public startTransactionTick(newTransactions: Transaction[]) {
+    // set tick state init
+    let prevNodes = this.nodes;
+
+    newTransactions = this.applyMerge(
+      prevNodes.map(node => node.tx),
+      newTransactions
+    );
+
+    let newNodes = Assemble(newTransactions);
+
+    // set tick state visualizing
+  }
+
+  private applyMerge(
+    transactions: Transaction[],
+    newTransactions: Transaction[]
+  ) {
+    // Increment age of all previous transactions
+    this.txStateManager.incrementAll();
+
+    // Reset age (or insert new with age 0) of all new transactions
+    for (const tx of newTransactions) {
+      this.txStateManager.verifyPresence(tx);
+    }
+
+    let allTransactions = [...transactions, ...newTransactions];
+    let aliveTransactions: Transaction[] = [];
+
+    for (const tx of allTransactions) {
+      let state = this.txStateManager.getState(tx)!;
+      if (state.age >= TxStateManager.MAX_AGE) {
+        state.alive = false;
+      } else {
+        aliveTransactions.push(tx);
+      }
+    }
+
+    return aliveTransactions;
+  }
+}
+
+/*
+Tick
+  Init
+  Visualizing
+  CleanUp
+*/
 
 /*
 
@@ -147,6 +235,8 @@ class HouseList {
   }
 }
 
+// TODO: 0th house (fallback house) is the house of any
+// transaction which does not have a valid house
 class HouseService {
   private list: HouseList;
 
@@ -162,8 +252,8 @@ class HouseService {
     return this.list.getHouseByIndex(index);
   }
 
-  public getHouseForTransaction(tx: Transaction): House {
-    return this.getHouseByIndex(0); // FIXME: Random
+  public getTxHouseIndex(tx: Transaction): number {
+    return 0; // FIXME: Random
   }
 }
 /* ========================== */
