@@ -4,11 +4,16 @@ import { Transaction } from "./rv_types";
 // import { Placement } from "./rv_vistypes";
 
 export type Placement =
-  | { type: "not_placed" }
-  | { type: "house"; index: number }
+  /* Tx is not currently placed anywhere */
+  // | { type: "not_placed" }
+  // /* Tx is at its house */
+  // | { type: "house" }
+  /* Tx is in waiting zone */
   | { type: "waiting" }
+  /* Tx is in a block at the given index (from top) */
   | { type: "block"; index: number }
-  | { type: "destruction" };
+  // /* Tx is being destroyed */
+  // | { type: "destruction" };
 
 /* ================================== */
 
@@ -18,7 +23,9 @@ interface MempoolNode {
 
   // Where this transaction currently is in the world
   placement: Placement;
+}
 
+interface TxState {
   // Index of the house this transaction originated from
   houseIndex: number;
 
@@ -30,151 +37,133 @@ interface MempoolNode {
   alive: boolean;
 }
 
-// It is a combination of excluded (waiting) and included (mined)
-// transactions of the visualization at a given point in time
-export class MempoolAssembly {
-  waiting: MempoolNode[];
-  mined: MempoolNode[][];
+class TxStateRepo {
+  private txIdToIdentity: Map<string, TxState>;
 
-  public tick(newTransactions: Transaction[]) {
-
+  public tickAll() {
+    // update age of all
   }
 
-  public releaseBlock(blockTransactions: Transaction[]) {
-
-  }
-}
-
-/* ================================== */
-
-export interface ReassembleCommand {
-}
-
-
-
-
-
-
-
-
-
-
-/* ================================== */
-/*
-export class WrapSprite {
-  protected scene: Scene;
-  protected gameObject: Phaser.GameObjects.GameObject;
-  protected physicsBody: Phaser.Physics.Arcade.Body;
-
-  constructor(scene: Scene) {
-    this.scene = scene;
+  public markSeen(tx: Transaction) {
+    // reset age or create new
   }
 
-  protected buildSprite(gameObject: Phaser.GameObjects.GameObject) {
-    this.gameObject = gameObject;
-    this.physicsBody = this.scene.physics.add.existing(gameObject).body as any;
-  }
-
-  public destroy() {
-    this.gameObject.destroy();
+  public remove(tx: Transaction) {
+    // remove from state
   }
 }
 
-export interface PersonIdentity {
-  tx: Transaction;
-  house: House;
-  placement: Placement;
-}
+// class NodeBuilder {
+//   private houseService: HouseService;
 
-export class Person extends WrapSprite {
-  private static CIRCLE_RADIUS = 20;
+//   constructor(houseService: HouseService) {
+//     this.houseService = houseService;
+//   }
 
-  private identity: PersonIdentity;
+//   public buildNode(tx: Transaction): MempoolNode {
+//     return {
+//       tx,
+//       placement: { type: "waiting" }, // "waiting" default
+//       houseIndex: this.houseService.getHouseForTransaction(tx).index,
+//       age: 0,
+//       alive: true
+//     };
+//   }
+// }
 
-  public static spawnAtHouse(
-    scene: Scene,
-    tx: Transaction,
-    houseService: HouseService
-  ) {
-    let house = houseService.getHouseForTransaction(tx);
+function Assemble(transactions: Transaction[]): MempoolNode[] {
+  const NODES_PER_BLOCK = 5;
+  const MAX_BLOCKS = 5;
 
-    // return new Person(scene, tx, house, {
-    //   type: "house",
-    //   index: house.index
-    // });
-  }
+  let nodes: MempoolNode[] = [];
+  let filledBlocks = 0;
 
-  constructor(
-    scene: Scene,
-    identity: PersonIdentity,
-    // tx: Transaction,
-    // house: House,
-    // placement: Placement,
-  ) {
-    super(scene);
-    this.identity = identity;
+  let i = 0;
 
-    // this.tx = tx;
-    // this.placement = placement;
-  }
-
-  public init() {
-    this.buildSprite(
-      this.scene.add.circle(-100, -100, Person.CIRCLE_RADIUS, 0xedae26)
-    );
-  }
-}
-   */
-
-/* ========================== */
-{
-  interface House {
-    index: number;
-    name: string;
-  }
-
-  class HouseList {
-    private houses: House[] = [];
-
-    constructor() {
-      this.houses = [];
-    }
-
-    public addHouse(name: string) {
-      let index = this.houses.length;
-      this.houses.push({
-        index,
-        name
+  while (i < transactions.length && filledBlocks < MAX_BLOCKS) {
+    let slice = transactions.slice(i, i + NODES_PER_BLOCK);
+    for (const tx of slice) {
+      nodes.push({
+        tx,
+        placement: { type: "block", index: filledBlocks }
       });
     }
 
-    public getHouses() {
-      return this.houses;
-    }
-
-    public getHouseByIndex(index: number) {
-      return this.houses[index];
-    }
+    i += NODES_PER_BLOCK;
   }
 
-  class HouseService {
-    private list: HouseList;
+  while (i < transactions.length) {
+    nodes.push({
+      tx: transactions[i],
+      placement: { type: 'waiting' }
+    })
+  }
 
-    constructor(list: HouseList) {
-      this.list = list;
-    }
+  return nodes;
+}
 
-    public getHouses() {
-      return this.list.getHouses();
-    }
+/*
 
-    public getHouseByIndex(index: number) {
-      return this.list.getHouseByIndex(index);
-    }
+allNodes
 
-    public getHouseForTransaction(tx: Transaction): House {
-      return this.getHouseByIndex(0); // FIXME: Random
-    }
+tick(newTxs):
+  let txs = allMempoolNodes.map(intoTx)
+  txs = mergeTxs(txs, newTxs)
+    apply TxStateRepo
+
+  newNodes = Assemble(txs)
+
+
+*/
+
+/* ========================== */
+
+interface House {
+  index: number;
+  name: string;
+}
+
+class HouseList {
+  private houses: House[] = [];
+
+  constructor() {
+    this.houses = [];
+  }
+
+  public addHouse(name: string) {
+    let index = this.houses.length;
+    this.houses.push({
+      index,
+      name
+    });
+  }
+
+  public getHouses() {
+    return this.houses;
+  }
+
+  public getHouseByIndex(index: number) {
+    return this.houses[index];
+  }
+}
+
+class HouseService {
+  private list: HouseList;
+
+  constructor(list: HouseList) {
+    this.list = list;
+  }
+
+  public getHouses() {
+    return this.list.getHouses();
+  }
+
+  public getHouseByIndex(index: number) {
+    return this.list.getHouseByIndex(index);
+  }
+
+  public getHouseForTransaction(tx: Transaction): House {
+    return this.getHouseByIndex(0); // FIXME: Random
   }
 }
 /* ========================== */
