@@ -4,9 +4,6 @@ import { Transaction } from "./rv_types";
 /* ================================== */
 
 interface TxState {
-  // // Index of the house this transaction originated from
-  // houseIndex: number;
-
   // Age since last refresh
   age: number;
 
@@ -40,7 +37,6 @@ class TxStateManager {
       let insertState: TxState = {
         age: 0,
         alive: true
-        // houseIndex: this.houseService.getHouseForTransaction(tx).index
       };
     }
   }
@@ -49,28 +45,14 @@ class TxStateManager {
     return this.txIdToState.get(tx.id);
   }
 
-  public remove(tx: Transaction) {
-    // remove from state
-    this.txIdToState.delete(tx.id);
+  // public remove(tx: Transaction) {
+  //   // remove from state
+  //   this.txIdToState.delete(tx.id);
+  // }
+
+  public isAlive(tx: Transaction) {
+    return Boolean(this.getState(tx)?.alive);
   }
-
-  // public forEach(callback: (state: TxState, txId: string) => void) {
-  //   this.txIdToState.forEach(callback);
-  // }
-
-  // public kill(tx: Transaction) {
-  //   // Set alive = false (TODO for garbage collection)
-  //   let state = this.getState(tx);
-  //   if (state) {
-  //     state.alive = false;
-  //   }
-
-  //   // this.txIdToState.forEach(state => {
-  //   //   if (state.age >= TxStateManager.MAX_AGE) {
-  //   //     state.alive = false;
-  //   //   }
-  //   // });
-  // }
 }
 
 /* ====================================== */
@@ -85,7 +67,7 @@ interface MempoolNode {
   // The actual transaction
   tx: Transaction;
 
-  // Where this transaction currently is in the world
+  // Where this transaction currently is in assembly
   placement: Placement;
 }
 
@@ -120,17 +102,57 @@ function Assemble(transactions: Transaction[]): MempoolNode[] {
   return nodes;
 }
 
+class MempoolSnapshot {
+  constructor(
+    public readonly nodes: MempoolNode[],
+    public readonly states: TxStateManager
+  ) {}
+}
+
+/* ====================================== */
+
+type MovePin =
+  | { to: "waiting" }
+  | { to: "block"; index: number }
+  | { to: "destroy" };
+
+type Move = {
+  tx: Transaction;
+  pin: MovePin;
+};
+
+function CalculateMoves(snapshotA: MempoolSnapshot, snapshotB: MempoolSnapshot) {
+  let combined = [...snapshotA.nodes, ...snapshotB.nodes];
+
+  for (const node of combined) {
+    // let oldPlacement: Placement;
+    // let newPlacement: Placement;
+    let aliveBefore = snapshotA.states.isAlive(node.tx);
+    let aliveNow = snapshotB.states.isAlive(node.tx);
+
+    if (aliveBefore && aliveNow) {
+      // check placement
+    }
+    else if (aliveBefore && !aliveNow) {
+      // register destroy move
+    }
+    else if (!aliveBefore && aliveNow) {
+      // register 'waiting' or 'block' move depending on placement
+    }
+  }
+}
+
 /* ====================================== */
 
 class MempoolApp {
-  nodes: MempoolNode[];
-  houseService: HouseService;
-  txStateManager: TxStateManager;
+  private houseService: HouseService;
+  private nodes: MempoolNode[];
+  private states: TxStateManager;
 
   constructor() {
     this.nodes = [];
     this.houseService = new HouseService(this.buildHouseList());
-    this.txStateManager = new TxStateManager();
+    this.states = new TxStateManager();
   }
 
   private buildHouseList() {
@@ -160,18 +182,18 @@ class MempoolApp {
     newTransactions: Transaction[]
   ) {
     // Increment age of all previous transactions
-    this.txStateManager.incrementAll();
+    this.states.incrementAll();
 
     // Reset age (or insert new with age 0) of all new transactions
     for (const tx of newTransactions) {
-      this.txStateManager.verifyPresence(tx);
+      this.states.verifyPresence(tx);
     }
 
     let allTransactions = [...transactions, ...newTransactions];
     let aliveTransactions: Transaction[] = [];
 
     for (const tx of allTransactions) {
-      let state = this.txStateManager.getState(tx)!;
+      let state = this.states.getState(tx)!;
       if (state.age >= TxStateManager.MAX_AGE) {
         state.alive = false;
       } else {
@@ -182,6 +204,8 @@ class MempoolApp {
     return aliveTransactions;
   }
 }
+
+/* ========================== */
 
 /*
 Tick
@@ -252,8 +276,8 @@ class HouseService {
     return this.list.getHouseByIndex(index);
   }
 
-  public getTxHouseIndex(tx: Transaction): number {
-    return 0; // FIXME: Random
+  public getTxHouse(tx: Transaction): House {
+    return this.getHouseByIndex(0); // FIXME: Random
   }
 }
 /* ========================== */
