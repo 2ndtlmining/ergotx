@@ -1,11 +1,12 @@
 import Phaser, { Scene } from "phaser";
 import { Transaction } from "./rv_types";
 import { DefaultAssembleStrategy } from "./rv_assemble";
-import { PropSet } from "./rv_propset";
 
 /* ================================== */
 
 type Placement =
+  /* The tx is yet to be spawned */
+  | { type: "none" }
   /* Tx is in waiting zone */
   | { type: "waiting" }
   /* Tx is in a block at the given index (from top) */
@@ -18,6 +19,9 @@ const TX_MAX_AGE = 4;
 class TxState {
   // Age
   age: number;
+
+  // Alive
+  alive: boolean;
 
   // Placement
   placement: Placement;
@@ -51,12 +55,8 @@ class TxStateSet {
     return this.txIdToState.get(tx.id);
   }
 
-  public remove(tx: Transaction) {
-    this.txIdToState.delete(tx.id);
-  }
-
   public isAlive(tx: Transaction) {
-    return this.txIdToState.has(tx.id);
+    return Boolean(this.getState(tx)?.alive);
   }
 
   public markSeen(tx: Transaction) {
@@ -66,14 +66,18 @@ class TxStateSet {
     } else {
       let insertState: TxState = {
         age: 0,
-        placement: { type: "waiting" } // TODO: default ?
+        alive: true,
+        placement: { type: "none" } // TODO: default ?
       };
     }
   }
 }
 
 class AssemblySnapshot {
-  constructor(public transactions: Transaction[], public states: TxStateSet) {}
+  constructor(
+    public readonly transactions: Transaction[],
+    public readonly states: TxStateSet
+  ) {}
 
   public clone() {
     return new AssemblySnapshot([...this.transactions], this.states.clone());
@@ -82,12 +86,6 @@ class AssemblySnapshot {
 
 class Engine {
   private assembly: AssemblySnapshot;
-  /*
-  targetAssembly
-  spawningTxs
-  dyingTxs
-  movingTxs
-  */
 
   constructor() {
     // Starts with empty assembly
@@ -97,39 +95,36 @@ class Engine {
   private onTx(incomingTx: Transaction[]) {
     let newAssembly = this.assembly.clone();
 
-    // increment
     newAssembly.states.incrementAll();
 
-    // append new or reset age of new
     for (const tx of incomingTx) {
       newAssembly.states.markSeen(tx);
     }
 
-    // remove with age >= MAX_AGE
-    let combinedSet = PropSet.fromArray(
-      [...newAssembly.transactions, ...incomingTx],
-      tx => tx.id
-    );
+    let addedTxIds: Set<string> = new Set();
+    let toAssembleTransactions: Transaction[] = [];
 
-    let newTransactions: Transaction[] = [];
-
-    for (const tx of combinedSet.getItems()) {
+    for (const tx of [...newAssembly.transactions, ...incomingTx]) {
       let state = newAssembly.states.getState(tx)!;
       if (state.age >= TX_MAX_AGE) {
-        newAssembly.states.remove(tx);
-      } else {
-        newTransactions.push(tx);
+        state.alive = false;
+      }
+
+      if (state.alive && !addedTxIds.has(tx.id)) {
+        addedTxIds.add(tx.id);
+        toAssembleTransactions.push(tx);
       }
     }
 
-    newAssembly.transactions = newTransactions;
+    // assembly
+    let assembledTransactions =
+      new DefaultAssembleStrategy().assembleTransactions(
+        toAssembleTransactions
+      );
 
-    let assembled = new DefaultAssembleStrategy().assembleTransactions(
-      newTransactions
-    );
-
-    for (const { tx, placement } of assembled) {
-      newAssembly.states.getState(tx)!.placement = placement;
+    for (const { tx, placement } of assembledTransactions) {
+      let state = newAssembly.states.getState(tx)!;
+      state.placement = placement;
     }
   }
 }
@@ -155,19 +150,10 @@ function CalculateMoves(snapshotA: AssemblySnapshot, snapshotB: AssemblySnapshot
 
 /*
 
-Assembly:
-  txs
-  placements
-  age
+Assembler:
+  assemble(transactions)
 
 Engine:
-  currentAssembly
-  targetAssembly
-  spawningTxs
-  dyingTxs
-  movingTxs
-
-Engine Tasks:
   Receive Transactions
   CheckAge
   Assemble
