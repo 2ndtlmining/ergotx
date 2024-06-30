@@ -2,10 +2,11 @@ import Phaser, { Scene } from "phaser";
 import { Transaction } from "./rv_types";
 import { DefaultAssembleStrategy } from "./rv_assemble";
 import { PropSet } from "./rv_propset";
+import { type Renderer } from "./rv_renderer";
 
 /* ================================== */
 
-type Placement =
+export type Placement =
   /* Tx is in waiting zone */
   | { type: "waiting" }
   /* Tx is in a block at the given index (from top) */
@@ -95,7 +96,7 @@ class AssemblySnapshot {
 
 /* ====================================== */
 
-interface Move {
+export interface Move {
   tx: Transaction;
   placement: Placement | null;
   isSpawning: boolean;
@@ -127,7 +128,7 @@ function CalculateMoves(
           tx,
           placement: placementAfter,
           isSpawning: false,
-          isDying: false,
+          isDying: false
         });
       }
     } else if (aliveBefore && !aliveNow) {
@@ -154,18 +155,25 @@ function CalculateMoves(
 
 /* ====================================== */
 
-class Engine {
+export class Engine {
   private assembly: AssemblySnapshot;
   private targetAssembly: AssemblySnapshot | null;
   private activeMoves: Move[];
 
-  constructor() {
+  private renderer: Renderer;
+  private isIdle: boolean;
+
+  constructor(renderer: Renderer) {
     // Starts with empty assembly
     this.assembly = new AssemblySnapshot([], new TxStateSet());
     this.targetAssembly = null;
+
+    this.renderer = renderer;
+
+    this.isIdle = true;
   }
 
-  private onTx(incomingTx: Transaction[]) {
+  private startTxTick(incomingTx: Transaction[]) {
     let newStates = this.assembly.states.clone();
 
     // increment
@@ -205,10 +213,36 @@ class Engine {
     this.targetAssembly = newAssembly;
     this.activeMoves = CalculateMoves(this.assembly, newAssembly);
   }
+
+  public onMoveComplete(moveHandle: number) {
+    let pendingMoves = 0; // TODO: find out
+    if (pendingMoves === 0) {
+      this.onTickEnd();
+    }
+  }
+
+  public onTickEnd() {
+    this.targetAssembly = null;
+    this.activeMoves = [];
+    this.isIdle = true;
+  }
+
+  public update() {
+    if (this.isIdle) {
+      let incomingTx = []; // from queue
+      if (incomingTx && incomingTx.length > 0) {
+        this.isIdle = false;
+        this.startTxTick(incomingTx);
+
+        for (let i = 0; i < this.activeMoves.length; ++i) {
+          this.renderer.executeMove(i, this.activeMoves[i]);
+        }
+      }
+    }
+  }
 }
 
 /* ================================ */
-
 
 /*
 
@@ -223,13 +257,6 @@ Engine:
   spawningTxs
   dyingTxs
   movingTxs
-
-Engine Tasks:
-  Receive Transactions
-  CheckAge
-  Assemble
-  Calculate Moves
-  Track previous state
 
 Renderer
   TickStart
@@ -255,4 +282,3 @@ tick(newTxs):
   newNodes = Assemble(txs)
 
 */
-
