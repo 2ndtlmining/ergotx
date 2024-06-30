@@ -81,8 +81,9 @@ class TxStateSet {
     } else {
       let insertState: TxState = {
         age: 0,
-        placement: { type: "waiting" } // TODO: default ?
+        placement: { type: "waiting" }
       };
+      this.txIdToState.set(tx.id, insertState);
     }
   }
 }
@@ -115,14 +116,14 @@ function CalculateMoves(
   let moves: Move[] = [];
 
   for (const tx of combinedSet.getItems()) {
-    let aliveBefore = snapshotA.states.isAlive(tx);
-    let aliveNow = snapshotB.states.isAlive(tx);
-
     let placementBefore = snapshotA.states.getState(tx)?.placement ?? null;
     let placementAfter = snapshotB.states.getState(tx)?.placement ?? null;
 
+    let aliveBefore = Boolean(placementBefore);
+    let aliveNow = Boolean(placementAfter);
+
     if (aliveBefore && aliveNow) {
-      // check placement
+      // check if placement is changed
       if (!arePlacementsEqual(placementBefore!, placementAfter!)) {
         moves.push({
           tx,
