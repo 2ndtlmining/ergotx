@@ -1,6 +1,5 @@
 import Phaser, { Geom, Math, Scene, Input, Scale, GameObjects } from "phaser";
 
-import { Engine } from './rv_engine';
 import { Renderer } from './rv_renderer';
 
 // let renderer = new Renderer();
