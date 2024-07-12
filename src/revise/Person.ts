@@ -23,10 +23,8 @@ export class Person extends WrapSprite<GameObjects.Arc> {
     this.lastIdleAt = new Math.Vector2();
     this.target = new Math.Vector2();
     this.moveHandle = -1;
-  }
 
-  public init() {
-    super.init(
+    super.buildSprite(
       this.scene.add.circle(
         //
         -1000,

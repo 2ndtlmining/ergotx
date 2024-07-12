@@ -11,6 +11,7 @@ import {
   HOUSE_TEXT_COLOR,
   WAITING_ZONE_COLOR
 } from "./theme";
+import { Bus } from "./Bus";
 
 export class Renderer {
   private scene: Scene;
@@ -24,6 +25,7 @@ export class Renderer {
   private canvasHeight: number;
 
   private waitingZone: Geom.Rectangle;
+  private buses: Bus[];
 
   constructor(scene: Scene) {
     this.scene = scene;
@@ -91,14 +93,32 @@ export class Renderer {
       .setOrigin(0, 0);
   }
 
-  private initBuses() {}
+  private initBuses() {
+    let busZone = Geom.Rectangle.Clone(this.waitingZone).setPosition(
+      this.waitingZone.x + this.waitingZone.width + 25,
+      this.waitingZone.y
+    );
+
+    this.buses = [];
+    let spacing = 10;
+    let busHeight = 150;
+
+    for (let i = 0; i < 5; ++i) {
+      let region = new Geom.Rectangle(
+        busZone.x,
+        busZone.y + i * (busHeight + spacing),
+        busZone.width,
+        busHeight
+      );
+
+      this.buses.push(new Bus(this.scene, region, `Bus ${i}`));
+    }
+  }
 
   private spawnPerson(tx: Transaction) {
     // Spawn person at their house
     let person = new Person(this, tx);
-    this.personMap.set(tx.id, person);
-
-    person.init();
+    this.personMap.set(tx.id, person)
 
     let house = this.houseService.getTxHouse(tx);
     person.place(house.position);

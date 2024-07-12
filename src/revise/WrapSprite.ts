@@ -9,7 +9,7 @@ export class WrapSprite<T extends Phaser.GameObjects.GameObject> {
     this.scene = scene;
   }
 
-  protected init(gameObject: T) {
+  protected buildSprite(gameObject: T) {
     this.gameObject = gameObject;
     this.physicsBody = this.scene.physics.add.existing(gameObject).body as any;
   }
