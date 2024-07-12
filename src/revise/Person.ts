@@ -5,6 +5,7 @@ import { Transaction } from "~/common/app_types";
 import { Placement } from "./Placement";
 import type { Renderer } from "./rv_renderer";
 import { PERSON_COLOR, PERSON_RADIUS } from "./theme";
+import { IVector2 } from "./math";
 
 export class Person extends WrapSprite<GameObjects.Arc> {
   private tx: Transaction;
@@ -35,12 +36,12 @@ export class Person extends WrapSprite<GameObjects.Arc> {
     );
   }
 
-  public place(position: Math.Vector2) {
+  public place(position: IVector2) {
     this.lastIdleAt.setFromObject(position);
     this.gameObject.copyPosition(position);
   }
 
-  public moveTo(moveHandle: number, position: Math.Vector2) {
+  public moveTo(moveHandle: number, position: IVector2) {
     this.lastIdleAt.setFromObject(this.physicsBody.position);
     this.target.setFromObject(position);
     this.moveHandle = moveHandle;

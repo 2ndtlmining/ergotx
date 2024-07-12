@@ -27,7 +27,7 @@ export class Bus extends WrapSprite<GameObjects.Rectangle> {
       .setOrigin(0, 0);
   }
 
-  public getLandingPoint() {
+  public getRandomPoint() {
     return this.stayRegion.getRandomPoint();
   }
 }

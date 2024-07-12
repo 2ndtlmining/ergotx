@@ -40,7 +40,7 @@ export class Renderer {
     this.initWaitingZone();
     this.initBuses();
 
-    // this.engine.startListening();
+    this.engine.startListening();
   }
 
   private initHouses() {
@@ -118,7 +118,7 @@ export class Renderer {
   private spawnPerson(tx: Transaction) {
     // Spawn person at their house
     let person = new Person(this, tx);
-    this.personMap.set(tx.id, person)
+    this.personMap.set(tx.id, person);
 
     let house = this.houseService.getTxHouse(tx);
     person.place(house.position);
@@ -139,10 +139,21 @@ export class Renderer {
       this.spawnPerson(move.tx);
     }
 
-    // get the person
-    let person = this.getTxPerson(move.tx);
-
     // schedule the person to move to move.placement
+    let placement = move.placement!;
+
+    let targetPosition: Geom.Point;
+    switch (placement.type) {
+      case "waiting":
+        targetPosition = this.waitingZone.getRandomPoint();
+        break;
+      case "block":
+        targetPosition = this.buses[placement.index].getRandomPoint();
+        break;
+    }
+
+    let person = this.getTxPerson(move.tx);
+    person.moveTo(moveHandle, targetPosition);
   }
 
   public update() {

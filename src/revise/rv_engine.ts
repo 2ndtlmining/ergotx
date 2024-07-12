@@ -80,7 +80,7 @@ class AssemblySnapshot {
 
 export interface Move {
   tx: Transaction;
-  placement: Placement | null;
+  placement: Placement | null; // null only if isDying is true
   isSpawning: boolean;
   isDying: boolean;
 }
