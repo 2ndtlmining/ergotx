@@ -58,6 +58,19 @@ export class Person extends WrapSprite<GameObjects.Arc> {
     this.isMoveActive = true;
   }
 
+  public moveToDeath(moveHandle: number) {
+    this.moveHandle = moveHandle;
+
+    this.scene.physics.moveTo(
+      this.gameObject,
+      this.physicsBody.position.x,
+      -20,
+      300, // TODO: No magic numbers
+      1000
+    );
+    this.isMoveActive = true;
+  }
+
   private shouldStop(): boolean {
     let a = this.lastIdleAt.clone().subtract(this.target);
     let b = new Math.Vector2()

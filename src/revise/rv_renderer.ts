@@ -127,6 +127,8 @@ export class Renderer {
   public executeMove(moveHandle: number, move: Move) {
     if (move.isDying) {
       // schedule the person with transaction to die
+      let person = this.getTxPerson(move.tx);
+      person.moveToDeath(moveHandle);
       return;
     }
 
