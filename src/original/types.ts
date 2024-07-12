@@ -1,4 +1,3 @@
-import { Math } from "phaser";
 import type { Person } from './main';
 
 export type SortDirection = "asc" | "desc";

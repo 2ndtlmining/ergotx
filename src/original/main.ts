@@ -1,8 +1,8 @@
-import "./global.css";
+import "~/global.css";
 
 import Phaser, { Geom, Math, Scene, Input, Scale, GameObjects } from "phaser";
 
-import { UpdateService } from "./ergo_api";
+import { UpdateService } from "~/common/ergo_api";
 import { MempoolEntry, PersonLocation, Transaction } from "./types";
 import {
   AssembleTransactions,
