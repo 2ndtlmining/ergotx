@@ -13,14 +13,18 @@ export class Person extends WrapSprite<GameObjects.Arc> {
   private visRenderer: Renderer;
 
   // Fields relating to currently executing move
-  private lastIdleAt: Math.Vector2 = Math.Vector2.ZERO;
-  private target: Math.Vector2 = Math.Vector2.ZERO;
-  private moveHandle: number = -1;
+  private lastIdleAt: Math.Vector2;
+  private target: Math.Vector2;
+  private moveHandle: number;
 
   constructor(renderer: Renderer, tx: Transaction) {
     super(renderer.getScene());
     this.tx = tx;
     this.visRenderer = renderer;
+
+    this.lastIdleAt = new Math.Vector2();
+    this.target = new Math.Vector2();
+    this.moveHandle = -1;
   }
 
   public init() {
@@ -36,8 +40,22 @@ export class Person extends WrapSprite<GameObjects.Arc> {
   }
 
   public place(position: Math.Vector2) {
-    this.lastIdleAt = position.clone();
-    this.gameObject.setPosition(position.x, position.y);
+    this.lastIdleAt.setFromObject(position);
+    this.gameObject.copyPosition(position);
+  }
+
+  public moveTo(moveHandle: number, position: Math.Vector2) {
+    this.lastIdleAt.setFromObject(this.physicsBody.position);
+    this.target.setFromObject(position);
+    this.moveHandle = moveHandle;
+
+    this.scene.physics.moveTo(
+      this.gameObject,
+      this.target.x,
+      this.target.y,
+      300, // TODO: No magic numbers
+      1000
+    );
   }
 
   public update() {}

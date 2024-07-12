@@ -54,9 +54,9 @@ export class Renderer {
       this.spawnPerson(move.tx);
     }
 
+    // get the person
     let person = this.getTxPerson(move.tx);
 
-    // get the person
     // schedule the person to move to move.placement
   }
 
