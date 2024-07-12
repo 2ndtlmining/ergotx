@@ -166,7 +166,9 @@ export class Engine {
   private renderer: Renderer;
   private isIdle: boolean;
 
+  /* ====== Queuing ====== */
   private updateService: UpdateService;
+  private txSetQueue: Transaction[][];
 
   constructor(renderer: Renderer) {
     // Starts with empty assembly
@@ -174,14 +176,16 @@ export class Engine {
     this.targetAssembly = null;
 
     this.renderer = renderer;
+
     this.updateService = new UpdateService();
+    this.txSetQueue = [];
 
     this.isIdle = true;
   }
 
   public startListening() {
     this.updateService.onUnconfirmedTransactions(txs => {
-      console.log("Found txs: ", txs.length);
+      this.txSetQueue.push(txs);
     });
     this.updateService.start();
   }
@@ -240,10 +244,24 @@ export class Engine {
     this.isIdle = true;
   }
 
+  private getNextTxSet(): Transaction[] | null {
+    if (this.txSetQueue.length === 0) {
+      return null;
+    }
+
+    let first = this.txSetQueue.shift()!;
+
+    if (first.length === 0)
+      return null;
+
+    return first;
+  }
+
   public update() {
     if (this.isIdle) {
-      let incomingTx = []; // from queue
-      if (incomingTx && incomingTx.length > 0) {
+      let incomingTx = this.getNextTxSet();
+      if (incomingTx !== null) {
+        console.log("Processing set: ", incomingTx.length);
         this.isIdle = false;
         this.startTxTick(incomingTx);
 

@@ -40,6 +40,10 @@ export class Renderer {
     // schedule the person to move to move.placement
   }
 
+  public init() {
+    this.engine.startListening();
+  }
+
   public update() {
     this.engine.update();
     this.personMap.forEach(person => {
