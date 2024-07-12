@@ -1,21 +1,23 @@
+import { Scene } from "phaser";
 import { Transaction } from "~/common/app_types";
-import { Engine, Move, Placement } from "./rv_engine";
+import { Engine, Move } from "./rv_engine";
 
-class Person {
-  public update() {}
-}
+import { Person } from "./Person";
 
 export class Renderer {
   private personMap: Map<string, Person>;
   private engine: Engine;
+  private scene: Scene;
 
-  constructor() {
+  constructor(scene: Scene) {
     this.personMap = new Map();
     this.engine = new Engine(this);
+    this.scene = scene;
   }
 
   private spawnPerson(tx: Transaction) {
-    let person = new Person(/* At their house */);
+    // Spawn person at their house
+    let person = new Person(this.scene, tx);
     this.personMap.set(tx.id, person);
   }
 
