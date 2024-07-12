@@ -11,7 +11,6 @@ export class MainScene extends Phaser.Scene {
 
   init() {
     this.visRenderer = new Renderer(this);
-    this.visRenderer.init();
     console.log("STARTED");
   }
 

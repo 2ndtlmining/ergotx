@@ -4,3 +4,5 @@ export const PERSON_COLOR = 0xedae26;
 export const HOUSE_RADIUS = 6;
 export const HOUSE_COLOR = 0xffffff;
 export const HOUSE_TEXT_COLOR = "#69f542";
+
+export const WAITING_ZONE_COLOR = 0x435153;
