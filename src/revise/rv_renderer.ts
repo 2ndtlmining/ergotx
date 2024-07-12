@@ -1,9 +1,11 @@
-import { Scene } from "phaser";
+import { Scene, Math } from "phaser";
 import { Transaction } from "~/common/app_types";
 import { Engine, Move } from "./rv_engine";
 
 import { Person } from "./Person";
-import { HouseService, HouseList, House } from "./rv_house";
+import { HouseService, House } from "./rv_house";
+import { getRegisteredHouses } from "./misc";
+import { HOUSE_COLOR, HOUSE_RADIUS, HOUSE_TEXT_COLOR } from "./theme";
 
 export class Renderer {
   private personMap: Map<string, Person>;
@@ -17,7 +19,16 @@ export class Renderer {
     this.engine = new Engine(this);
     this.scene = scene;
 
-    this.houseService = new HouseService(buildHouseList());
+    this.houseService = new HouseService([
+      {
+       name: "Default House",
+       position: new Math.Vector2(150, 150)
+      },
+      ...getRegisteredHouses().map((houseData, index) => ({
+        name: houseData.name,
+        position: new Math.Vector2(150, 150 + 200 * (index + 1))
+      }))
+    ]);
   }
 
   private spawnPerson(tx: Transaction) {
@@ -61,6 +72,16 @@ export class Renderer {
   }
 
   public init() {
+    this.houseService.getHouses().forEach(({ name, position }) => {
+      this.scene.add.circle(position.x, position.y, HOUSE_RADIUS, HOUSE_COLOR);
+      this.scene.add
+        .text(position.x, position.y + 35, name, {
+          fontSize: 20,
+          color: HOUSE_TEXT_COLOR
+        })
+        .setOrigin(0.5, 0.5);
+    });
+
     this.engine.startListening();
   }
 
@@ -71,14 +92,3 @@ export class Renderer {
     });
   }
 }
-
-/* ============================ */
-
-function buildHouseList() {
-  let list = new HouseList();
-  list.addHouse("House A");
-  list.addHouse("House B");
-  list.addHouse("House C");
-  return list;
-}
-

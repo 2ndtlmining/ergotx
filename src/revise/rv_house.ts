@@ -2,51 +2,25 @@ import { Math } from "phaser";
 import { Transaction } from "~/common/app_types";
 
 export interface House {
-  index: number;
   name: string;
   position: Math.Vector2;
-}
-
-export class HouseList {
-  private houses: House[] = [];
-
-  constructor() {
-    this.houses = [];
-  }
-
-  public addHouse(name: string) {
-    let index = this.houses.length;
-    this.houses.push({
-      index,
-      name,
-      position: new Math.Vector2(0, 0)
-    });
-  }
-
-  public getHouses(): House[] {
-    return this.houses;
-  }
-
-  public getHouseByIndex(index: number) {
-    return this.houses[index];
-  }
 }
 
 // TODO: 0th house (fallback house) is the house of any
 // transaction which does not have a valid house
 export class HouseService {
-  private list: HouseList;
+  private readonly houses: readonly House[];
 
-  constructor(list: HouseList) {
-    this.list = list;
+  constructor(houses: House[]) {
+    this.houses = [...houses];
   }
 
-  public getHouses() {
-    return this.list.getHouses();
+  public getHouses(): readonly House[] {
+    return this.houses;
   }
 
   public getHouseByIndex(index: number) {
-    return this.list.getHouseByIndex(index);
+    return this.houses[index];
   }
 
   public getTxHouse(tx: Transaction): House {

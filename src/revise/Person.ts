@@ -4,9 +4,7 @@ import { WrapSprite } from "./WrapSprite";
 import { Transaction } from "~/common/app_types";
 import { Placement } from "./Placement";
 import type { Renderer } from "./rv_renderer";
-
-const PERSON_RADIUS = 20;
-const PERSON_COLOR = 0xedae26;
+import { PERSON_COLOR, PERSON_RADIUS } from "./theme";
 
 export class Person extends WrapSprite<GameObjects.Arc> {
   private tx: Transaction;
