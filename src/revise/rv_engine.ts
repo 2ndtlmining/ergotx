@@ -141,6 +141,7 @@ export class Engine {
   private assembly: AssemblySnapshot;
   private targetAssembly: AssemblySnapshot | null;
   private activeMoves: Move[];
+  private pendingMoves: number;
 
   private renderer: Renderer;
   private isIdle: boolean;
@@ -153,6 +154,8 @@ export class Engine {
     // Starts with empty assembly
     this.assembly = new AssemblySnapshot([], new TxStateSet());
     this.targetAssembly = null;
+    this.activeMoves = [];
+    this.pendingMoves = 0;
 
     this.renderer = renderer;
 
@@ -207,17 +210,21 @@ export class Engine {
 
     let newAssembly = new AssemblySnapshot(newTransactions, newStates);
     this.targetAssembly = newAssembly;
+
     this.activeMoves = CalculateMoves(this.assembly, newAssembly);
+    this.pendingMoves = this.activeMoves.length;
   }
 
   public onMoveComplete(moveHandle: number) {
-    let pendingMoves = 0; // TODO: find out
-    if (pendingMoves === 0) {
+    this.pendingMoves = Math.max(0, this.pendingMoves - 1);
+    if (this.pendingMoves === 0) {
       this.onTickEnd();
     }
   }
 
   public onTickEnd() {
+    console.log(`TickEnd`);
+
     this.targetAssembly = null;
     this.activeMoves = [];
     this.isIdle = true;
@@ -240,7 +247,8 @@ export class Engine {
     if (this.isIdle) {
       let incomingTx = this.getNextTxSet();
       if (incomingTx !== null) {
-        console.log("Processing set: ", incomingTx.length);
+        // console.log("Processing set: ", incomingTx.length);
+        console.log(`TickStart::TXS (${incomingTx.length})`);
         this.isIdle = false;
         this.startTxTick(incomingTx);
 
@@ -250,9 +258,14 @@ export class Engine {
       }
     }
   }
+
+  /* ================================ */
+
+  public getActiveMove(moveHandle: number) {
+    return this.activeMoves[moveHandle];
+  }
 }
 
-/* ================================ */
 
 /*
 

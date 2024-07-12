@@ -124,10 +124,6 @@ export class Renderer {
     person.place(house.position);
   }
 
-  // public onMoveComplete(moveHandle: number) {
-
-  // }
-
   public executeMove(moveHandle: number, move: Move) {
     if (move.isDying) {
       // schedule the person with transaction to die
@@ -154,6 +150,18 @@ export class Renderer {
 
     let person = this.getTxPerson(move.tx);
     person.moveTo(moveHandle, targetPosition);
+  }
+
+  public onMoveComplete(moveHandle: number) {
+    let move = this.engine.getActiveMove(moveHandle);
+
+    if (move.isDying) {
+      let person = this.getTxPerson(move.tx);
+      person.destroy();
+      this.personMap.delete(move.tx.id);
+    }
+
+    this.engine.onMoveComplete(moveHandle);
   }
 
   public update() {

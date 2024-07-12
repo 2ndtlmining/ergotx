@@ -12,6 +12,7 @@ export class Person extends WrapSprite<GameObjects.Arc> {
   private visRenderer: Renderer;
 
   // Fields relating to currently executing move
+  private isMoveActive: boolean;
   private lastIdleAt: Math.Vector2;
   private target: Math.Vector2;
   private moveHandle: number;
@@ -21,6 +22,7 @@ export class Person extends WrapSprite<GameObjects.Arc> {
     this.tx = tx;
     this.visRenderer = renderer;
 
+    this.isMoveActive = false;
     this.lastIdleAt = new Math.Vector2();
     this.target = new Math.Vector2();
     this.moveHandle = -1;
@@ -53,7 +55,36 @@ export class Person extends WrapSprite<GameObjects.Arc> {
       300, // TODO: No magic numbers
       1000
     );
+    this.isMoveActive = true;
   }
 
-  public update() {}
+  private shouldStop(): boolean {
+    let a = this.lastIdleAt.clone().subtract(this.target);
+    let b = new Math.Vector2()
+      .setFromObject(this.physicsBody.position)
+      .subtract(this.target);
+
+    return a.dot(b) <= 0;
+  }
+
+  private onMoveComplete() {
+    this.isMoveActive = false;
+
+    this.physicsBody.stop();
+    this.lastIdleAt.setFromObject(this.physicsBody.position);
+
+    this.visRenderer.onMoveComplete(this.moveHandle);
+  }
+
+  public update() {
+    // let isIdle = this.personState === "idle";
+    if (this.isMoveActive && this.shouldStop()) {
+      this.onMoveComplete();
+      // this.nodeBody.stop();
+      // if (this.location.type === 'destroy')
+      //   this.destroy();
+      // // this.lastWalkAt = time;
+      // this.personState = "idle";
+    }
+  }
 }
