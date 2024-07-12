@@ -1,8 +1,10 @@
 import Phaser, { Scene } from "phaser";
-import { Transaction } from "./rv_types";
+import { Transaction } from "~/common/app_types";
 import { DefaultAssembleStrategy } from "./rv_assemble";
 import { PropSet } from "./rv_propset";
 import { type Renderer } from "./rv_renderer";
+
+import { UpdateService } from '~/common/ergo_api';
 
 /* ================================== */
 
@@ -164,14 +166,24 @@ export class Engine {
   private renderer: Renderer;
   private isIdle: boolean;
 
+  private updateService: UpdateService;
+
   constructor(renderer: Renderer) {
     // Starts with empty assembly
     this.assembly = new AssemblySnapshot([], new TxStateSet());
     this.targetAssembly = null;
 
     this.renderer = renderer;
+    this.updateService = new UpdateService();
 
     this.isIdle = true;
+  }
+
+  public startListening() {
+    this.updateService.onUnconfirmedTransactions(txs => {
+      console.log("Found txs: ", txs.length);
+    });
+    this.updateService.start();
   }
 
   private startTxTick(incomingTx: Transaction[]) {

@@ -1,4 +1,4 @@
-import { Transaction } from "./rv_types";
+import { Transaction } from "~/common/app_types";
 import { Engine, Move, Placement } from "./rv_engine";
 
 class Person {

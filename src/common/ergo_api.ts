@@ -6,12 +6,11 @@ import {
 } from "set-interval-async";
 import {
   Block,
-  BlockTransaction,
-  BlockWithTransactions,
+  TransactedBlock,
   SortDirection,
   Transaction,
   VoidCallack
-} from "./types";
+} from "./app_types";
 
 class ApiService {
   private kyInstance: KyInstance;
@@ -78,7 +77,7 @@ class ApiService {
   public async getBlockTransactions(blockId: string) {
     let result = await this.kyInstance
       .get("api/v1/blocks/" + blockId, { retry: 3 })
-      .json<{ block: { blockTransactions: BlockTransaction[] } }>();
+      .json<{ block: { blockTransactions: Transaction[] } }>();
 
     return result.block.blockTransactions;
   }
@@ -88,7 +87,7 @@ export class UpdateService {
   private api: ApiService;
 
   private callbackTx!: VoidCallack<Transaction[]>;
-  private callbackBlock!: VoidCallack<BlockWithTransactions>;
+  private callbackBlock!: VoidCallack<TransactedBlock>;
 
   private lastConfirmedBlockHeight = -1;
 
@@ -159,7 +158,7 @@ export class UpdateService {
   }
 
   // Called when a new block is successfully mined
-  public onNewBlock(callbackBlock: VoidCallack<BlockWithTransactions>): this {
+  public onNewBlock(callbackBlock: VoidCallack<TransactedBlock>): this {
     this.callbackBlock = callbackBlock;
     return this;
   }
