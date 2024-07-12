@@ -1,8 +1,10 @@
+import { Math } from "phaser";
 import { Transaction } from "~/common/app_types";
 
 export interface House {
   index: number;
   name: string;
+  position: Math.Vector2;
 }
 
 export class HouseList {
@@ -16,11 +18,12 @@ export class HouseList {
     let index = this.houses.length;
     this.houses.push({
       index,
-      name
+      name,
+      position: new Math.Vector2(0, 0)
     });
   }
 
-  public getHouses() {
+  public getHouses(): House[] {
     return this.houses;
   }
 

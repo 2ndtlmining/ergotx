@@ -1,25 +1,26 @@
-import Phaser, { Scene, Math } from "phaser";
+import Phaser, { Scene, Math, GameObjects } from "phaser";
 
 import { WrapSprite } from "./WrapSprite";
 import { Transaction } from "~/common/app_types";
 import { Placement } from "./Placement";
+import type { Renderer } from "./rv_renderer";
 
 const PERSON_RADIUS = 20;
 const PERSON_COLOR = 0xedae26;
 
-export class Person extends WrapSprite {
+export class Person extends WrapSprite<GameObjects.Arc> {
   private tx: Transaction;
-
-  private moveSpeed: number = 300;
+  private visRenderer: Renderer;
 
   // Fields relating to currently executing move
-  private start: Math.Vector2 = Math.Vector2.ZERO;
+  private lastIdleAt: Math.Vector2 = Math.Vector2.ZERO;
   private target: Math.Vector2 = Math.Vector2.ZERO;
   private moveHandle: number = -1;
 
-  constructor(scene: Scene, tx: Transaction) {
-    super(scene);
+  constructor(renderer: Renderer, tx: Transaction) {
+    super(renderer.getScene());
     this.tx = tx;
+    this.visRenderer = renderer;
   }
 
   public init() {
@@ -32,6 +33,11 @@ export class Person extends WrapSprite {
         PERSON_COLOR
       )
     );
+  }
+
+  public place(position: Math.Vector2) {
+    this.lastIdleAt = position.clone();
+    this.gameObject.setPosition(position.x, position.y);
   }
 
   public update() {}
