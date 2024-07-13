@@ -3,6 +3,7 @@ import "~/global.css";
 import Phaser from "phaser";
 
 import { MainScene } from "./MainScene";
+import { SCENE_BG_COLOR } from "./theme";
 
 let _game = new Phaser.Game({
   type: Phaser.AUTO,
@@ -10,7 +11,7 @@ let _game = new Phaser.Game({
   height: window.innerHeight,
   autoCenter: Phaser.Scale.Center.CENTER_BOTH,
   scene: MainScene,
-  backgroundColor: 0x06303d,
+  backgroundColor: SCENE_BG_COLOR,
   physics: {
     default: "arcade",
     arcade: {
