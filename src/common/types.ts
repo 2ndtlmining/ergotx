@@ -1,6 +1,3 @@
-/* ====================== */
-
-export type SortDirection = "asc" | "desc";
 export type VoidCallack<T> = (payload: T) => void;
 
 /* ====================== */

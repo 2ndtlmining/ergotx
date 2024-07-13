@@ -1,5 +1,5 @@
 import { Math } from "phaser";
-import { Transaction } from "~/common/app_types";
+import { Transaction } from "~/common/types";
 
 export interface House {
   name: string;
@@ -26,4 +26,15 @@ export class HouseService {
   public getTxHouse(tx: Transaction): House {
     return this.getHouseByIndex(0); // FIXME: Random
   }
+}
+
+/* ================================ */
+
+export function getRegisteredHouses(): { name: string }[] {
+  return [
+    //
+    { name: "House 1" },
+    { name: "House 2" },
+    { name: "House 3" }
+  ];
 }

@@ -1,9 +1,6 @@
-import Phaser, { Geom, Math, Scene, Input, Scale, GameObjects } from "phaser";
+import Phaser from "phaser";
 
-import { Renderer } from './rv_renderer';
-
-// let renderer = new Renderer();
-// renderer.init();
+import { Renderer } from './rendering/Renderer';
 
 export class MainScene extends Phaser.Scene {
 

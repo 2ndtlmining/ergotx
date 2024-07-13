@@ -1,4 +1,4 @@
-import { Transaction } from "~/common/app_types";
+import { Transaction } from "~/common/types";
 
 export type AssemblyPlacement =
   | { type: "waiting" }

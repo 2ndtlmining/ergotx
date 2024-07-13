@@ -1,11 +1,11 @@
-import Phaser, { Scene } from "phaser";
-import { Transaction } from "~/common/app_types";
-import { DefaultAssembleStrategy } from "./rv_assemble";
-import { PropSet } from "./rv_propset";
-import { type Renderer } from "./rv_renderer";
+import { Transaction } from "~/common/types";
+import { DefaultAssembleStrategy } from "./assembly";
+import { PropSet } from "~/common/PropSet";
 
-import { UpdateService } from "~/common/ergo_api";
+import { UpdateService } from "~/ergoapi/UpdateService";
 import { Placement, arePlacementsEqual } from "./Placement";
+
+import { type Renderer } from "./Renderer";
 
 /* ========================== */
 

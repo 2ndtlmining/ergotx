@@ -1,4 +1,4 @@
-import Phaser, { GameObjects, Scene, Geom } from "phaser";
+import { GameObjects, Scene, Geom } from "phaser";
 import { WrapSprite } from "./WrapSprite";
 
 export class Bus extends WrapSprite<GameObjects.Rectangle> {
@@ -20,7 +20,6 @@ export class Bus extends WrapSprite<GameObjects.Rectangle> {
         )
         .setOrigin(0, 0)
     );
-
 
     this.scene.add
       .text(region.x + 4, region.y + 4, label)

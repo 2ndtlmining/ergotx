@@ -3,13 +3,14 @@ import "~/global.css";
 import Phaser from "phaser";
 
 import { MainScene } from "./MainScene";
-import { SCENE_BG_COLOR } from "./theme";
+import { SCENE_BG_COLOR } from "~/common/theme";
 
-let _game = new Phaser.Game({
-  type: Phaser.AUTO,
+let game = new Phaser.Game({
+  type: Phaser.CANVAS,
   width: 1200,
   height: window.innerHeight,
   autoCenter: Phaser.Scale.Center.CENTER_BOTH,
+  powerPreference: 'high-performance',
   scene: MainScene,
   backgroundColor: SCENE_BG_COLOR,
   physics: {
@@ -20,3 +21,5 @@ let _game = new Phaser.Game({
     }
   }
 });
+
+(<any>window).game = game;

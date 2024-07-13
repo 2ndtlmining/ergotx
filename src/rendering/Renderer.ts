@@ -1,17 +1,17 @@
 import { Scene, Math, Geom } from "phaser";
-import { Transaction } from "~/common/app_types";
-import { Engine, Move } from "./rv_engine";
+import { Transaction } from "~/common/types";
+import { Engine, Move } from "./Engine";
 
-import { Person } from "./Person";
-import { HouseService, House } from "./rv_house";
-import { getRegisteredHouses } from "./misc";
+import { HouseService, getRegisteredHouses } from "./house";
 import {
   HOUSE_COLOR,
   HOUSE_RADIUS,
   HOUSE_TEXT_COLOR,
   WAITING_ZONE_COLOR
-} from "./theme";
-import { Bus } from "./Bus";
+} from "~/common/theme";
+
+import { Person } from "./actors/Person";
+import { Bus } from "./actors/Bus";
 
 export class Renderer {
   private scene: Scene;

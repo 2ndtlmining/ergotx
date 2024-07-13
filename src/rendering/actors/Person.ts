@@ -1,11 +1,10 @@
-import Phaser, { Scene, Math, GameObjects } from "phaser";
+import { Math, GameObjects } from "phaser";
 
 import { WrapSprite } from "./WrapSprite";
-import { Transaction } from "~/common/app_types";
-import { Placement } from "./Placement";
-import type { Renderer } from "./rv_renderer";
-import { PERSON_COLOR, PERSON_RADIUS } from "./theme";
-import { IVector2 } from "./math";
+import { Transaction } from "~/common/types";
+import type { Renderer } from "../Renderer";
+import { PERSON_COLOR, PERSON_RADIUS } from "~/common/theme";
+import { IVector2 } from "~/common/math";
 
 export class Person extends WrapSprite<GameObjects.Arc> {
   private tx: Transaction;
@@ -63,16 +62,6 @@ export class Person extends WrapSprite<GameObjects.Arc> {
       x: this.physicsBody.position.x,
       y: -20
     });
-    // this.moveHandle = moveHandle;
-
-    // this.scene.physics.moveTo(
-    //   this.gameObject,
-    //   this.physicsBody.position.x,
-    //   -20,
-    //   300, // TODO: No magic numbers
-    //   1000
-    // );
-    // this.isMoveActive = true;
   }
 
   private shouldStop(): boolean {
@@ -94,14 +83,8 @@ export class Person extends WrapSprite<GameObjects.Arc> {
   }
 
   public update() {
-    // let isIdle = this.personState === "idle";
     if (this.isMoveActive && this.shouldStop()) {
       this.onMoveComplete();
-      // this.nodeBody.stop();
-      // if (this.location.type === 'destroy')
-      //   this.destroy();
-      // // this.lastWalkAt = time;
-      // this.personState = "idle";
     }
   }
 }
