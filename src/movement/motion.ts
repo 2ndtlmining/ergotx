@@ -111,6 +111,21 @@ export class MotionController {
   }
 }
 
-interface SupportsMotion {
+export interface SupportsMotion {
   getMotionController(): MotionController;
+}
+
+export function applyMotions(motions: Motion[]) {
+  if (motions.length === 0) return Promise.resolve();
+
+  return new Promise<void>(resolve => {
+    let pending = motions.length;
+    for (const motion of motions) {
+      motion.start(() => {
+        if (--pending <= 0) {
+          resolve();
+        }
+      });
+    }
+  });
 }
