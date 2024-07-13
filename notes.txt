@@ -1,15 +1,3 @@
-repeatedly call API:
-    calculate delta
-    emit events (new tx, new block)
-
-on tx:
-    update person
-
-on block:
-    update bus
-
-
-API:
 
 get mempool
 
@@ -40,18 +28,6 @@ get confirmed blocks
         transactionscount
 
 
- <h2>Mempool</h2>
-<p>Count: <span id="mempool-count">0</span></p>
-
-<!-- prettier-ignore-start -->
-<pre><code id="mempool"></code></pre>
-<!-- prettier-ignore-end -->
-
-<h2>Lastest Block</h2>
-
-<!-- prettier-ignore-start -->
-<pre><code id="latest-block"></code></pre>
-<!-- prettier-ignore-end -->
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -59,14 +35,6 @@ get confirmed blocks
 
 TODO:
 
-handle events in queue instead of calling funcions syncrhonomously
-
-
-PLAN:
-
-    add busses
-    add a transaction to bus
-    leave bus
 
 buses:
     tx killed:
@@ -78,60 +46,35 @@ buses:
 
     block:
         These two in parallel
-        |____|extra txs inside top bus (if any) go to waiting or prev bus
-             |waiting txs of this block (if any) go inside top bus
+        |____|(1) extra txs inside top bus (if any) go to waiting or prev bus
+             |(2) waiting txs of this block (if any) go inside top bus
+             |(3) non existant txs of this block spawn and go inside the top bus
 
         These two in parallel
-        |____|top bus goes to leaving
-             |prev buses move to forward
+        |____|(4) top bus goes to leaving
+             |(5) prev buses move to forward
 
 
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 
-(Block[], WaitingTx[]) MakeBlockTemplates(mempool) {
+block update:
+    newTransactions = current.transactions - block.transactions
 
-}
+    // ---
 
-enum Location {
-    Home(...),
-    Waiting,
-    Bus(index),
-    Destroy
-}
+    for tx in block.transactions:
+        case inside top block:
+            no move
 
-TxMoveCommand[] TxStateDelta(old, new) {
-    let oldTx = TxLocations(old);
-    let newTx = TxLocations(old);
+        case inside another block:
+            move to top bus through waiting route (2-3 moves)
 
-    let commands = [];
+        case inside waiting:
+            move to bus
 
-    for tx in newTx + oldTx:
-        let oldLocation;
-        let targetLocation;
-
-        if tx in oldTx:
-                oldLocation = oldTx[tx]
-            else
-                oldLocation = TxHome(tx)
-
-        if tx in newTx:
-            targetLocation = newTx[tx]
-        else
-            targetLocation = DESTROY
-
-        if oldLocation != targetLocation:
-            commands.push({ tx: tx, from: oldLocation, to: targetLocation })
-}
-
-
-void OnTxs(tx: Tx[]) {
-    mempool = CombineMempoolWithAge(mempool, txs) // also sets the appropriate location: Home() or Waiting
-
-    let newBlockTemplates = MakeBlockTemplates(mempool + txs);
-    let commands = TxStateDelta(oldBlockTemplates, newBlockTemplates)
-
-    // each command can be run in parallel
-
-    for cmd in commands:
-        cmd.tx.executeCommand(cmd)
-}
+        case absent:
+            spawn at home
+            move to top bus
