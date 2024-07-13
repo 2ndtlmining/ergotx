@@ -5,14 +5,18 @@ import { VoidCallback } from "~/common/types";
 type ArcadePhysics = Physics.Arcade.ArcadePhysics;
 type PhysicsBody = Physics.Arcade.Body;
 
-// class Motion {
-//   constructor(
-//     public readonly body: PhysicsBody,
-//     public readonly points: IVector2[]
-//   ) {}
-// }
+export class Motion {
+  constructor(
+    public readonly controller: MotionController,
+    public readonly points: IVector2[]
+  ) {}
 
-class MotionController {
+  public start(onComplete: VoidCallback<void>) {
+    this.controller.startMotion(this.points, onComplete);
+  }
+}
+
+export class MotionController {
   private physics: ArcadePhysics;
   private body: PhysicsBody;
 
@@ -26,7 +30,7 @@ class MotionController {
   private nextPointIndex: number;
 
   // Is the body currently moving
-  private isMoving: boolean;
+  private _isMoving: boolean;
 
   // Called when the current motion has ended
   private onComplete: VoidCallback<void>;
@@ -38,8 +42,20 @@ class MotionController {
     this.currentSequence = [];
     this.lastPoint = new Math.Vector2();
     this.nextPointIndex = -1;
-    this.isMoving = false;
+    this._isMoving = false;
     this.onComplete = () => {};
+  }
+
+  public isMoving() {
+    return this._isMoving;
+  }
+
+  public stop() {
+    this.body.stop();
+  }
+
+  public createMotion(points: IVector2[]) {
+    return new Motion(this, points);
   }
 
   public startMotion(points: IVector2[], onComplete: VoidCallback<void>) {
@@ -49,19 +65,19 @@ class MotionController {
     this.currentSequence = [...points];
     this.lastPoint.setFromObject(this.body.position);
     this.nextPointIndex = 0;
-    this.isMoving = true;
+    this._isMoving = true;
     this.onComplete = onComplete;
 
     this.shiftNext();
   }
 
   public update() {
-    if (this.isMoving) {
+    if (this._isMoving) {
       if (this.shouldStop()) {
         this.nextPointIndex++;
 
         if (this.nextPointIndex >= this.currentSequence.length) {
-          this.isMoving = false;
+          this._isMoving = false;
           this.body.stop();
           this.onComplete();
         } else {
@@ -98,19 +114,3 @@ class MotionController {
 interface SupportsMotion {
   getMotionController(): MotionController;
 }
-
-// class Dot implements SupportsMotion {
-//   private motionController: MotionController;
-
-//   constructor() {
-//     this.motionController = new MotionController(this.physicsBody);
-//   }
-
-//   getMotionController(): MotionController {
-//     return this.motionController;
-//   }
-
-//   update() {
-//     this.motionController.update();
-//   }
-// }
