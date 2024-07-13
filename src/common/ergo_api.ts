@@ -102,7 +102,7 @@ export class UpdateService {
   }
 
   public start() {
-    this.destroy();
+    this.stop();
 
     this.taskId = setIntervalAsync(async () => {
       await this._updateBlocks();
@@ -145,7 +145,7 @@ export class UpdateService {
       }, 0);
   }
 
-  public destroy() {
+  public stop() {
     if (this.taskId) clearIntervalAsync(this.taskId);
   }
 

@@ -31,7 +31,7 @@ export class Renderer {
     this.scene = scene;
 
     this.personMap = new Map();
-    this.engine = new Engine(this);
+    this.engine = (<any>window).engine = new Engine(this);
 
     this.canvasWidth = +this.scene.game.config.width;
     this.canvasHeight = +this.scene.game.config.height;

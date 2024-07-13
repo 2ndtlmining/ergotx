@@ -59,16 +59,20 @@ export class Person extends WrapSprite<GameObjects.Arc> {
   }
 
   public moveToDeath(moveHandle: number) {
-    this.moveHandle = moveHandle;
+    this.moveTo(moveHandle, {
+      x: this.physicsBody.position.x,
+      y: -20
+    });
+    // this.moveHandle = moveHandle;
 
-    this.scene.physics.moveTo(
-      this.gameObject,
-      this.physicsBody.position.x,
-      -20,
-      300, // TODO: No magic numbers
-      1000
-    );
-    this.isMoveActive = true;
+    // this.scene.physics.moveTo(
+    //   this.gameObject,
+    //   this.physicsBody.position.x,
+    //   -20,
+    //   300, // TODO: No magic numbers
+    //   1000
+    // );
+    // this.isMoveActive = true;
   }
 
   private shouldStop(): boolean {

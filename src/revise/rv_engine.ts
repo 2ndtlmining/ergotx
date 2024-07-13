@@ -4,7 +4,7 @@ import { DefaultAssembleStrategy } from "./rv_assemble";
 import { PropSet } from "./rv_propset";
 import { type Renderer } from "./rv_renderer";
 
-import { UpdateService } from '~/common/ergo_api';
+import { UpdateService } from "~/common/ergo_api";
 import { Placement, arePlacementsEqual } from "./Placement";
 
 /* ========================== */
@@ -213,6 +213,8 @@ export class Engine {
 
     this.activeMoves = CalculateMoves(this.assembly, newAssembly);
     this.pendingMoves = this.activeMoves.length;
+
+    console.log("activeMoves = ", this.activeMoves);
   }
 
   public onMoveComplete(moveHandle: number) {
@@ -224,7 +226,7 @@ export class Engine {
 
   public onTickEnd() {
     console.log(`TickEnd`);
-
+    this.assembly = this.targetAssembly!;
     this.targetAssembly = null;
     this.activeMoves = [];
     this.isIdle = true;
@@ -237,8 +239,7 @@ export class Engine {
 
     let first = this.txSetQueue.shift()!;
 
-    if (first.length === 0)
-      return null;
+    if (first.length === 0) return null;
 
     return first;
   }
@@ -247,13 +248,16 @@ export class Engine {
     if (this.isIdle) {
       let incomingTx = this.getNextTxSet();
       if (incomingTx !== null) {
-        // console.log("Processing set: ", incomingTx.length);
         console.log(`TickStart::TXS (${incomingTx.length})`);
         this.isIdle = false;
         this.startTxTick(incomingTx);
 
-        for (let i = 0; i < this.activeMoves.length; ++i) {
-          this.renderer.executeMove(i, this.activeMoves[i]);
+        if (this.activeMoves.length === 0) {
+          this.onTickEnd();
+        } else {
+          for (let i = 0; i < this.activeMoves.length; ++i) {
+            this.renderer.executeMove(i, this.activeMoves[i]);
+          }
         }
       }
     }
@@ -265,7 +269,6 @@ export class Engine {
     return this.activeMoves[moveHandle];
   }
 }
-
 
 /*
 
