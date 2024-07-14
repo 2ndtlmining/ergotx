@@ -61,8 +61,12 @@ buses:
 
 block update:
     remainingTransactions = current.transactions - block.transactions
+    targetAssembly = assemble(remainingTransactions)
 
     // ---
+
+    spawns = []
+    walks = []
 
     for tx in block.transactions:
         case inside top block:
@@ -78,21 +82,26 @@ block update:
             add spawn
             add walk WalkIn(top block)
 
-    walks: remainingTransactions
-
-    targetAssembly = assemble(remainingTransactions)
+    yieldOuts = []
+    yieldIns = []
 
     for tx in targetAssembly:
+        // compute nextPlacmentOnce
         if tx.placement == waiting:
             walks.add(tx, waiting)
         else if tx.placement == bus
             nextBus = bus + 1
-            if nextBus != oldAssembly.tx.bus:
-                walks.add(tx, nextBus)
+            if nextBus == OVERFLOW_BUS:
+                yieldOuts.push(walk tx waiting)
+                yieldIns.push(walk tx nextBus - 1)
 
+            else if nextBus != oldAssembly.tx.bus:
+                walks.push(tx, nextBus)
 
     cmd(spawns)
     cmd(walks)
+    cmd(yieldOuts)
     cmd(driveoff)
+    cmd(yieldIns)
 
 
