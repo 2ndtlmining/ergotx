@@ -1,15 +1,14 @@
 import { UpdateService } from "~/ergoapi/UpdateService";
-import { PropSet } from "~/common/PropSet";
 import type { TransactedBlock, Transaction } from "~/common/types";
 
 import type { AssembleStrategy } from "~/assemble/AssembleStrategy";
 import { DefaultAssembleStrategy } from "~/assemble/DefaultAssembleStrategy";
 
 import { AssemblySnapshot, TxStateSet } from "./state-snapshot";
-import type { Command, AcceptsCommands } from "./Command";
-import { arePlacementsEqual, Placement } from "./Placement";
-
-const TX_MAX_AGE = 4;
+import type { AcceptsCommands } from "./Command";
+import { UnconfirmedTransactionsTick } from "./UnconfirmedTransactionsTick";
+import { Tick } from "./Tick";
+import { BlockFoundTick } from "./BlockFoundTick";
 
 type Update =
   | { type: "txs"; transactions: Transaction[] }
@@ -17,8 +16,6 @@ type Update =
 
 export class Engine {
   private assembly: AssemblySnapshot;
-  private targetAssembly: AssemblySnapshot | null;
-
   private assembleStrategy: AssembleStrategy;
 
   private cmdExecutor: AcceptsCommands;
@@ -31,8 +28,6 @@ export class Engine {
   constructor(cmdExecutor: AcceptsCommands) {
     // Starts with empty assembly
     this.assembly = new AssemblySnapshot([], new TxStateSet());
-    this.targetAssembly = null;
-
     this.assembleStrategy = new DefaultAssembleStrategy();
 
     this.cmdExecutor = cmdExecutor;
@@ -59,217 +54,35 @@ export class Engine {
     this.updateService.start();
   }
 
-  /* ================= TX TICK ================= */
+  private createNextTick(): Tick {
+    let nextUpdate = this.updatesQueue.shift()!;
 
-  private mergeIncomingTxs(newStates: TxStateSet, incomingTxs: Transaction[]) {
-    // increment
-    newStates.incrementAll();
+    switch (nextUpdate.type) {
+      case "txs":
+        return new UnconfirmedTransactionsTick(
+          this.assembly,
+          this.assembleStrategy,
+          nextUpdate.transactions
+        );
 
-    // append new or reset age of new
-    for (const tx of incomingTxs) {
-      newStates.markSeen(tx);
+      case "block":
+        return new BlockFoundTick(
+          this.assembly,
+          this.assembleStrategy,
+          nextUpdate.block
+        );
     }
-
-    // remove with age >= MAX_AGE
-    let combinedSet = PropSet.fromArray(
-      [...this.assembly.transactions, ...incomingTxs],
-      tx => tx.id
-    );
-
-    let newTransactions: Transaction[] = [];
-
-    for (const tx of combinedSet.getItems()) {
-      let state = newStates.getState(tx)!;
-      if (state.age >= TX_MAX_AGE) {
-        newStates.remove(tx);
-      } else {
-        newTransactions.push(tx);
-      }
-    }
-
-    return newTransactions;
-  }
-
-  private assembleTxs(states: TxStateSet, transactions: Transaction[]) {
-    let assembled = this.assembleStrategy.assembleTransactions(transactions);
-    for (const { tx, placement } of assembled) {
-      states.getState(tx)!.placement = placement;
-    }
-  }
-
-  private async emitTxsCommands() {
-    let snapshotA = this.assembly;
-    let snapshotB = this.targetAssembly!;
-
-    let combinedSet = PropSet.fromArray(
-      [...snapshotA.transactions, ...snapshotB.transactions],
-      tx => tx.id
-    );
-
-    let lifespans: Command[] = [];
-    let walks: Command[] = [];
-
-    for (const tx of combinedSet.getItems()) {
-      let placementBefore = snapshotA.states.getState(tx)?.placement ?? null;
-      let placementAfter = snapshotB.states.getState(tx)?.placement ?? null;
-
-      let aliveBefore = Boolean(placementBefore);
-      let aliveNow = Boolean(placementAfter);
-
-      if (aliveBefore && aliveNow) {
-        if (!arePlacementsEqual(placementBefore!, placementAfter!)) {
-          walks.push({
-            type: "walk",
-            tx,
-            placement: placementAfter!
-          });
-        }
-      } else if (aliveBefore && !aliveNow) {
-        // register destroy move
-        lifespans.push({
-          type: "kill",
-          tx
-        });
-      } else if (!aliveBefore && aliveNow) {
-        // First spawn
-        lifespans.push({
-          type: "spawn",
-          tx
-        });
-
-        // and then register 'waiting' or 'block' depending
-        // on placement
-        walks.push({
-          type: "walk",
-          tx,
-          placement: placementAfter!
-        });
-      }
-    }
-
-    if (lifespans.length > 0) await this.cmdExecutor.executeCommands(lifespans);
-
-    if (walks.length > 0) await this.cmdExecutor.executeCommands(walks);
-  }
-
-  private async startTxsTick(incomingTxs: Transaction[]) {
-    let newStates = this.assembly.states.clone();
-    let newTransactions = this.mergeIncomingTxs(newStates, incomingTxs);
-
-    this.assembleTxs(newStates, newTransactions);
-    this.targetAssembly = new AssemblySnapshot(newTransactions, newStates);
-
-    // Commands
-    return this.emitTxsCommands();
-  }
-
-  /* ================= BLOCK TICK ================= */
-
-  private async startBlockTick(block: TransactedBlock) {
-    let newStates = this.assembly.states.clone();
-    let remainingTransactions: Transaction[] = [];
-
-    for (const tx of this.assembly.transactions) {
-      // If this transaction is also part of the (found and
-      // outgoing) block then remove it
-      if (block.transactions.find(blockTx => blockTx.id === tx.id)) {
-        newStates.remove(tx);
-      }
-      // Otherwise store it for reassembly
-      else {
-        remainingTransactions.push(tx);
-      }
-    }
-
-    // Calculate target assembly
-    this.assembleTxs(newStates, remainingTransactions);
-    this.targetAssembly = new AssemblySnapshot(
-      remainingTransactions,
-      newStates
-    );
-
-    let spawns: Command[] = [];
-    let walks: Command[] = [];
-
-    for (const tx of block.transactions) {
-      let placementBefore = this.assembly.states.getState(tx)?.placement;
-      let placementAfter: Placement = { type: "block", index: 0 };
-
-      // If the transaction did not exist in the last snapshot
-      if (!placementBefore) {
-        // First spawn and the move to top block
-        spawns.push({ type: "spawn", tx });
-        walks.push({
-          type: "walk",
-          tx,
-          placement: placementAfter
-        });
-      }
-      // Otherwise (placement did exist before) check if it was
-      // anywhere other than top block. If so, then move it to top block
-      else if (!arePlacementsEqual(placementBefore, placementAfter)) {
-        walks.push({
-          type: "walk",
-          tx,
-          placement: placementAfter
-        });
-      }
-    }
-
-    for (const tx of remainingTransactions) {
-      let placementBefore = this.assembly.states.getState(tx)!.placement;
-      let placementAfter = structuredClone(
-        this.targetAssembly.states.getState(tx)!.placement
-      );
-
-      if (placementAfter.type === "block")
-        //
-        placementAfter.index += 1;
-
-      if (!arePlacementsEqual(placementBefore, placementAfter)) {
-        walks.push({
-          type: "walk",
-          tx,
-          placement: placementAfter
-        });
-      }
-    }
-
-    if (spawns)
-      await this.cmdExecutor.executeCommands(spawns);
-
-    if (walks)
-      await this.cmdExecutor.executeCommands(walks);
   }
 
   public update() {
     if (this.isIdle && this.updatesQueue.length > 0) {
-      let nextUpdate = this.updatesQueue.shift()!;
       this.isIdle = false;
 
-      let tickPromise: Promise<void>;
+      let tick = this.createNextTick();
+      let targetAssembly = tick.getNextAssembly();
 
-      switch (nextUpdate.type) {
-        case "txs":
-          tickPromise = this.startTxsTick(nextUpdate.transactions);
-          break;
-
-        case "block":
-          console.log("Found block", nextUpdate.block);
-          // tickPromise = this.startBlockTick(nextUpdate.block);
-          tickPromise = Promise.resolve();
-          break;
-      }
-
-      tickPromise.then(() => {
-        if (
-          this.targetAssembly !== null &&
-          this.targetAssembly !== this.assembly
-        ) {
-          this.assembly = this.targetAssembly;
-        }
-
-        this.targetAssembly = null;
+      tick.applyCommands(this.cmdExecutor).then(() => {
+        this.assembly = targetAssembly;
         this.isIdle = true;
       });
     }
