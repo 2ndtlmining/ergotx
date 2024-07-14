@@ -59,22 +59,40 @@ buses:
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
-
 block update:
-    newTransactions = current.transactions - block.transactions
+    remainingTransactions = current.transactions - block.transactions
 
     // ---
 
     for tx in block.transactions:
         case inside top block:
-            no move
+            no walk
 
         case inside another block:
-            move to top bus through waiting route (2-3 moves)
+            add walk WalkIn(top block)
 
         case inside waiting:
-            move to bus
+            WalkIn(top block)
 
         case absent:
-            spawn at home
-            move to top bus
+            add spawn
+            add walk WalkIn(top block)
+
+    walks: remainingTransactions
+
+    targetAssembly = assemble(remainingTransactions)
+
+    for tx in targetAssembly:
+        if tx.placement == waiting:
+            walks.add(tx, waiting)
+        else if tx.placement == bus
+            nextBus = bus + 1
+            if nextBus != oldAssembly.tx.bus:
+                walks.add(tx, nextBus)
+
+
+    cmd(spawns)
+    cmd(walks)
+    cmd(driveoff)
+
+
