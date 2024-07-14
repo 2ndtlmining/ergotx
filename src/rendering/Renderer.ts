@@ -12,18 +12,21 @@ import { Engine } from "~/engine/Engine";
 import type { AcceptsCommands, Command } from "~/engine/Command";
 import type { Placement } from "~/engine/Placement";
 
-import { attachMotion } from "~/movement/motion";
+import { attachMotion, Motion } from "~/movement/motion";
 import { LinearMotion } from "~/movement/LinearMotion";
 import { HouseService, getRegisteredHouses } from "./housing";
 
 import { Person } from "./actors/Person";
 import { Bus } from "./actors/Bus";
+import { NUM_FUTURE_BLOCKS } from "~/common/constants";
 
 export class Renderer implements AcceptsCommands {
   private scene: Scene;
-  private personMap: Map<string, Person>;
-  private engine: Engine;
 
+  private personMap: Map<string, Person>;
+  private blockGroups: Map<string, number>;
+
+  private engine: Engine;
   private houseService: HouseService;
 
   // Visuals related fields
@@ -35,8 +38,8 @@ export class Renderer implements AcceptsCommands {
 
   constructor(scene: Scene) {
     this.scene = scene;
-
     this.personMap = new Map();
+    this.blockGroups = new Map();
     this.engine = (<any>window).engine = new Engine(this);
 
     this.canvasWidth = +this.scene.game.config.width;
@@ -109,7 +112,7 @@ export class Renderer implements AcceptsCommands {
     let spacing = 10;
     let busHeight = 150;
 
-    for (let i = 0; i < 5; ++i) {
+    for (let i = 0; i < NUM_FUTURE_BLOCKS; ++i) {
       let region = new Geom.Rectangle(
         busZone.x,
         busZone.y + i * (busHeight + spacing),
@@ -133,27 +136,48 @@ export class Renderer implements AcceptsCommands {
     let person = this.getTxPerson(tx);
     person.destroy();
     this.personMap.delete(tx.id);
+    this.blockGroups.delete(tx.id);
   }
 
   private async cmdWalk(tx: Transaction, placement: Placement) {
+    let person = this.getTxPerson(tx);
+
     let targetPosition: Geom.Point;
 
     switch (placement.type) {
       case "waiting":
         targetPosition = this.waitingZone.getRandomPoint();
+        this.blockGroups.delete(tx.id);
         break;
       case "block":
         targetPosition = this.buses[placement.index].getRandomPoint();
+        this.blockGroups.set(tx.id, placement.index);
         break;
     }
 
-    let person = this.getTxPerson(tx);
     let motion = new LinearMotion([targetPosition]);
-
     return attachMotion(person, motion).run();
   }
 
-  public async executeCommands(commands: Command[]) {
+  private async cmdDriveOff() {
+    let motions: Motion[] = [];
+
+    for (const [txId, currentBlock] of this.blockGroups.entries()) {
+      const newBlock = currentBlock - 1;
+
+      if (newBlock === -1) {
+        // this is going out of screen
+        this.blockGroups.delete(txId);
+      } else {
+        // this is going to block above
+        this.blockGroups.set(txId, newBlock);
+      }
+    }
+
+    return Promise.all(motions.map(motion => motion.run()));
+  }
+
+  public executeCommands(commands: Command[]) {
     console.log("CMDS: ", commands);
     let cmdPromises = commands.map(cmd => {
       switch (cmd.type) {

@@ -1,10 +1,11 @@
 import type { Transaction } from "~/common/types";
 import type { AssembleStrategy, AssembledTransaction } from './AssembleStrategy';
+import { NUM_FUTURE_BLOCKS } from "~/common/constants";
 
 export class DefaultAssembleStrategy implements AssembleStrategy {
   public assembleTransactions(transactions: Transaction[]): AssembledTransaction[] {
     const NODES_PER_BLOCK = 5;
-    const MAX_BLOCKS = 5;
+    const MAX_BLOCKS = NUM_FUTURE_BLOCKS;
 
     let nodes: AssembledTransaction[] = [];
     let filledBlocks = 0;
