@@ -1,9 +1,6 @@
 import { Scene, Math, Geom } from "phaser";
-import { Transaction } from "~/common/types";
-import { Engine } from "~/engine/Engine";
-import type { AcceptsCommands, Command } from "~/engine/Command";
 
-import { HouseService, getRegisteredHouses } from "./housing";
+import { Transaction } from "~/common/types";
 import {
   HOUSE_COLOR,
   HOUSE_RADIUS,
@@ -11,10 +8,15 @@ import {
   WAITING_ZONE_COLOR
 } from "~/common/theme";
 
+import { Engine } from "~/engine/Engine";
+import type { AcceptsCommands, Command } from "~/engine/Command";
+import type { Placement } from "~/engine/Placement";
+
+import { LinearMotion, runMotion } from "~/movement/motion";
+import { HouseService, getRegisteredHouses } from "./housing";
+
 import { Person } from "./actors/Person";
 import { Bus } from "./actors/Bus";
-import type { Placement } from "~/engine/Placement";
-import { LinearMotion, runMotion } from "~/movement/motion";
 
 export class Renderer implements AcceptsCommands {
   private scene: Scene;
@@ -119,7 +121,7 @@ export class Renderer implements AcceptsCommands {
   }
 
   private async cmdSpawn(tx: Transaction) {
-    let person = new Person(this, tx);
+    let person = new Person(this.scene, tx);
     this.personMap.set(tx.id, person);
 
     let house = this.houseService.getTxHouse(tx);
@@ -178,10 +180,6 @@ export class Renderer implements AcceptsCommands {
   }
 
   /* ======================================= */
-
-  public getScene() {
-    return this.scene;
-  }
 
   private getTxPerson(tx: Transaction) {
     return this.personMap.get(tx.id)!;

@@ -1,4 +1,5 @@
 import { Math } from "phaser";
+
 import { Transaction } from "~/common/types";
 
 export interface House {

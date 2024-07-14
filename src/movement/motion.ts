@@ -74,9 +74,7 @@ export class LinearMotion extends Motion {
   private lastPoint: Math.Vector2;
   private nextPointIndex: number;
 
-  constructor(
-    public readonly points: IVector2[]
-  ) {
+  constructor(public readonly points: IVector2[]) {
     super();
     this.lastPoint = new Math.Vector2();
     this.nextPointIndex = -1;
@@ -134,9 +132,12 @@ export interface SupportsMotion {
   getMotionController(): MotionController;
 }
 
-export async function runMotion(target: SupportsMotion, motion: Motion) {
+export function applyMotion(target: SupportsMotion, motion: Motion) {
   let controller = target.getMotionController();
   motion.attachTo(controller);
+  return motion;
+}
 
-  return motion.start();
+export async function runMotion(target: SupportsMotion, motion: Motion) {
+  return applyMotion(target, motion).start();
 }

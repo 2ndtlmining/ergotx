@@ -1,18 +1,23 @@
-import { GameObjects } from "phaser";
-import { WrapSprite } from "./WrapSprite";
+import { GameObjects, Scene } from "phaser";
+
 import { Transaction } from "~/common/types";
-import type { Renderer } from "../Renderer";
 import { PERSON_COLOR, PERSON_RADIUS } from "~/common/theme";
 import { IVector2 } from "~/common/math";
+
 import { MotionController, SupportsMotion } from "~/movement/motion";
 
-export class Person extends WrapSprite<GameObjects.Arc> implements SupportsMotion {
+import { WrapSprite } from "./WrapSprite";
+
+export class Person
+  extends WrapSprite<GameObjects.Arc>
+  implements SupportsMotion
+{
   public readonly tx: Transaction;
 
   private motionController: MotionController;
 
-  constructor(renderer: Renderer, tx: Transaction) {
-    super(renderer.getScene());
+  constructor(scene: Scene, tx: Transaction) {
+    super(scene);
     this.tx = tx;
 
     super.buildSprite(

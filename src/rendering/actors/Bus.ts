@@ -1,4 +1,5 @@
 import { GameObjects, Scene, Geom } from "phaser";
+
 import { WrapSprite } from "./WrapSprite";
 
 export class Bus extends WrapSprite<GameObjects.Rectangle> {

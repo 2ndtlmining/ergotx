@@ -1,9 +1,11 @@
 import { UpdateService } from "~/ergoapi/UpdateService";
-import { TransactedBlock, Transaction } from "~/common/types";
-import { AssemblySnapshot, TxStateSet } from "./state-snapshot";
 import { PropSet } from "~/common/PropSet";
+import type { TransactedBlock, Transaction } from "~/common/types";
+
 import type { AssembleStrategy } from "~/assemble/AssembleStrategy";
 import { DefaultAssembleStrategy } from "~/assemble/DefaultAssembleStrategy";
+
+import { AssemblySnapshot, TxStateSet } from "./state-snapshot";
 import type { Command, AcceptsCommands } from "./Command";
 import { arePlacementsEqual } from "./Placement";
 
@@ -153,9 +155,7 @@ export class Engine {
   }
 
   private async startTxsTick(incomingTxs: Transaction[]) {
-    // Calculate Next assembly
     let newStates = this.assembly.states.clone();
-
     let newTransactions = this.mergeIncomingTxs(newStates, incomingTxs);
     this.assembleTxs(newStates, newTransactions);
 
