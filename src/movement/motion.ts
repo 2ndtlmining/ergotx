@@ -11,8 +11,10 @@ export class Motion {
     public readonly points: IVector2[]
   ) {}
 
-  public start(onComplete: VoidCallback<void>) {
-    this.controller.startMotion(this.points, onComplete);
+  public start() {
+    return new Promise(resolve => {
+      this.controller.startMotion(this.points, resolve);
+    });
   }
 }
 
@@ -111,21 +113,21 @@ export class MotionController {
   }
 }
 
-export interface SupportsMotion {
-  getMotionController(): MotionController;
-}
+// export interface SupportsMotion {
+//   getMotionController(): MotionController;
+// }
 
-export function applyMotions(motions: Motion[]) {
-  if (motions.length === 0) return Promise.resolve();
+// export function applyMotions(motions: Motion[]) {
+//   if (motions.length === 0) return Promise.resolve();
 
-  return new Promise<void>(resolve => {
-    let pending = motions.length;
-    for (const motion of motions) {
-      motion.start(() => {
-        if (--pending <= 0) {
-          resolve();
-        }
-      });
-    }
-  });
-}
+//   return new Promise<void>(resolve => {
+//     let pending = motions.length;
+//     for (const motion of motions) {
+//       motion.start(() => {
+//         if (--pending <= 0) {
+//           resolve();
+//         }
+//       });
+//     }
+//   });
+// }

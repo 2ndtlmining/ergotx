@@ -12,6 +12,7 @@ import {
 
 import { Person } from "./actors/Person";
 import { Bus } from "./actors/Bus";
+import { Command } from "./engine/Command";
 
 export class Renderer {
   private scene: Scene;
@@ -115,8 +116,58 @@ export class Renderer {
     }
   }
 
-  private spawnPerson(tx: Transaction) {
-    // Spawn person at their house
+  // private spawnPerson(tx: Transaction) {
+  //   // Spawn person at their house
+  // let person = new Person(this, tx);
+  // this.personMap.set(tx.id, person);
+
+  // let house = this.houseService.getTxHouse(tx);
+  // person.place(house.position);
+  // }
+
+  // public executeMove(moveHandle: number, move: Move) {
+  //   if (move.isDying) {
+  //     // schedule the person with transaction to die
+  //     let person = this.getTxPerson(move.tx);
+  //     person.moveToDeath(moveHandle);
+  //     return;
+  //   }
+
+  //   if (move.isSpawning) {
+  //     // spawn a person at the house
+  //     this.spawnPerson(move.tx);
+  //   }
+
+  //   // schedule the person to move to move.placement
+  //   let placement = move.placement!;
+
+  //   let targetPosition: Geom.Point;
+  //   switch (placement.type) {
+  //     case "waiting":
+  //       targetPosition = this.waitingZone.getRandomPoint();
+  //       break;
+  //     case "block":
+  //       targetPosition = this.buses[placement.index].getRandomPoint();
+  //       break;
+  //   }
+
+  //   let person = this.getTxPerson(move.tx);
+  //   person.moveTo(moveHandle, targetPosition);
+  // }
+
+  // public onMoveComplete(moveHandle: number) {
+  //   let move = this.engine.getActiveMove(moveHandle);
+
+  //   if (move.isDying) {
+  //     let person = this.getTxPerson(move.tx);
+  //     person.destroy();
+  //     this.personMap.delete(move.tx.id);
+  //   }
+
+  //   this.engine.onMoveComplete(moveHandle);
+  // }
+
+  private async cmdSpawn(tx: Transaction) {
     let person = new Person(this, tx);
     this.personMap.set(tx.id, person);
 
@@ -124,47 +175,26 @@ export class Renderer {
     person.place(house.position);
   }
 
-  public executeMove(moveHandle: number, move: Move) {
-    if (move.isDying) {
-      // schedule the person with transaction to die
-      let person = this.getTxPerson(move.tx);
-      person.moveToDeath(moveHandle);
-      return;
-    }
+  private async cmdKill(tx: Transaction) {
 
-    if (move.isSpawning) {
-      // spawn a person at the house
-      this.spawnPerson(move.tx);
-    }
-
-    // schedule the person to move to move.placement
-    let placement = move.placement!;
-
-    let targetPosition: Geom.Point;
-    switch (placement.type) {
-      case "waiting":
-        targetPosition = this.waitingZone.getRandomPoint();
-        break;
-      case "block":
-        targetPosition = this.buses[placement.index].getRandomPoint();
-        break;
-    }
-
-    let person = this.getTxPerson(move.tx);
-    person.moveTo(moveHandle, targetPosition);
   }
 
-  public onMoveComplete(moveHandle: number) {
-    let move = this.engine.getActiveMove(moveHandle);
+  public async executeCommands(commands: Command[]) {
+    let cmdPromises = commands.map(cmd => {
+      switch (cmd.type) {
+        case "spawn":
+          return this.cmdSpawn(cmd.tx);
+        // case "kill":
+        // case "walk":
+        // case "drive_off":
+      }
+      // return this.cmdSpawn();
+    });
 
-    if (move.isDying) {
-      let person = this.getTxPerson(move.tx);
-      person.destroy();
-      this.personMap.delete(move.tx.id);
-    }
-
-    this.engine.onMoveComplete(moveHandle);
+    return Promise.all(cmdPromises);
   }
+
+  /* ======================================= */
 
   public update() {
     this.engine.update();
@@ -173,7 +203,7 @@ export class Renderer {
     });
   }
 
-  /* ============= */
+  /* ======================================= */
 
   public getScene() {
     return this.scene;
