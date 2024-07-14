@@ -1,5 +1,5 @@
 import { Transaction } from "~/common/types";
-import { Placement } from "../Placement";
+import { Placement } from "./Placement";
 
 export class TxState {
   // Age

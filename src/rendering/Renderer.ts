@@ -1,7 +1,7 @@
 import { Scene, Math, Geom } from "phaser";
 import { Transaction } from "~/common/types";
-// import { Engine, Move } from "./Engine";
-import { Engine2 as Engine } from "./engine/Engine2";
+import { Engine } from "./Engine";
+import type { Command } from "./Command";
 
 import { HouseService, getRegisteredHouses } from "./house";
 import {
@@ -13,7 +13,6 @@ import {
 
 import { Person } from "./actors/Person";
 import { Bus } from "./actors/Bus";
-import { Command } from "./engine/Command";
 import { Placement } from "./Placement";
 
 export class Renderer {

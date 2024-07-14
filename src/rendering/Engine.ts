@@ -1,11 +1,11 @@
 import { UpdateService } from "~/ergoapi/UpdateService";
 import { TransactedBlock, Transaction } from "~/common/types";
-import { Renderer } from "../Renderer";
+import type { Renderer } from "./Renderer";
 import { AssemblySnapshot, TxStateSet } from "./snapshot";
 import { PropSet } from "~/common/PropSet";
-import { AssembleStrategy, DefaultAssembleStrategy } from "../assembly";
+import { AssembleStrategy, DefaultAssembleStrategy } from "./assembly";
 import { Command } from "./Command";
-import { arePlacementsEqual } from "../Placement";
+import { arePlacementsEqual } from "./Placement";
 
 const TX_MAX_AGE = 4;
 
@@ -13,7 +13,7 @@ type Update =
   | { type: "txs"; transactions: Transaction[] }
   | { type: "block"; block: TransactedBlock };
 
-export class Engine2 {
+export class Engine {
   private assembly: AssemblySnapshot;
   private targetAssembly: AssemblySnapshot | null;
 
