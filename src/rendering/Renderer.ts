@@ -1,6 +1,7 @@
 import { Scene, Math, Geom } from "phaser";
 import { Transaction } from "~/common/types";
-import { Engine, Move } from "./Engine";
+// import { Engine, Move } from "./Engine";
+import { Engine2 as Engine } from "./engine/Engine2";
 
 import { HouseService, getRegisteredHouses } from "./house";
 import {
@@ -13,6 +14,7 @@ import {
 import { Person } from "./actors/Person";
 import { Bus } from "./actors/Bus";
 import { Command } from "./engine/Command";
+import { Placement } from "./Placement";
 
 export class Renderer {
   private scene: Scene;
@@ -116,57 +118,6 @@ export class Renderer {
     }
   }
 
-  // private spawnPerson(tx: Transaction) {
-  //   // Spawn person at their house
-  // let person = new Person(this, tx);
-  // this.personMap.set(tx.id, person);
-
-  // let house = this.houseService.getTxHouse(tx);
-  // person.place(house.position);
-  // }
-
-  // public executeMove(moveHandle: number, move: Move) {
-  //   if (move.isDying) {
-  //     // schedule the person with transaction to die
-  //     let person = this.getTxPerson(move.tx);
-  //     person.moveToDeath(moveHandle);
-  //     return;
-  //   }
-
-  //   if (move.isSpawning) {
-  //     // spawn a person at the house
-  //     this.spawnPerson(move.tx);
-  //   }
-
-  //   // schedule the person to move to move.placement
-  //   let placement = move.placement!;
-
-  //   let targetPosition: Geom.Point;
-  //   switch (placement.type) {
-  //     case "waiting":
-  //       targetPosition = this.waitingZone.getRandomPoint();
-  //       break;
-  //     case "block":
-  //       targetPosition = this.buses[placement.index].getRandomPoint();
-  //       break;
-  //   }
-
-  //   let person = this.getTxPerson(move.tx);
-  //   person.moveTo(moveHandle, targetPosition);
-  // }
-
-  // public onMoveComplete(moveHandle: number) {
-  //   let move = this.engine.getActiveMove(moveHandle);
-
-  //   if (move.isDying) {
-  //     let person = this.getTxPerson(move.tx);
-  //     person.destroy();
-  //     this.personMap.delete(move.tx.id);
-  //   }
-
-  //   this.engine.onMoveComplete(moveHandle);
-  // }
-
   private async cmdSpawn(tx: Transaction) {
     let person = new Person(this, tx);
     this.personMap.set(tx.id, person);
@@ -176,7 +127,27 @@ export class Renderer {
   }
 
   private async cmdKill(tx: Transaction) {
+    let person = new Person(this, tx);
+    person.destroy();
+    this.personMap.delete(tx.id);
+  }
 
+  private async cmdWalk(tx: Transaction, placement: Placement) {
+    let targetPosition: Geom.Point;
+
+    switch (placement.type) {
+      case "waiting":
+        targetPosition = this.waitingZone.getRandomPoint();
+        break;
+      case "block":
+        targetPosition = this.buses[placement.index].getRandomPoint();
+        break;
+    }
+
+    let person = this.getTxPerson(tx);
+    let motion = person.createLinearMotion([targetPosition]);
+
+    return motion.start();
   }
 
   public async executeCommands(commands: Command[]) {
@@ -184,11 +155,13 @@ export class Renderer {
       switch (cmd.type) {
         case "spawn":
           return this.cmdSpawn(cmd.tx);
-        // case "kill":
-        // case "walk":
-        // case "drive_off":
+        case "kill":
+          return this.cmdKill(cmd.tx);
+        case "walk":
+          return this.cmdWalk(cmd.tx, cmd.placement);
+        case "drive_off":
+          return Promise.resolve();
       }
-      // return this.cmdSpawn();
     });
 
     return Promise.all(cmdPromises);

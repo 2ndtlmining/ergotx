@@ -13,7 +13,7 @@ type Update =
   | { type: "txs"; transactions: Transaction[] }
   | { type: "block"; block: TransactedBlock };
 
-class Engine2 {
+export class Engine2 {
   private assembly: AssemblySnapshot;
   private targetAssembly: AssemblySnapshot | null;
 
@@ -95,7 +95,7 @@ class Engine2 {
     }
   }
 
-  private emitTxsCommands() {
+  private async emitTxsCommands() {
     let snapshotA = this.assembly;
     let snapshotB = this.targetAssembly!;
 
@@ -126,28 +126,31 @@ class Engine2 {
       } else if (aliveBefore && !aliveNow) {
         // register destroy move
         kills.push({
-          type: 'kill',
-          tx,
+          type: "kill",
+          tx
         });
       } else if (!aliveBefore && aliveNow) {
         // First spawn
         spawns.push({
-          type: 'spawn',
+          type: "spawn",
           tx
         });
 
         // and then register 'waiting' or 'block' depending
         // on placement
         walks.push({
-          type: 'walk',
+          type: "walk",
           tx,
           placement: placementAfter!
         });
       }
     }
+
+    await this.renderer.executeCommands([...spawns, ...kills]);
+    await this.renderer.executeCommands(walks);
   }
 
-  private startTxsTick(incomingTxs: Transaction[]) {
+  private async startTxsTick(incomingTxs: Transaction[]) {
     // Calculate Next assembly
     let newStates = this.assembly.states.clone();
 
@@ -157,59 +160,41 @@ class Engine2 {
     this.targetAssembly = new AssemblySnapshot(newTransactions, newStates);
 
     // Commands
-    this.emitTxsCommands();
+    return this.emitTxsCommands();
   }
-}
 
-/*
+  private async startBlockTick(block: TransactedBlock) {
+    return Promise.resolve();
+  }
 
-function CalculateMoves(
-  snapshotA: AssemblySnapshot,
-  snapshotB: AssemblySnapshot
-) {
-  let combinedSet = PropSet.fromArray(
-    [...snapshotA.transactions, ...snapshotB.transactions],
-    tx => tx.id
-  );
+  public update() {
+    if (this.isIdle && this.updatesQueue.length > 0) {
+      let nextUpdate = this.updatesQueue.shift()!;
+      this.isIdle = false;
 
-  let moves: Move[] = [];
+      let tickPromise: Promise<void>;
 
-  for (const tx of combinedSet.getItems()) {
-    let placementBefore = snapshotA.states.getState(tx)?.placement ?? null;
-    let placementAfter = snapshotB.states.getState(tx)?.placement ?? null;
+      switch (nextUpdate.type) {
+        case "txs":
+          tickPromise = this.startTxsTick(nextUpdate.transactions);
+          break;
 
-    let aliveBefore = Boolean(placementBefore);
-    let aliveNow = Boolean(placementAfter);
-
-    if (aliveBefore && aliveNow) {
-      // check if placement is changed
-      if (!arePlacementsEqual(placementBefore!, placementAfter!)) {
-        moves.push({
-          tx,
-          placement: placementAfter,
-          isSpawning: false,
-          isDying: false
-        });
+        case "block":
+          tickPromise = this.startBlockTick(nextUpdate.block);
+          break;
       }
-    } else if (aliveBefore && !aliveNow) {
-      // register destroy move
-      moves.push({
-        tx,
-        placement: null,
-        isSpawning: false,
-        isDying: true
-      });
-    } else if (!aliveBefore && aliveNow) {
-      // register 'waiting' or 'block' move depending on placement. spawns
-      moves.push({
-        tx,
-        placement: placementAfter,
-        isSpawning: true,
-        isDying: false
+
+      tickPromise.then(() => {
+        if (
+          this.targetAssembly !== null &&
+          this.targetAssembly !== this.assembly
+        ) {
+          this.assembly = this.targetAssembly;
+        }
+
+        this.targetAssembly = null;
+        this.isIdle = true;
       });
     }
   }
-
-  return moves;
 }
-*/

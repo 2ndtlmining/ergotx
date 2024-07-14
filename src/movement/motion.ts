@@ -18,13 +18,18 @@ export abstract class Motion {
 }
 
 export class MotionController {
+  public readonly physics: ArcadePhysics;
+  public readonly body: PhysicsBody;
+
   private currentMotion: Motion | null;
   private onComplete: VoidCallback<void>;
 
   constructor(
-    public readonly physics: ArcadePhysics,
-    public readonly body: PhysicsBody
+    physics: ArcadePhysics,
+    body: PhysicsBody
   ) {
+    this.physics = physics;
+    this.body = body;
     this.currentMotion = null;
     this.onComplete = () => {}
   }
@@ -46,6 +51,7 @@ export class MotionController {
   public completeCurrent() {
     this.currentMotion = null;
     this.onComplete();
+    this.onComplete = () => {};
   }
 
   public update() {
@@ -64,6 +70,8 @@ export class LinearMotion extends Motion {
     public readonly points: IVector2[]
   ) {
     super(controller);
+    this.lastPoint = new Math.Vector2();
+    this.nextPointIndex = -1;
   }
 
   public _init() {
