@@ -4,10 +4,8 @@ import { AssemblySnapshot, TxStateSet } from "./state-snapshot";
 import { PropSet } from "~/common/PropSet";
 import type { AssembleStrategy } from "~/assemble/AssembleStrategy";
 import { DefaultAssembleStrategy } from "~/assemble/DefaultAssembleStrategy";
-import { Command } from "./Command";
+import type { Command, AcceptsCommands } from "./Command";
 import { arePlacementsEqual } from "./Placement";
-
-import type { Renderer } from "~/rendering/Renderer";
 
 const TX_MAX_AGE = 4;
 
@@ -21,21 +19,21 @@ export class Engine {
 
   private assembleStrategy: AssembleStrategy;
 
-  private renderer: Renderer;
+  private cmdExecutor: AcceptsCommands;
   private isIdle: boolean;
 
   /* ====== Queuing ====== */
   private updateService: UpdateService;
   private updatesQueue: Update[];
 
-  constructor(renderer: Renderer) {
+  constructor(cmdExecutor: AcceptsCommands) {
     // Starts with empty assembly
     this.assembly = new AssemblySnapshot([], new TxStateSet());
     this.targetAssembly = null;
 
     this.assembleStrategy = new DefaultAssembleStrategy();
 
-    this.renderer = renderer;
+    this.cmdExecutor = cmdExecutor;
     this.isIdle = true;
 
     this.updateService = new UpdateService();
@@ -148,10 +146,10 @@ export class Engine {
     }
 
     if (lifespans.length > 0)
-      await this.renderer.executeCommands(lifespans);
+      await this.cmdExecutor.executeCommands(lifespans);
 
     if (walks.length > 0)
-      await this.renderer.executeCommands(walks);
+      await this.cmdExecutor.executeCommands(walks);
   }
 
   private async startTxsTick(incomingTxs: Transaction[]) {

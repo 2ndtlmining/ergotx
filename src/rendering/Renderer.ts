@@ -1,7 +1,7 @@
 import { Scene, Math, Geom } from "phaser";
 import { Transaction } from "~/common/types";
 import { Engine } from "~/engine/Engine";
-import type { Command } from "~/engine/Command";
+import type { AcceptsCommands, Command } from "~/engine/Command";
 
 import { HouseService, getRegisteredHouses } from "./housing";
 import {
@@ -16,7 +16,7 @@ import { Bus } from "./actors/Bus";
 import type { Placement } from "~/engine/Placement";
 import { LinearMotion, runMotion } from "~/movement/motion";
 
-export class Renderer {
+export class Renderer implements AcceptsCommands {
   private scene: Scene;
   private personMap: Map<string, Person>;
   private engine: Engine;
