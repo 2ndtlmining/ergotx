@@ -104,8 +104,7 @@ export class Engine {
       tx => tx.id
     );
 
-    let spawns: Command[] = [];
-    let kills: Command[] = [];
+    let lifespans: Command[] = [];
     let walks: Command[] = [];
 
     for (const tx of combinedSet.getItems()) {
@@ -125,13 +124,13 @@ export class Engine {
         }
       } else if (aliveBefore && !aliveNow) {
         // register destroy move
-        kills.push({
+        lifespans.push({
           type: "kill",
           tx
         });
       } else if (!aliveBefore && aliveNow) {
         // First spawn
-        spawns.push({
+        lifespans.push({
           type: "spawn",
           tx
         });
@@ -146,8 +145,11 @@ export class Engine {
       }
     }
 
-    await this.renderer.executeCommands([...spawns, ...kills]);
-    await this.renderer.executeCommands(walks);
+    if (lifespans.length > 0)
+      await this.renderer.executeCommands(lifespans);
+
+    if (walks.length > 0)
+      await this.renderer.executeCommands(walks);
   }
 
   private async startTxsTick(incomingTxs: Transaction[]) {

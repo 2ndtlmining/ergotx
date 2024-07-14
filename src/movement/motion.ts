@@ -6,11 +6,23 @@ type ArcadePhysics = Physics.Arcade.ArcadePhysics;
 type PhysicsBody = Physics.Arcade.Body;
 
 export abstract class Motion {
-  constructor(protected readonly controller: MotionController) {}
+  private _controller: MotionController | null;
+
+  constructor() {
+    this._controller = null;
+  }
 
   public abstract _init(): void;
   public abstract _update(): void;
   public abstract _cancel(): void;
+
+  public attachTo(controller: MotionController) {
+    this._controller = controller;
+  }
+
+  public get controller() {
+    return this._controller!;
+  }
 
   public start(): Promise<void> {
     return this.controller.startMotion(this);
@@ -24,14 +36,11 @@ export class MotionController {
   private currentMotion: Motion | null;
   private onComplete: VoidCallback<void>;
 
-  constructor(
-    physics: ArcadePhysics,
-    body: PhysicsBody
-  ) {
+  constructor(physics: ArcadePhysics, body: PhysicsBody) {
     this.physics = physics;
     this.body = body;
     this.currentMotion = null;
-    this.onComplete = () => {}
+    this.onComplete = () => {};
   }
 
   public startMotion(motion: Motion): Promise<void> {
@@ -66,10 +75,9 @@ export class LinearMotion extends Motion {
   private nextPointIndex: number;
 
   constructor(
-    controller: MotionController,
     public readonly points: IVector2[]
   ) {
-    super(controller);
+    super();
     this.lastPoint = new Math.Vector2();
     this.nextPointIndex = -1;
   }
@@ -122,110 +130,13 @@ export class LinearMotion extends Motion {
   }
 }
 
-// export class Motion {
-// constructor(
-//   public readonly controller: MotionController,
-//   public readonly points: IVector2[]
-// ) {}
+export interface SupportsMotion {
+  getMotionController(): MotionController;
+}
 
-//   public start() {
-//     return new Promise(resolve => {
-//       this.controller.startMotion(this.points, resolve);
-//     });
-//   }
-// }
+export async function runMotion(target: SupportsMotion, motion: Motion) {
+  let controller = target.getMotionController();
+  motion.attachTo(controller);
 
-// export class MotionController {
-//   private physics: ArcadePhysics;
-//   private body: PhysicsBody;
-
-//   // Sequence to follow in the current motion
-//   private currentSequence: IVector2[];
-
-//   // The last point from which a shift started
-//   private lastPoint: Math.Vector2;
-
-//   // index of the next target point, or -1 if not moving
-//   private nextPointIndex: number;
-
-//   // Is the body currently moving
-  // private _isMoving: boolean;
-
-  // // Called when the current motion has ended
-  // private onComplete: VoidCallback<void>;
-
-//   constructor(physics: ArcadePhysics, body: PhysicsBody) {
-//     this.physics = physics;
-//     this.body = body;
-
-//     this.currentSequence = [];
-//     this.lastPoint = new Math.Vector2();
-//     this.nextPointIndex = -1;
-//     this._isMoving = false;
-//     this.onComplete = () => {};
-//   }
-
-//   public isMoving() {
-//     return this._isMoving;
-//   }
-
-//   public stop() {
-//     this.body.stop();
-//   }
-
-//   public createMotion(points: IVector2[]) {
-//     return new Motion(this, points);
-//   }
-
-//   public startMotion(points: IVector2[], onComplete: VoidCallback<void>) {
-//     // TODO: do not allow empty array for points
-//     this.body.stop();
-
-// this.currentSequence = [...points];
-// this.lastPoint.setFromObject(this.body.position);
-// this.nextPointIndex = 0;
-// this._isMoving = true;
-// this.onComplete = onComplete;
-
-// this.shiftNext();
-//   }
-
-// public update() {
-//   if (this._isMoving) {
-//     if (this.shouldStop()) {
-//       this.nextPointIndex++;
-
-//       if (this.nextPointIndex >= this.currentSequence.length) {
-//         this._isMoving = false;
-//         this.body.stop();
-//         this.onComplete();
-//       } else {
-//         this.shiftNext();
-//       }
-//     }
-//   }
-// }
-
-// private shouldStop(): boolean {
-//   let nextPoint = this.currentSequence[this.nextPointIndex];
-//   let a = this.lastPoint.clone().subtract(nextPoint);
-//   let b = new Math.Vector2()
-//     .setFromObject(this.body.position)
-//     .subtract(nextPoint);
-
-//   return a.dot(b) <= 0;
-// }
-
-// private shiftNext() {
-//   this.lastPoint.setFromObject(this.body.position);
-//   let nextPoint = this.currentSequence[this.nextPointIndex];
-
-//   this.physics.moveTo(
-//     this.body.gameObject,
-//     nextPoint.x,
-//     nextPoint.y,
-//     300, // TODO: No magic numbers
-//     1000
-//   );
-// }
-// }
+  return motion.start();
+}

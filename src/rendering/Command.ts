@@ -1,5 +1,5 @@
-import { Transaction } from "~/common/types";
-import { Placement } from "./Placement";
+import type { Transaction } from "~/common/types";
+import type { Placement } from "./Placement";
 
 export type Command =
   | { type: "spawn"; tx: Transaction }

@@ -14,6 +14,7 @@ import {
 import { Person } from "./actors/Person";
 import { Bus } from "./actors/Bus";
 import { Placement } from "./Placement";
+import { LinearMotion, runMotion } from "~/movement/motion";
 
 export class Renderer {
   private scene: Scene;
@@ -144,9 +145,9 @@ export class Renderer {
     }
 
     let person = this.getTxPerson(tx);
-    let motion = person.createLinearMotion([targetPosition]);
+    let motion = new LinearMotion([targetPosition]);
 
-    return motion.start();
+    return runMotion(person, motion);
   }
 
   public async executeCommands(commands: Command[]) {
