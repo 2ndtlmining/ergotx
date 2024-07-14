@@ -127,7 +127,7 @@ export class Renderer {
   }
 
   private async cmdKill(tx: Transaction) {
-    let person = new Person(this, tx);
+    let person = this.getTxPerson(tx);
     person.destroy();
     this.personMap.delete(tx.id);
   }
@@ -151,6 +151,7 @@ export class Renderer {
   }
 
   public async executeCommands(commands: Command[]) {
+    console.log("CMDS: ", commands)
     let cmdPromises = commands.map(cmd => {
       switch (cmd.type) {
         case "spawn":
