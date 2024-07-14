@@ -1,20 +1,8 @@
-import { Transaction } from "~/common/types";
-
-export type AssemblyPlacement =
-  | { type: "waiting" }
-  | { type: "block"; index: number };
-
-export interface AssembledTransaction {
-  tx: Transaction;
-  placement: AssemblyPlacement;
-}
-
-export interface AssembleStrategy {
-  assembleTransactions(transactions: Transaction[]): AssembledTransaction[];
-}
+import type { Transaction } from "~/common/types";
+import type { AssembleStrategy, AssembledTransaction } from './AssembleStrategy';
 
 export class DefaultAssembleStrategy implements AssembleStrategy {
-  assembleTransactions(transactions: Transaction[]): AssembledTransaction[] {
+  public assembleTransactions(transactions: Transaction[]): AssembledTransaction[] {
     const NODES_PER_BLOCK = 5;
     const MAX_BLOCKS = 5;
 

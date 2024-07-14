@@ -1,9 +1,9 @@
 import { Scene, Math, Geom } from "phaser";
 import { Transaction } from "~/common/types";
-import { Engine } from "./Engine";
-import type { Command } from "./Command";
+import { Engine } from "~/engine/Engine";
+import type { Command } from "~/engine/Command";
 
-import { HouseService, getRegisteredHouses } from "./house";
+import { HouseService, getRegisteredHouses } from "./housing";
 import {
   HOUSE_COLOR,
   HOUSE_RADIUS,
@@ -13,7 +13,7 @@ import {
 
 import { Person } from "./actors/Person";
 import { Bus } from "./actors/Bus";
-import { Placement } from "./Placement";
+import type { Placement } from "~/engine/Placement";
 import { LinearMotion, runMotion } from "~/movement/motion";
 
 export class Renderer {
@@ -151,7 +151,7 @@ export class Renderer {
   }
 
   public async executeCommands(commands: Command[]) {
-    console.log("CMDS: ", commands)
+    console.log("CMDS: ", commands);
     let cmdPromises = commands.map(cmd => {
       switch (cmd.type) {
         case "spawn":

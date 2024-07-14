@@ -1,11 +1,13 @@
 import { UpdateService } from "~/ergoapi/UpdateService";
 import { TransactedBlock, Transaction } from "~/common/types";
-import type { Renderer } from "./Renderer";
-import { AssemblySnapshot, TxStateSet } from "./snapshot";
+import { AssemblySnapshot, TxStateSet } from "./state-snapshot";
 import { PropSet } from "~/common/PropSet";
-import { AssembleStrategy, DefaultAssembleStrategy } from "./assembly";
+import type { AssembleStrategy } from "~/assemble/AssembleStrategy";
+import { DefaultAssembleStrategy } from "~/assemble/DefaultAssembleStrategy";
 import { Command } from "./Command";
 import { arePlacementsEqual } from "./Placement";
+
+import type { Renderer } from "~/rendering/Renderer";
 
 const TX_MAX_AGE = 4;
 
