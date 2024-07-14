@@ -12,7 +12,8 @@ import { Engine } from "~/engine/Engine";
 import type { AcceptsCommands, Command } from "~/engine/Command";
 import type { Placement } from "~/engine/Placement";
 
-import { LinearMotion, runMotion } from "~/movement/motion";
+import { attachMotion } from "~/movement/motion";
+import { LinearMotion } from "~/movement/LinearMotion";
 import { HouseService, getRegisteredHouses } from "./housing";
 
 import { Person } from "./actors/Person";
@@ -149,7 +150,7 @@ export class Renderer implements AcceptsCommands {
     let person = this.getTxPerson(tx);
     let motion = new LinearMotion([targetPosition]);
 
-    return runMotion(person, motion);
+    return attachMotion(person, motion).run();
   }
 
   public async executeCommands(commands: Command[]) {
