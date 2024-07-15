@@ -49,8 +49,8 @@ export class Renderer implements AcceptsCommands {
     this.personMap = new Map();
     this.blockGroups = new Map();
 
-    (<any>window).rd = this;
-    this.engine = (<any>window).engine = new Engine(this);
+    (<any>window).r = this;
+    this.engine = (<any>window).e = new Engine(this);
 
     this.canvasWidth = +this.scene.game.config.width;
     this.canvasHeight = +this.scene.game.config.height;
@@ -173,36 +173,57 @@ export class Renderer implements AcceptsCommands {
   }
 
   private async cmdDriveOff() {
-    let motions: Motion[] = [];
-
-    let firstBusMotion = attachMotion(
-      this.buses[0],
-      new LinearMotion([
-        {
-          x: this.busLineX,
-          y: -this.buses[0].getHeight()
-        }
-      ])
-    );
-
-    motions.push(firstBusMotion);
+    let frontlines = [-this.buses[0].getHeight()];
 
     let newFrontline = GLOBAL_FRONTLINE;
     for (let i = 1; i < this.buses.length; ++i) {
-      let bus = this.buses[i];
+      frontlines.push(newFrontline);
+      newFrontline += this.buses[i].getHeight() + SPACING;
+    }
 
-      let motion = attachMotion(
-        bus,
+    let motions: Motion[] = [];
+
+    for (let i = 0; i < this.buses.length; ++i) {
+      let busMotion = attachMotion(
+        this.buses[i],
         new LinearMotion([
           {
             x: this.busLineX,
-            y: newFrontline
+            y: frontlines[i]
           }
         ])
       );
 
-      motions.push(motion);
-      newFrontline += bus.getHeight() + SPACING;
+      motions.push(busMotion);
+    }
+
+    // update block groups and add animations
+    for (const [txId, currentBlock] of this.blockGroups.entries()) {
+      const newBlock = currentBlock - 1;
+
+      if (newBlock === -1) {
+        // this is going out of screen
+        this.blockGroups.delete(txId);
+      } else {
+        // this is going to the block above
+        this.blockGroups.set(txId, newBlock);
+      }
+
+      let displacement =
+        frontlines[currentBlock] - this.buses[currentBlock].getY();
+
+      let person = this.getTxIdPerson(txId);
+      let personMotion = attachMotion(
+        person,
+        new LinearMotion([
+          {
+            x: person.getX(),
+            y: person.getY() + displacement
+          }
+        ])
+      );
+
+      motions.push(personMotion);
     }
 
     let motionPromises = Promise.all(motions.map(m => m.run()));
@@ -217,22 +238,6 @@ export class Renderer implements AcceptsCommands {
       nextSpawnBus.place({ x: this.busLineX, y: newFrontline });
       this.buses.push(nextSpawnBus);
     });
-
-    // let motions: Motion[] = [];
-
-    // for (const [txId, currentBlock] of this.blockGroups.entries()) {
-    //   const newBlock = currentBlock - 1;
-
-    //   if (newBlock === -1) {
-    //     // this is going out of screen
-    //     this.blockGroups.delete(txId);
-    //   } else {
-    //     // this is going to block above
-    //     this.blockGroups.set(txId, newBlock);
-    //   }
-    // }
-
-    // return Promise.all(motions.map(motion => motion.run()));
   }
 
   public executeCommands(commands: Command[]) {
@@ -246,7 +251,7 @@ export class Renderer implements AcceptsCommands {
         case "walk":
           return this.cmdWalk(cmd.tx, cmd.placement);
         case "drive_off":
-          return Promise.resolve();
+          return this.cmdDriveOff();
       }
     });
 
@@ -269,5 +274,10 @@ export class Renderer implements AcceptsCommands {
 
   private getTxPerson(tx: Transaction) {
     return this.personMap.get(tx.id)!;
+  }
+
+  // TODO: make this and the one above a single function
+  private getTxIdPerson(txId: string) {
+    return this.personMap.get(txId)!;
   }
 }

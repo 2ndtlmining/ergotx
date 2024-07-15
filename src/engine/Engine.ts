@@ -54,6 +54,10 @@ export class Engine {
     this.updateService.start();
   }
 
+  public stopListening() {
+    this.updateService.stop();
+  }
+
   private createNextTick(): Tick {
     let nextUpdate = this.updatesQueue.shift()!;
 

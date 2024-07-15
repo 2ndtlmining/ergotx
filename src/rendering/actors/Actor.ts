@@ -22,4 +22,12 @@ export class Actor {
   public destroy() {
     this.gameObject.destroy();
   }
+
+  public getX() {
+    return this.gameObject.x;
+  }
+
+  public getY() {
+    return this.gameObject.y;
+  }
 }
