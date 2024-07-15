@@ -1,61 +1,3 @@
-
-get mempool
-
-    http://213.239.193.208:9053/transactions/unconfirmed?limit=90&offset=0
-
-    https://api.ergoplatform.com/transactions/unconfirmed?limit=8&sortBy=size&sortDirection=desc
-    sortBy:
-        creationtimestamp
-        size
-
-    a few, 20-30 tx at most
-
-get confirmed blocks
-
-    http://213.239.193.208:9053/blocks?limit=50&offset=0
-    returns the blocks (well, only block ids) starting at the given offset, so this call actually returns the very first 50 blocks in the blockchain
-
-    https://api.ergoplatform.com/api/v1/blocks?limit=1&offset=0&sortBy=height&sortDirection=desc
-
-    sortBy:
-        blockcoins
-        blockfee
-        difficulty
-        height
-        minerreward
-        size
-        timestamp
-        transactionscount
-
-
-
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
-
-TODO:
-
-
-buses:
-    tx killed:
-        is in waiting zone:
-
-    tx:
-        new txs go to waiting or inside a bus
-        old txs get outside of bus (to waiting) or change bus
-
-    block:
-        These two in parallel
-        |____|(1) extra txs inside top bus (if any) go to waiting or prev bus
-             |(2) waiting txs of this block (if any) go inside top bus
-             |(3) non existant txs of this block spawn and go inside the top bus
-
-        These two in parallel
-        |____|(4) top bus goes to leaving
-             |(5) prev buses move to forward
-
-
---------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
@@ -103,5 +45,15 @@ block update:
     cmd(yieldOuts)
     cmd(driveoff)
     cmd(yieldIns)
+
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
+spacing = 16 // spacing between blocks
+frontline
+
+Bus:
+    height
 
 
