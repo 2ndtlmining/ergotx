@@ -20,6 +20,7 @@ export class Engine {
 
   private cmdExecutor: AcceptsCommands;
   private isIdle: boolean;
+  private isPaused: boolean;
 
   /* ====== Queuing ====== */
   private updateService: UpdateService;
@@ -32,6 +33,7 @@ export class Engine {
 
     this.cmdExecutor = cmdExecutor;
     this.isIdle = true;
+    this.isPaused = false;
 
     this.updateService = new UpdateService();
     this.updatesQueue = [];
@@ -58,6 +60,16 @@ export class Engine {
     this.updateService.stop();
   }
 
+  public pause() {
+    this.stopListening();
+    this.isPaused = true;
+  }
+
+  public resume() {
+    this.startListening();
+    this.isPaused = false;
+  }
+
   private createNextTick(): Tick {
     let nextUpdate = this.updatesQueue.shift()!;
 
@@ -79,7 +91,7 @@ export class Engine {
   }
 
   public update() {
-    if (this.isIdle && this.updatesQueue.length > 0) {
+    if (!this.isPaused && this.isIdle && this.updatesQueue.length > 0) {
       this.isIdle = false;
 
       let tick = this.createNextTick();

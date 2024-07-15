@@ -10,7 +10,7 @@ import { NUM_FUTURE_BLOCKS } from "~/common/constants";
 
 export class BlockFoundTick extends Tick {
   private targetAssembly: AssemblySnapshot;
-  private remainingTransactions: Transaction[];
+  // private remainingTransactions: Transaction[];
 
   constructor(
     assembly: AssemblySnapshot,
@@ -20,7 +20,7 @@ export class BlockFoundTick extends Tick {
     super(assembly, assembleStrategy);
 
     let newStates = this.assembly.states.clone();
-    this.remainingTransactions = [];
+    let remainingTransactions: Transaction[] = [];
 
     for (const tx of this.assembly.transactions) {
       // If this transaction is also part of the (found and
@@ -30,14 +30,14 @@ export class BlockFoundTick extends Tick {
       }
       // Otherwise store it for reassembly
       else {
-        this.remainingTransactions.push(tx);
+        remainingTransactions.push(tx);
       }
     }
 
     this.targetAssembly = assembleWith(
       this.assembleStrategy,
       newStates,
-      this.remainingTransactions
+      remainingTransactions
     );
   }
 
@@ -77,7 +77,7 @@ export class BlockFoundTick extends Tick {
     let yieldOuts: Command[] = [];
     let yieldIns: Command[] = [];
 
-    for (const tx of this.remainingTransactions) {
+    for (const tx of this.targetAssembly.transactions) {
       let placementBefore = this.assembly.states.getState(tx)!.placement;
       let placementAfter = this.targetAssembly.states.getState(tx)!.placement;
 

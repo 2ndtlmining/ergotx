@@ -226,18 +226,19 @@ export class Renderer implements AcceptsCommands {
       motions.push(personMotion);
     }
 
-    let motionPromises = Promise.all(motions.map(m => m.run()));
+    await Promise.all(motions.map(m => m.run()));
 
-    return motionPromises.then(() => {
-      this.buses.shift()?.destroy();
-      let nextSpawnBus = new LiveBus(
-        this.scene,
-        this.newBusWidth,
-        this.newBusHeight
-      );
-      nextSpawnBus.place({ x: this.busLineX, y: newFrontline });
-      this.buses.push(nextSpawnBus);
-    });
+    this.buses.shift()?.destroy();
+    let nextSpawnBus = new LiveBus(
+      this.scene,
+      this.newBusWidth,
+      this.newBusHeight
+    );
+
+    this.scene.children.sendToBack(nextSpawnBus.getGameObject());
+    nextSpawnBus.place({ x: this.busLineX, y: newFrontline });
+
+    this.buses.push(nextSpawnBus);
   }
 
   public executeCommands(commands: Command[]) {

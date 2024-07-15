@@ -30,4 +30,8 @@ export class Actor {
   public getY() {
     return this.gameObject.y;
   }
+
+  public getGameObject() {
+    return this.gameObject;
+  }
 }
