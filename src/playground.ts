@@ -10,7 +10,7 @@ import { Bus2 as Bus } from "./rendering/actors/Bus2";
 
 const SPACING = 16;
 const GLOBAL_FRONTLINE = 48;
-const NUM_BUSES = 6;
+const NUM_BUSES = 4;
 const LINE_CENTER = 600;
 
 export class PlaygroundScene extends Phaser.Scene {
@@ -73,11 +73,15 @@ export class PlaygroundScene extends Phaser.Scene {
       motions.push(motion);
 
       newFrontline += bus.getHeight() + SPACING;
-      // break;
     }
 
-    Promise.all(motions.map(motion => motion.run())).then(() => {
+    let motionPromises = Promise.all(motions.map(m => m.run()));
+
+    return motionPromises.then(() => {
       this.buses.shift()?.destroy();
+      let nextSpawnBus = new Bus(this);
+      nextSpawnBus.place({ x: LINE_CENTER, y: newFrontline });
+      this.buses.push(nextSpawnBus);
     });
   };
 
