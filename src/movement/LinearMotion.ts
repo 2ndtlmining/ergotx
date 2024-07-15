@@ -56,7 +56,7 @@ export class LinearMotion extends Motion {
       nextPoint.x,
       nextPoint.y,
       300, // TODO: No magic numbers
-      1000
+      // 1000
     );
   }
 }

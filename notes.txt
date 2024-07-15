@@ -44,6 +44,9 @@ block update:
     cmd(walks)
     cmd(yieldOuts)
     cmd(driveoff)
+        top bus leaves
+        others move ahead
+        new bus is spawned at the end
     cmd(yieldIns)
 
 
