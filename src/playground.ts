@@ -1,3 +1,5 @@
+/*
+
 import "~/global.css";
 
 import Phaser from "phaser";
@@ -36,8 +38,6 @@ export class PlaygroundScene extends Phaser.Scene {
   }
 
   driveOff = () => {
-    // let motion = attachMotion(this.buses[1], new LinearMotion([{ x: 800, y: 50 }]));
-    // motion.run();
     let motions: Motion[] = [];
 
     let firstBus = this.buses[0];
@@ -46,8 +46,6 @@ export class PlaygroundScene extends Phaser.Scene {
       firstBus,
       new LinearMotion([
         {
-          // x: LINE_CENTER,
-          // y: -(firstBus.getHeight() + SPACING)
           x: 800,
           y: GLOBAL_FRONTLINE
         }
@@ -108,3 +106,5 @@ let game = new Phaser.Game({
 });
 
 (<any>window).game = game;
+
+*/

@@ -1,20 +1,21 @@
-import { GameObjects, Scene, Geom } from "phaser";
+import { GameObjects, Geom, Scene } from "phaser";
 import { WrapSprite } from "./WrapSprite";
-import { IVector2 } from "~/common/math";
 import { MotionController, SupportsMotion } from "~/movement/motion";
+import { BUS_COLOR } from "~/common/theme";
+import { IVector2 } from "~/common/math";
 
-export class Bus2
+export class LiveBus
   extends WrapSprite<GameObjects.Rectangle>
   implements SupportsMotion
 {
   private motionController: MotionController;
 
-  constructor(scene: Scene) {
+  constructor(scene: Scene, width: number, height: number) {
     super(scene);
 
     super.buildSprite(
       this.scene.add
-        .rectangle(-1000, -1000, 100, 150, 0x553c69)
+        .rectangle(-1000, -1000, width, height, BUS_COLOR)
         .setOrigin(0.5, 0)
     );
 
@@ -29,13 +30,21 @@ export class Bus2
     return this.gameObject.height;
   }
 
-  public getGameObject() {
-    return this.gameObject;
-  }
-
   public place(position: IVector2) {
     this.gameObject.copyPosition(position);
   }
+
+  public getWalkInTargetPoint() {
+    // TODO: cache region (and update when moved) for faster
+    // point calculation
+    let allowedRegion = this.gameObject.getBounds();
+
+    // TODO: inflate according to width and/or height
+    Geom.Rectangle.Inflate(allowedRegion, -100, -100);
+    return allowedRegion.getRandomPoint();
+  }
+
+  /* ============= */
 
   public update() {
     this.motionController.update();

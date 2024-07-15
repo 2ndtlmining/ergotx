@@ -55,7 +55,8 @@ export class LinearMotion extends Motion {
       this.controller.body.gameObject,
       nextPoint.x,
       nextPoint.y,
-      300, // TODO: No magic numbers
+      310, // TODO: No magic numbers
+      // 40, // TODO: No magic numbers
       // 1000
     );
   }

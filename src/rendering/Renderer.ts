@@ -17,8 +17,12 @@ import { LinearMotion } from "~/movement/LinearMotion";
 import { HouseService, getRegisteredHouses } from "./housing";
 
 import { Person } from "./actors/Person";
-import { Bus } from "./actors/Bus";
+// import { Bus } from "./actors/Bus";
+import { LiveBus } from "./actors/LiveBus";
 import { NUM_FUTURE_BLOCKS } from "~/common/constants";
+
+const SPACING = 16;
+const GLOBAL_FRONTLINE = 48;
 
 export class Renderer implements AcceptsCommands {
   private scene: Scene;
@@ -34,12 +38,18 @@ export class Renderer implements AcceptsCommands {
   private canvasHeight: number;
 
   private waitingZone: Geom.Rectangle;
-  private buses: Bus[];
+  private busLineX: number;
+  private newBusWidth: number;
+  private newBusHeight: number;
+
+  private buses: LiveBus[];
 
   constructor(scene: Scene) {
     this.scene = scene;
     this.personMap = new Map();
     this.blockGroups = new Map();
+
+    (<any>window).rd = this;
     this.engine = (<any>window).engine = new Engine(this);
 
     this.canvasWidth = +this.scene.game.config.width;
@@ -103,24 +113,27 @@ export class Renderer implements AcceptsCommands {
   }
 
   private initBuses() {
+    this.buses = [];
+
+    // TODO: Don't need the whole rectangle
     let busZone = Geom.Rectangle.Clone(this.waitingZone).setPosition(
       this.waitingZone.x + this.waitingZone.width + 25,
       this.waitingZone.y
     );
 
-    this.buses = [];
-    let spacing = 10;
-    let busHeight = 150;
+    this.busLineX = busZone.centerX;
 
+    this.newBusWidth = busZone.width;
+    this.newBusHeight = 150;
+
+    let frontline = GLOBAL_FRONTLINE;
     for (let i = 0; i < NUM_FUTURE_BLOCKS; ++i) {
-      let region = new Geom.Rectangle(
-        busZone.x,
-        busZone.y + i * (busHeight + spacing),
-        busZone.width,
-        busHeight
-      );
+      let bus = new LiveBus(this.scene, this.newBusWidth, this.newBusHeight);
 
-      this.buses.push(new Bus(this.scene, region, `Bus ${i}`));
+      bus.place({ x: this.busLineX, y: frontline });
+      frontline += bus.getHeight() + SPACING;
+
+      this.buses.push(bus);
     }
   }
 
@@ -150,7 +163,7 @@ export class Renderer implements AcceptsCommands {
         this.blockGroups.delete(tx.id);
         break;
       case "block":
-        targetPosition = this.buses[placement.index].getRandomPoint();
+        targetPosition = this.buses[placement.index].getWalkInTargetPoint();
         this.blockGroups.set(tx.id, placement.index);
         break;
     }
@@ -162,19 +175,64 @@ export class Renderer implements AcceptsCommands {
   private async cmdDriveOff() {
     let motions: Motion[] = [];
 
-    for (const [txId, currentBlock] of this.blockGroups.entries()) {
-      const newBlock = currentBlock - 1;
+    let firstBusMotion = attachMotion(
+      this.buses[0],
+      new LinearMotion([
+        {
+          x: this.busLineX,
+          y: -this.buses[0].getHeight()
+        }
+      ])
+    );
 
-      if (newBlock === -1) {
-        // this is going out of screen
-        this.blockGroups.delete(txId);
-      } else {
-        // this is going to block above
-        this.blockGroups.set(txId, newBlock);
-      }
+    motions.push(firstBusMotion);
+
+    let newFrontline = GLOBAL_FRONTLINE;
+    for (let i = 1; i < this.buses.length; ++i) {
+      let bus = this.buses[i];
+
+      let motion = attachMotion(
+        bus,
+        new LinearMotion([
+          {
+            x: this.busLineX,
+            y: newFrontline
+          }
+        ])
+      );
+
+      motions.push(motion);
+      newFrontline += bus.getHeight() + SPACING;
     }
 
-    return Promise.all(motions.map(motion => motion.run()));
+    let motionPromises = Promise.all(motions.map(m => m.run()));
+
+    return motionPromises.then(() => {
+      this.buses.shift()?.destroy();
+      let nextSpawnBus = new LiveBus(
+        this.scene,
+        this.newBusWidth,
+        this.newBusHeight
+      );
+      nextSpawnBus.place({ x: this.busLineX, y: newFrontline });
+      this.buses.push(nextSpawnBus);
+    });
+
+    // let motions: Motion[] = [];
+
+    // for (const [txId, currentBlock] of this.blockGroups.entries()) {
+    //   const newBlock = currentBlock - 1;
+
+    //   if (newBlock === -1) {
+    //     // this is going out of screen
+    //     this.blockGroups.delete(txId);
+    //   } else {
+    //     // this is going to block above
+    //     this.blockGroups.set(txId, newBlock);
+    //   }
+    // }
+
+    // return Promise.all(motions.map(motion => motion.run()));
   }
 
   public executeCommands(commands: Command[]) {
@@ -201,6 +259,9 @@ export class Renderer implements AcceptsCommands {
     this.engine.update();
     this.personMap.forEach(person => {
       person.update();
+    });
+    this.buses.forEach(bus => {
+      bus.update();
     });
   }
 

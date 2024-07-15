@@ -22,4 +22,10 @@ let game = new Phaser.Game({
   }
 });
 
+Object.defineProperty(window, "fps", {
+  get: function () {
+    return game.loop.actualFps;
+  }
+});
+
 (<any>window).game = game;
