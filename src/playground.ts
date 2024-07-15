@@ -1,5 +1,3 @@
-/*
-
 import "~/global.css";
 
 import Phaser from "phaser";
@@ -8,7 +6,8 @@ import { SCENE_BG_COLOR } from "~/common/theme";
 import { Person } from "./rendering/actors/Person";
 import { attachMotion, Motion } from "./movement/motion";
 import { LinearMotion } from "./movement/LinearMotion";
-import { Bus2 as Bus } from "./rendering/actors/Bus2";
+// import { Bus2 as Bus } from "./rendering/actors/Bus2";
+import { LiveBus } from "./rendering/actors/LiveBus";
 
 const SPACING = 16;
 const GLOBAL_FRONTLINE = 48;
@@ -16,7 +15,7 @@ const NUM_BUSES = 4;
 const LINE_CENTER = 600;
 
 export class PlaygroundScene extends Phaser.Scene {
-  buses: Bus[] = [];
+  buses: LiveBus[] = [];
 
   init() {
     console.log("PlaygroundScene::init()");
@@ -25,7 +24,7 @@ export class PlaygroundScene extends Phaser.Scene {
 
     // CREATE BUSES
     for (let i = 0; i < NUM_BUSES; ++i) {
-      this.buses.push(new Bus(this));
+      this.buses.push(new LiveBus(this, 200, 200));
     }
 
     // DRAW BUSES
@@ -77,14 +76,14 @@ export class PlaygroundScene extends Phaser.Scene {
 
     return motionPromises.then(() => {
       this.buses.shift()?.destroy();
-      let nextSpawnBus = new Bus(this);
+      let nextSpawnBus = new LiveBus(this, 200, 200);
       nextSpawnBus.place({ x: LINE_CENTER, y: newFrontline });
       this.buses.push(nextSpawnBus);
     });
   };
 
-  update() {
-    this.buses.forEach(bus => bus.update());
+  update(_, deltaTime: number) {
+    this.buses.forEach(bus => bus.update(deltaTime));
   }
 }
 
@@ -107,4 +106,4 @@ let game = new Phaser.Game({
 
 (<any>window).game = game;
 
-*/
+// */

@@ -11,7 +11,7 @@ export class MainScene extends Phaser.Scene {
     console.log("STARTED");
   }
 
-  update() {
-    this.visRenderer.update();
+  update(_currentTime: number, deltaTime: number) {
+    this.visRenderer.update(deltaTime);
   }
 }

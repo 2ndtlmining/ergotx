@@ -1,13 +1,10 @@
 import { GameObjects, Geom, Scene } from "phaser";
-import { WrapSprite } from "./WrapSprite";
+import { Actor } from "./Actor";
 import { MotionController, SupportsMotion } from "~/movement/motion";
 import { BUS_COLOR } from "~/common/theme";
 import { IVector2 } from "~/common/math";
 
-export class LiveBus
-  extends WrapSprite<GameObjects.Rectangle>
-  implements SupportsMotion
-{
+export class LiveBus extends Actor implements SupportsMotion {
   private motionController: MotionController;
 
   constructor(scene: Scene, width: number, height: number) {
@@ -21,13 +18,14 @@ export class LiveBus
 
     // This needs to be done after the above call to buildSprite
     this.motionController = new MotionController(
-      this.scene.physics,
-      this.physicsBody
+      this.gameObject
+      // this.scene.physics,
+      // this.physicsBody
     );
   }
 
   public getHeight() {
-    return this.gameObject.height;
+    return this.gameObject.getBounds().height;
   }
 
   public place(position: IVector2) {
@@ -46,8 +44,8 @@ export class LiveBus
 
   /* ============= */
 
-  public update() {
-    this.motionController.update();
+  public update(deltaTime: number) {
+    this.motionController.update(deltaTime);
   }
 
   public getMotionController(): MotionController {

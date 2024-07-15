@@ -255,13 +255,13 @@ export class Renderer implements AcceptsCommands {
 
   /* ======================================= */
 
-  public update() {
+  public update(deltaTime: number) {
     this.engine.update();
     this.personMap.forEach(person => {
-      person.update();
+      person.update(deltaTime);
     });
     this.buses.forEach(bus => {
-      bus.update();
+      bus.update(deltaTime);
     });
   }
 

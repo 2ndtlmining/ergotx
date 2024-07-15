@@ -1,4 +1,4 @@
-import { GameObjects, Scene } from "phaser";
+import { Scene } from "phaser";
 
 import { Transaction } from "~/common/types";
 import { PERSON_COLOR, PERSON_RADIUS } from "~/common/theme";
@@ -6,10 +6,10 @@ import { IVector2 } from "~/common/math";
 
 import { MotionController, SupportsMotion } from "~/movement/motion";
 
-import { WrapSprite } from "./WrapSprite";
+import { Actor } from "./Actor";
 
 export class Person
-  extends WrapSprite<GameObjects.Arc>
+  extends Actor
   implements SupportsMotion
 {
   public readonly tx: Transaction;
@@ -32,8 +32,9 @@ export class Person
 
     // This needs to be done after the above call to buildSprite
     this.motionController = new MotionController(
-      this.scene.physics,
-      this.physicsBody
+      this.gameObject,
+      // this.scene.physics,
+      // this.physicsBody
     );
   }
 
@@ -41,8 +42,8 @@ export class Person
     this.gameObject.copyPosition(position);
   }
 
-  public update() {
-    this.motionController.update();
+  public update(deltaTime: number) {
+    this.motionController.update(deltaTime);
   }
 
   public getMotionController(): MotionController {
