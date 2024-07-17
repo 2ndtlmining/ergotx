@@ -3,87 +3,48 @@ import "~/global.css";
 import Phaser from "phaser";
 
 import { SCENE_BG_COLOR } from "~/common/theme";
-import { Person } from "./rendering/actors/Person";
-import { attachMotion, Motion } from "./movement/motion";
-import { LinearMotion } from "./movement/LinearMotion";
-// import { Bus2 as Bus } from "./rendering/actors/Bus2";
-import { LiveBus } from "./rendering/actors/LiveBus";
-
-const SPACING = 16;
-const GLOBAL_FRONTLINE = 48;
-const NUM_BUSES = 4;
-const LINE_CENTER = 600;
 
 export class PlaygroundScene extends Phaser.Scene {
-  buses: LiveBus[] = [];
+  preload() {
+    this.load.image("grass", "/tiles/grass.png");
+    this.load.image("road", "/tiles/road.png");
+    this.load.image("floor-check", "/tiles/floor-check.png");
+    this.load.image("floor-stone", "/tiles/floor-stone.png");
+  }
 
-  init() {
-    console.log("PlaygroundScene::init()");
-    (<any>window).p = this;
-    (<any>window).driveOff = this.driveOff;
+  private fillTilesBackground() {
+    const imageNames = ["grass", "road", "floor-check", "floor-stone"];
 
-    // CREATE BUSES
-    for (let i = 0; i < NUM_BUSES; ++i) {
-      this.buses.push(new LiveBus(this, 200, 200));
-    }
+    let numTilesX = 12;
+    let canvasWidth = +this.game.config.width;
 
-    // DRAW BUSES
-    let frontline = GLOBAL_FRONTLINE;
-    for (let i = 0; i < this.buses.length; ++i) {
-      let bus = this.buses[i];
-      bus.place({ x: LINE_CENTER, y: frontline });
-      frontline += bus.getHeight() + SPACING;
+    let tileSize = Math.floor(canvasWidth / numTilesX);
+
+    let level: number[][] = [
+      [0, 0, 0, 1, 2, 3, 3, 4],
+      [0, 0, 0, 1, 2, 3, 3, 4],
+      [0, 0, 0, 1, 2, 3, 3, 4],
+      [0, 0, 0, 1, 2, 3, 3, 4],
+      [0, 0, 0, 1, 2, 3, 3, 4],
+      [0, 0, 0, 1, 2, 3, 3, 4],
+      [0, 0, 0, 1, 2, 3, 3, 4]
+    ];
+
+    for (let i = 0; i < level.length; ++i) {
+      const row = level[i];
+      for (let j = 0; j < row.length; ++j) {
+        let x = tileSize * j;
+        let y = tileSize * i;
+
+        let image = this.add.image(x, y, imageNames[row[j]]).setOrigin(0, 0);
+        let scale = tileSize / image.width;
+        image.setScale(scale, scale);
+      }
     }
   }
 
-  driveOff = () => {
-    let motions: Motion[] = [];
-
-    let firstBus = this.buses[0];
-
-    let firstBusMotion = attachMotion(
-      firstBus,
-      new LinearMotion([
-        {
-          x: 800,
-          y: GLOBAL_FRONTLINE
-        }
-      ])
-    );
-
-    motions.push(firstBusMotion);
-
-    let newFrontline = GLOBAL_FRONTLINE;
-    for (let i = 1; i < this.buses.length; ++i) {
-      let bus = this.buses[i];
-
-      let motion = attachMotion(
-        bus,
-        new LinearMotion([
-          {
-            x: LINE_CENTER,
-            y: newFrontline
-          }
-        ])
-      );
-
-      motions.push(motion);
-
-      newFrontline += bus.getHeight() + SPACING;
-    }
-
-    let motionPromises = Promise.all(motions.map(m => m.run()));
-
-    return motionPromises.then(() => {
-      this.buses.shift()?.destroy();
-      let nextSpawnBus = new LiveBus(this, 200, 200);
-      nextSpawnBus.place({ x: LINE_CENTER, y: newFrontline });
-      this.buses.push(nextSpawnBus);
-    });
-  };
-
-  update(_, deltaTime: number) {
-    this.buses.forEach(bus => bus.update(deltaTime));
+  create() {
+    // this.fillTilesBackground();
   }
 }
 
@@ -94,7 +55,8 @@ let game = new Phaser.Game({
   autoCenter: Phaser.Scale.Center.CENTER_BOTH,
   powerPreference: "high-performance",
   scene: PlaygroundScene,
-  backgroundColor: SCENE_BG_COLOR,
+  //   backgroundColor: SCENE_BG_COLOR,
+  backgroundColor: 0x313131,
   physics: {
     default: "arcade",
     arcade: {
@@ -107,3 +69,19 @@ let game = new Phaser.Game({
 (<any>window).game = game;
 
 // */
+
+/*
+
+const cursors = this.input.keyboard!.createCursorKeys();
+
+this.controls = new Phaser.Cameras.Controls.FixedKeyControl({
+  camera: this.cameras.main,
+  left: cursors.left,
+  right: cursors.right,
+  up: cursors.up,
+  down: cursors.down,
+  speed: 0.25
+});
+
+this.cameras.main.setBounds(0, 0, 1400, 1400);
+*/
