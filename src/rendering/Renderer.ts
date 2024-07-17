@@ -63,7 +63,7 @@ export class Renderer implements AcceptsCommands {
     this.initWaitingZone();
     this.initBuses();
 
-    (<any>window).w.start();
+    // (<any>window).w.start();
     this.engine.startListening();
   }
 

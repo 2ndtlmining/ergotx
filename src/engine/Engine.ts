@@ -1,6 +1,7 @@
 import type { TransactedBlock, Transaction } from "~/common/types";
 import type { UpdateService } from "~/ergoapi/UpdateService";
 import { PollUpdateService } from "~/ergoapi/PollUpdateService";
+import { ReplayUpdateService } from "~/ergoapi/ReplayUpdateService";
 
 import type { AssembleStrategy } from "~/assemble/AssembleStrategy";
 import { DefaultAssembleStrategy } from "~/assemble/DefaultAssembleStrategy";
@@ -36,7 +37,8 @@ export class Engine {
     this.isIdle = true;
     this.isPaused = false;
 
-    this.updateService = new PollUpdateService();
+    // this.updateService = new PollUpdateService();
+    this.updateService = new ReplayUpdateService();
     this.updatesQueue = [];
 
     this.updateService
