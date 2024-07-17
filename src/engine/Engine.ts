@@ -11,7 +11,7 @@ import { UnconfirmedTransactionsTick } from "./UnconfirmedTransactionsTick";
 import { Tick } from "./Tick";
 import { BlockFoundTick } from "./BlockFoundTick";
 
-type Update =
+export type Update =
   | { type: "txs"; transactions: Transaction[] }
   | { type: "block"; block: TransactedBlock };
 
@@ -38,9 +38,7 @@ export class Engine {
 
     this.updateService = new PollUpdateService();
     this.updatesQueue = [];
-  }
 
-  public startListening() {
     this.updateService
       .on("txs", txs => {
         this.updatesQueue.push({
@@ -54,6 +52,13 @@ export class Engine {
           block
         });
       });
+  }
+
+  public getUpdateService() {
+    return this.updateService;
+  }
+
+  public startListening() {
     this.updateService.start();
   }
 

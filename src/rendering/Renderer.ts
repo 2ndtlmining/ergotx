@@ -20,6 +20,7 @@ import { Person } from "./actors/Person";
 // import { Bus } from "./actors/Bus";
 import { LiveBus } from "./actors/LiveBus";
 import { NUM_FUTURE_BLOCKS } from "~/common/constants";
+import { watchUpdates } from "~/engine/watch-updates";
 
 const SPACING = 16;
 const GLOBAL_FRONTLINE = 48;
@@ -49,8 +50,11 @@ export class Renderer implements AcceptsCommands {
     this.personMap = new Map();
     this.blockGroups = new Map();
 
+    this.engine = new Engine(this);
+
     (<any>window).r = this;
-    this.engine = (<any>window).e = new Engine(this);
+    (<any>window).e = this.engine;
+    (<any>window).w = watchUpdates(this.engine.getUpdateService());
 
     this.canvasWidth = +this.scene.game.config.width;
     this.canvasHeight = +this.scene.game.config.height;
@@ -59,6 +63,7 @@ export class Renderer implements AcceptsCommands {
     this.initWaitingZone();
     this.initBuses();
 
+    (<any>window).w.start();
     this.engine.startListening();
   }
 
@@ -242,7 +247,7 @@ export class Renderer implements AcceptsCommands {
   }
 
   public executeCommands(commands: Command[]) {
-    console.log("CMDS: ", commands);
+    // console.log("CMDS: ", commands);
     let cmdPromises = commands.map(cmd => {
       switch (cmd.type) {
         case "spawn":
