@@ -28,6 +28,18 @@ export class ReplayUpdateService extends UpdateService {
       });
   }
 
+  public emitNext(count: number = 1) {
+    for (let i = 0; i < count; ++i) {
+      if (this.nextIndex < this.updates.length) {
+        let update = this.updates[this.nextIndex++];
+        this.emitUpdate(update);
+      } else {
+        this.allEmitted = true;
+        this.stop();
+      }
+    }
+  }
+
   public start() {
     if (this.pendingStart) return;
 
@@ -46,13 +58,7 @@ export class ReplayUpdateService extends UpdateService {
 
   private startTimer() {
     this.taskId = setInterval(() => {
-      if (this.nextIndex < this.updates.length) {
-        let update = this.updates[this.nextIndex++];
-        this.emitUpdate(update);
-      } else {
-        this.allEmitted = true;
-        this.stop();
-      }
+      this.emitNext();
     }, this.TASK_INTERVAL_MS);
   }
 

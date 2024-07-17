@@ -41,11 +41,11 @@ export class Engine {
   }
 
   public startListening() {
-    this.updateService.start();
+    // this.updateService.start();
   }
 
   public stopListening() {
-    this.updateService.stop();
+    // this.updateService.stop();
   }
 
   public pause() {
