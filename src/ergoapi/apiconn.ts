@@ -1,7 +1,6 @@
 import ky, { type KyInstance } from "ky";
 import type { Block, Transaction } from "~/common/types";
 
-
 const kyInstance = ky.extend({
   timeout: false,
   prefixUrl: "https://api.ergoplatform.com"

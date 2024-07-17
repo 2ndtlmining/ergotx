@@ -1,7 +1,7 @@
 import ky from "ky";
 
 import { UpdateService } from "./UpdateService";
-import { Update } from "~/engine/Engine";
+import { Update } from "./Update";
 import EventEmitter from "eventemitter3";
 
 export class ReplayUpdateService extends UpdateService {
@@ -10,13 +10,15 @@ export class ReplayUpdateService extends UpdateService {
 
   private nextIndex: number = 0;
   private updates: Update[];
+
   private readyEmitter = new EventEmitter();
   private isReady = false;
   private pendingStart = false;
+  private allEmitted = false;
 
-  constructor() {
+  constructor(replayUrl: string) {
     super();
-    ky.get("/replays/replay-01.json")
+    ky.get(replayUrl)
       .json()
       .then(contents => {
         this.updates = contents as Update[];
@@ -46,15 +48,9 @@ export class ReplayUpdateService extends UpdateService {
     this.taskId = setInterval(() => {
       if (this.nextIndex < this.updates.length) {
         let update = this.updates[this.nextIndex++];
-        switch (update.type) {
-          case "txs":
-            this.emit("txs", update.transactions);
-            break;
-          case "block":
-            this.emit("block", update.block);
-            break;
-        }
+        this.emitUpdate(update);
       } else {
+        this.allEmitted = true;
         this.stop();
       }
     }, this.TASK_INTERVAL_MS);
@@ -65,5 +61,18 @@ export class ReplayUpdateService extends UpdateService {
       clearInterval(this.taskId);
       this.taskId = null;
     }
+  }
+
+  public getNextUpdate(): Update {
+    let update = super.getNextUpdate();
+    if (
+      this.nextIndex === this.updates.length &&
+      this.allEmitted &&
+      !this.hasUpdatesInQueue()
+    ) {
+      console.log("Replay ended");
+    }
+
+    return update;
   }
 }

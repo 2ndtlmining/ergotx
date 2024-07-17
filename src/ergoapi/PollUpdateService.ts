@@ -34,11 +34,11 @@ export class PollUpdateService extends UpdateService {
     if (this.taskId) clearIntervalAsync(this.taskId);
   }
 
-  private async emitBlock(block: Block) {
+  private async fillAndEmitBlock(block: Block) {
     let transactions = await getBlockTransactions(block.id);
 
     setTimeout(() => {
-      this.emit("block", {
+      this.emitBlock({
         ...block,
         transactions
       });
@@ -49,13 +49,13 @@ export class PollUpdateService extends UpdateService {
     if (this.lastConfirmedBlockHeight === -1) {
       let block = await getLatestBlock();
       this.lastConfirmedBlockHeight = block.height;
-      this.emitBlock(block);
+      this.fillAndEmitBlock(block);
     } else {
       let blocks = await getBlocksAbove(this.lastConfirmedBlockHeight);
 
       for (const block of blocks) {
         this.lastConfirmedBlockHeight = block.height;
-        this.emitBlock(block);
+        this.fillAndEmitBlock(block);
       }
     }
   }
@@ -64,7 +64,7 @@ export class PollUpdateService extends UpdateService {
     let txs = await getUnconfirmedTransactions();
     if (txs.length > 0)
       setTimeout(() => {
-        this.emit("txs", txs);
+        this.emitTxs(txs);
       }, 0);
   }
 }

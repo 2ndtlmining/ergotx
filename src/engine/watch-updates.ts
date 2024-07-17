@@ -1,30 +1,19 @@
 import type { UpdateService } from "~/ergoapi/UpdateService";
-import type { Update } from "./Engine";
+import type { Update } from "~/ergoapi/Update";
 
-import FileSaver from 'file-saver';
+import FileSaver from "file-saver";
 
 export function watchUpdates(updateService: UpdateService) {
   let collected: Update[] = [];
   let stopped = true;
 
-  let handlerTx = txs => {
-    collected.push({
-      type: "txs",
-      transactions: txs
-    });
-  };
-
-  let handlerBlock = block => {
-    collected.push({
-      type: "block",
-      block
-    });
+  let handlerUpdate = update => {
+    collected.push(update);
   };
 
   function save() {
-    // save
     const blob = new Blob([JSON.stringify(collected, null, 2)], {
-      type: "application/json",
+      type: "application/json"
     });
 
     FileSaver.saveAs(blob, "replay.json");
@@ -37,14 +26,14 @@ export function watchUpdates(updateService: UpdateService) {
   function start() {
     if (!stopped) return;
 
-    updateService.on("txs", handlerTx).on("block", handlerBlock);
+    updateService.getEmitter().on("update", handlerUpdate);
     stopped = false;
   }
 
   function stop() {
     if (stopped) return;
 
-    updateService.off("txs", handlerTx).off("block", handlerBlock);
+    updateService.getEmitter().off("update", handlerUpdate);
     stopped = true;
   }
 

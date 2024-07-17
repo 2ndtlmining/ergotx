@@ -1,4 +1,3 @@
-import type { TransactedBlock, Transaction } from "~/common/types";
 import type { UpdateService } from "~/ergoapi/UpdateService";
 import { PollUpdateService } from "~/ergoapi/PollUpdateService";
 import { ReplayUpdateService } from "~/ergoapi/ReplayUpdateService";
@@ -12,10 +11,6 @@ import { UnconfirmedTransactionsTick } from "./UnconfirmedTransactionsTick";
 import { Tick } from "./Tick";
 import { BlockFoundTick } from "./BlockFoundTick";
 
-export type Update =
-  | { type: "txs"; transactions: Transaction[] }
-  | { type: "block"; block: TransactedBlock };
-
 export class Engine {
   private assembly: AssemblySnapshot;
   private assembleStrategy: AssembleStrategy;
@@ -24,9 +19,7 @@ export class Engine {
   private isIdle: boolean;
   private isPaused: boolean;
 
-  /* ====== Queuing ====== */
   private updateService: UpdateService;
-  private updatesQueue: Update[];
 
   constructor(cmdExecutor: AcceptsCommands) {
     // Starts with empty assembly
@@ -38,22 +31,7 @@ export class Engine {
     this.isPaused = false;
 
     // this.updateService = new PollUpdateService();
-    this.updateService = new ReplayUpdateService();
-    this.updatesQueue = [];
-
-    this.updateService
-      .on("txs", txs => {
-        this.updatesQueue.push({
-          type: "txs",
-          transactions: txs
-        });
-      })
-      .on("block", block => {
-        this.updatesQueue.push({
-          type: "block",
-          block
-        });
-      });
+    this.updateService = new ReplayUpdateService("/replays/replay-01.json");
   }
 
   public getUpdateService() {
@@ -79,7 +57,7 @@ export class Engine {
   }
 
   private createNextTick(): Tick {
-    let nextUpdate = this.updatesQueue.shift()!;
+    let nextUpdate = this.updateService.getNextUpdate();
 
     switch (nextUpdate.type) {
       case "txs":
@@ -99,7 +77,11 @@ export class Engine {
   }
 
   public update() {
-    if (!this.isPaused && this.isIdle && this.updatesQueue.length > 0) {
+    if (
+      !this.isPaused &&
+      this.isIdle &&
+      this.updateService.hasUpdatesInQueue()
+    ) {
       this.isIdle = false;
 
       let tick = this.createNextTick();
