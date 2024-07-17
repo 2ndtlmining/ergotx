@@ -7,6 +7,7 @@ import { SCENE_BG_COLOR } from "~/common/theme";
 
 let game = new Phaser.Game({
   type: Phaser.CANVAS,
+  // type: Phaser.WEBGL,
   width: 1200,
   height: window.innerHeight,
   autoCenter: Phaser.Scale.Center.CENTER_BOTH,

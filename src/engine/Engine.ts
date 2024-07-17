@@ -10,6 +10,7 @@ import type { AcceptsCommands } from "./Command";
 import { UnconfirmedTransactionsTick } from "./UnconfirmedTransactionsTick";
 import { Tick } from "./Tick";
 import { BlockFoundTick } from "./BlockFoundTick";
+import { delay } from "~/common/utils";
 
 export class Engine {
   private assembly: AssemblySnapshot;
@@ -87,10 +88,13 @@ export class Engine {
       let tick = this.createNextTick();
       let targetAssembly = tick.getNextAssembly();
 
-      tick.applyCommands(this.cmdExecutor).then(() => {
-        this.assembly = targetAssembly;
-        this.isIdle = true;
-      });
+      tick
+        .applyCommands(this.cmdExecutor)
+        .then(() => delay(0))
+        .then(() => {
+          this.assembly = targetAssembly;
+          this.isIdle = true;
+        });
     }
   }
 }
