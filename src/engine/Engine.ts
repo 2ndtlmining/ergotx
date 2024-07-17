@@ -10,6 +10,7 @@ import type { AcceptsCommands } from "./Command";
 import { UnconfirmedTransactionsTick } from "./UnconfirmedTransactionsTick";
 import { Tick } from "./Tick";
 import { BlockFoundTick } from "./BlockFoundTick";
+import { SkipTick } from "./SkipTick";
 import { delay } from "~/common/utils";
 
 export class Engine {
@@ -69,6 +70,7 @@ export class Engine {
         );
 
       case "block":
+        // return new SkipTick(this.assembly, this.assembleStrategy);
         return new BlockFoundTick(
           this.assembly,
           this.assembleStrategy,
