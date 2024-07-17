@@ -6,29 +6,20 @@ import { SCENE_BG_COLOR } from "~/common/theme";
 
 export class PlaygroundScene extends Phaser.Scene {
   preload() {
+    this.load.image("hex", "/tiles/grass.png");
+    this.load.image("floor_check", "/tiles/floor-check.png");
+    this.load.image("floor_stone", "/tiles/floor-stone.png");
     this.load.image("grass", "/tiles/grass.png");
     this.load.image("road", "/tiles/road.png");
-    this.load.image("floor-check", "/tiles/floor-check.png");
-    this.load.image("floor-stone", "/tiles/floor-stone.png");
   }
 
   private fillTilesBackground() {
-    const imageNames = ["grass", "road", "floor-check", "floor-stone"];
+    const imageNames = ["hex", "floor_check", "floor_stone", "grass", "road"];
 
     let numTilesX = 12;
     let canvasWidth = +this.game.config.width;
 
     let tileSize = Math.floor(canvasWidth / numTilesX);
-
-    let level: number[][] = [
-      [0, 0, 0, 1, 2, 3, 3, 4],
-      [0, 0, 0, 1, 2, 3, 3, 4],
-      [0, 0, 0, 1, 2, 3, 3, 4],
-      [0, 0, 0, 1, 2, 3, 3, 4],
-      [0, 0, 0, 1, 2, 3, 3, 4],
-      [0, 0, 0, 1, 2, 3, 3, 4],
-      [0, 0, 0, 1, 2, 3, 3, 4]
-    ];
 
     for (let i = 0; i < level.length; ++i) {
       const row = level[i];
@@ -44,9 +35,32 @@ export class PlaygroundScene extends Phaser.Scene {
   }
 
   create() {
-    // this.fillTilesBackground();
+    this.fillTilesBackground();
   }
 }
+
+let level: number[][] = [
+  [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 4, 4],
+  [0, 0, 0, 0, 0, 1, 1, 3, 3, 3, 4, 4],
+  [0, 0, 0, 0, 0, 1, 1, 3, 3, 3, 4, 4],
+  [0, 0, 0, 0, 0, 1, 1, 3, 3, 3, 4, 4],
+  [0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 4, 4],
+  [0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 4, 4],
+  [0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 4, 4],
+  [0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 4, 4],
+  [0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 4, 4],
+  [0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 4, 4],
+  [0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 4, 4],
+  [0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 4, 4],
+  [0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 4, 4],
+  [0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 4, 4],
+  [0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 4, 4],
+  [0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 4, 4],
+  [0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 4, 4],
+  [0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 4, 4],
+  [0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 4, 4],
+  [0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 4, 4],
+];
 
 let game = new Phaser.Game({
   type: Phaser.CANVAS,
