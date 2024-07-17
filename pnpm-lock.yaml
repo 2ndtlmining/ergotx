@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      eventemitter3:
+        specifier: ^5.0.1
+        version: 5.0.1
       ky:
         specifier: ^1.2.4
         version: 1.2.4

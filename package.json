@@ -18,6 +18,7 @@
   },
   "packageManager": "pnpm@9.1.2",
   "dependencies": {
+    "eventemitter3": "^5.0.1",
     "ky": "^1.2.4",
     "phaser": "^3.80.1",
     "set-interval-async": "^3.0.3"

@@ -1,5 +1,6 @@
-import { UpdateService } from "~/ergoapi/UpdateService";
 import type { TransactedBlock, Transaction } from "~/common/types";
+import type { UpdateService } from "~/ergoapi/UpdateService";
+import { PollUpdateService } from "~/ergoapi/PollUpdateService";
 
 import type { AssembleStrategy } from "~/assemble/AssembleStrategy";
 import { DefaultAssembleStrategy } from "~/assemble/DefaultAssembleStrategy";
@@ -35,19 +36,19 @@ export class Engine {
     this.isIdle = true;
     this.isPaused = false;
 
-    this.updateService = new UpdateService();
+    this.updateService = new PollUpdateService();
     this.updatesQueue = [];
   }
 
   public startListening() {
     this.updateService
-      .onUnconfirmedTransactions(txs => {
+      .on('txs', txs => {
         this.updatesQueue.push({
           type: "txs",
           transactions: txs
         });
       })
-      .onNewBlock(block => {
+      .on('block', block => {
         this.updatesQueue.push({
           type: "block",
           block

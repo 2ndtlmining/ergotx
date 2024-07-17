@@ -1,4 +1,3 @@
-export type VoidCallack<T> = (payload: T) => void;
 export type VoidCallback<T> = (payload: T) => void;
 
 /* ====================== */
