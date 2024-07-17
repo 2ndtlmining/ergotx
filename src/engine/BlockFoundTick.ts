@@ -1,9 +1,8 @@
 import { AssembleStrategy } from "~/assemble/AssembleStrategy";
-import { PropSet } from "~/common/PropSet";
 import { TransactedBlock, Transaction } from "~/common/types";
 import { AcceptsCommands, Command } from "./Command";
 import { arePlacementsEqual, Placement } from "./Placement";
-import { AssemblySnapshot, TxStateSet } from "./state-snapshot";
+import { AssemblySnapshot } from "./state-snapshot";
 import { Tick } from "./Tick";
 import { assembleWith } from "./utils";
 import { NUM_FUTURE_BLOCKS } from "~/common/constants";
@@ -113,8 +112,7 @@ export class BlockFoundTick extends Tick {
     ];
 
     for (const batch of sequence) {
-      if (batch)
-        await cmdExecutor.executeCommands(batch);
+      if (batch) await cmdExecutor.executeCommands(batch);
     }
   }
 }

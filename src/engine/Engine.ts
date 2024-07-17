@@ -42,13 +42,13 @@ export class Engine {
 
   public startListening() {
     this.updateService
-      .on('txs', txs => {
+      .on("txs", txs => {
         this.updatesQueue.push({
           type: "txs",
           transactions: txs
         });
       })
-      .on('block', block => {
+      .on("block", block => {
         this.updatesQueue.push({
           type: "block",
           block

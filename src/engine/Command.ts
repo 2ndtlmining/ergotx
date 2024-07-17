@@ -7,7 +7,6 @@ export type Command =
   | { type: "walk"; tx: Transaction; placement: Placement }
   | { type: "drive_off" };
 
-
 export interface AcceptsCommands {
   executeCommands(commands: Command[]): Promise<unknown>;
 }

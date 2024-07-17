@@ -12,5 +12,3 @@ export abstract class Tick {
   abstract getNextAssembly(): AssemblySnapshot;
   abstract applyCommands(cmdExecutor: AcceptsCommands): Promise<void>;
 }
-
-

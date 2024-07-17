@@ -36,10 +36,7 @@ export class LinearMotion extends Motion {
     let distToTarget = direction.length();
 
     let displacementLength = SPEED * deltaTime;
-    let displacement = direction
-      .clone()
-      .normalize()
-      .scale(displacementLength);
+    let displacement = direction.clone().normalize().scale(displacementLength);
 
     if (distToTarget <= MAX_DELTA_DIST || displacementLength > distToTarget) {
       // go to next target, or stop
@@ -52,9 +49,10 @@ export class LinearMotion extends Motion {
         this.controller.completeCurrent();
         return;
       }
-    }
-    else {
-      let nextPoint = new Math.Vector2().setFromObject(source).add(displacement);
+    } else {
+      let nextPoint = new Math.Vector2()
+        .setFromObject(source)
+        .add(displacement);
       this.controller.gameObject.setX(nextPoint.x);
       this.controller.gameObject.setY(nextPoint.y);
     }

@@ -8,10 +8,7 @@ import { MotionController, SupportsMotion } from "~/movement/motion";
 
 import { Actor } from "./Actor";
 
-export class Person
-  extends Actor
-  implements SupportsMotion
-{
+export class Person extends Actor implements SupportsMotion {
   public readonly tx: Transaction;
 
   private motionController: MotionController;
@@ -31,11 +28,7 @@ export class Person
     );
 
     // This needs to be done after the above call to buildSprite
-    this.motionController = new MotionController(
-      this.gameObject,
-      // this.scene.physics,
-      // this.physicsBody
-    );
+    this.motionController = new MotionController(this.gameObject);
   }
 
   public place(position: IVector2) {

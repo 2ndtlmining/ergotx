@@ -38,7 +38,7 @@ export class PollUpdateService extends UpdateService {
     let transactions = await getBlockTransactions(block.id);
 
     setTimeout(() => {
-      this.emit('block', {
+      this.emit("block", {
         ...block,
         transactions
       });
@@ -64,7 +64,7 @@ export class PollUpdateService extends UpdateService {
     let txs = await getUnconfirmedTransactions();
     if (txs.length > 0)
       setTimeout(() => {
-        this.emit('txs', txs);
+        this.emit("txs", txs);
       }, 0);
   }
 }
