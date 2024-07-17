@@ -4,18 +4,21 @@ import {
   type SetIntervalAsyncTimer
 } from "set-interval-async";
 
-import {
+import type {
   Block,
   TransactedBlock,
   Transaction,
   VoidCallack
 } from "~/common/types";
 
-import { ApiService } from "./ApiService";
+import {
+  getUnconfirmedTransactions,
+  getBlockTransactions,
+  getBlocksAbove,
+  getLatestBlock
+} from "./apiconn";
 
 export class UpdateService {
-  private api: ApiService;
-
   private callbackTx!: VoidCallack<Transaction[]>;
   private callbackBlock!: VoidCallack<TransactedBlock>;
 
@@ -25,8 +28,6 @@ export class UpdateService {
   private TASK_INTERVAL_MS = 3500;
 
   constructor() {
-    this.api = new ApiService();
-
     this.callbackTx = () => {};
     this.callbackBlock = () => {};
   }
@@ -41,7 +42,7 @@ export class UpdateService {
   }
 
   private async _emitBlock(block: Block) {
-    let transactions = await this.api.getBlockTransactions(block.id);
+    let transactions = await getBlockTransactions(block.id);
 
     setTimeout(() => {
       this.callbackBlock({
@@ -53,11 +54,11 @@ export class UpdateService {
 
   private async _updateBlocks() {
     if (this.lastConfirmedBlockHeight === -1) {
-      let block = await this.api.getLatestBlock();
+      let block = await getLatestBlock();
       this.lastConfirmedBlockHeight = block.height;
       this._emitBlock(block);
     } else {
-      let blocks = await this.api.getBlocksAbove(this.lastConfirmedBlockHeight);
+      let blocks = await getBlocksAbove(this.lastConfirmedBlockHeight);
 
       for (const block of blocks) {
         this.lastConfirmedBlockHeight = block.height;
@@ -67,7 +68,7 @@ export class UpdateService {
   }
 
   private async _updateTransactions() {
-    let txs = await this.api.getUnconfirmedTransactions();
+    let txs = await getUnconfirmedTransactions();
     if (txs.length > 0)
       setTimeout(() => {
         this.callbackTx(txs);
@@ -92,4 +93,3 @@ export class UpdateService {
     return this;
   }
 }
-
