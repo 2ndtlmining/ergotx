@@ -82,7 +82,9 @@ export class WorldManager {
       let x = nextX - halfWidth;
       let line = scene.add
         .rectangle(x, 0, lineWidth, this.WorldMaxHeight, TILE_GRIDLINES_COLOR)
-        .setOrigin(0, 0);
+        .setOrigin(0, 0)
+        .setActive(false)
+        .setVisible(false);
 
       this.gridlines.add(line);
     }
@@ -92,7 +94,10 @@ export class WorldManager {
       let y = nextY - halfWidth;
       let line = scene.add
         .rectangle(0, y, this.WorldMaxWidth, lineWidth, TILE_GRIDLINES_COLOR)
-        .setOrigin(0, 0);
+        .setActive(false)
+        .setOrigin(0, 0)
+        .setActive(false)
+        .setVisible(false);
 
       this.gridlines.add(line);
     }
@@ -125,6 +130,10 @@ export class WorldManager {
 
   static update(deltaTime: number) {
     this.cameraControls.update(deltaTime);
+  }
+
+  public static showGridLines(show: boolean) {
+    this.gridlines.setVisible(show);
   }
 }
 
