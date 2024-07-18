@@ -1,6 +1,7 @@
-import Phaser from "phaser";
+import Phaser, { Scenes } from "phaser";
 
 import { Region } from "./Region";
+import { TILE_GRIDLINES_COLOR } from "~/common/theme";
 
 export class WorldManager {
   private static canvasWidth = 0;
@@ -10,7 +11,6 @@ export class WorldManager {
   private static numTilesY = 0;
 
   private static tileSize = 0;
-  private static spacing = 6;
 
   /* ========== Camera ========== */
   private static cameraControls: Phaser.Cameras.Controls.FixedKeyControl;
@@ -31,11 +31,11 @@ export class WorldManager {
   }
 
   public static get WorldMaxWidth() {
-    return (this.tileSize + this.spacing) * this.numTilesX - this.spacing;
+    return this.tileSize * this.numTilesX;
   }
 
   public static get WorldMaxHeight() {
-    return (this.tileSize + this.spacing) * this.numTilesY - this.spacing;
+    return this.tileSize * this.numTilesY;
   }
 
   private static setupCameraControls(scene: Phaser.Scene) {
@@ -64,12 +64,10 @@ export class WorldManager {
     this.canvasWidth = +scene.game.config.width;
     this.canvasHeight = +scene.game.config.height;
 
-    this.tileSize = Math.floor(
-      (this.canvasWidth - this.spacing * (this.numTilesX - 1)) / this.numTilesX
-    );
+    this.tileSize = Math.floor(this.canvasWidth / this.numTilesX);
 
     this.numTilesY = Math.max(
-      Math.ceil(this.canvasHeight / (this.tileSize + this.spacing)) + 10,
+      Math.ceil(this.canvasHeight / this.tileSize) + 10,
       20
     );
 
@@ -83,13 +81,40 @@ export class WorldManager {
     for (let i = 0; i < this.numTilesY; ++i) {
       let row = level[Math.min(level.length - 1, i)];
       for (let j = 0; j < this.numTilesX; ++j) {
-        let x = (this.tileSize + this.spacing) * j;
-        let y = (this.tileSize + this.spacing) * i;
+        let x = this.tileSize * j;
+        let y = this.tileSize * i;
 
         let image = scene.add.image(x, y, imageNames[row[j]]).setOrigin(0, 0);
         let scale = this.tileSize / image.width;
         image.setScale(scale, scale);
       }
+    }
+
+    /* ================= */
+
+    const lineWidth = 3;
+    const halfWidth = lineWidth / 2;
+
+    let linesGroup = scene.add.group();
+
+    for (let i = 0; i < this.numTilesX - 1; ++i) {
+      let nextX = this.tileSize * (i + 1);
+      let x = nextX - halfWidth;
+      let line = scene.add
+        .rectangle(x, 0, lineWidth, this.WorldMaxHeight, TILE_GRIDLINES_COLOR)
+        .setOrigin(0, 0);
+
+      linesGroup.add(line);
+    }
+
+    for (let i = 0; i < this.numTilesY - 1; ++i) {
+      let nextY = this.tileSize * (i + 1);
+      let y = nextY - halfWidth;
+      let line = scene.add
+        .rectangle(0, y, this.WorldMaxWidth, lineWidth, TILE_GRIDLINES_COLOR)
+        .setOrigin(0, 0);
+
+      linesGroup.add(line);
     }
   }
 
