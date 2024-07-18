@@ -21,6 +21,9 @@ let game = new Phaser.Game({
   //     debug: false
   //   }
   // }
+  audio: {
+    noAudio: true
+  },
 });
 
 Object.defineProperty(window, "fps", {

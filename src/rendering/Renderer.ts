@@ -81,15 +81,15 @@ export class Renderer implements AcceptsCommands {
     ]);
 
     // Draw houses
-    this.houseService.getHouses().forEach(({ name, position }) => {
-      this.scene.add.circle(position.x, position.y, HOUSE_RADIUS, HOUSE_COLOR);
-      this.scene.add
-        .text(position.x, position.y + 35, name, {
-          fontSize: 20,
-          color: HOUSE_TEXT_COLOR
-        })
-        .setOrigin(0.5, 0.5);
-    });
+    // this.houseService.getHouses().forEach(({ name, position }) => {
+    //   this.scene.add.circle(position.x, position.y, HOUSE_RADIUS, HOUSE_COLOR);
+    //   this.scene.add
+    //     .text(position.x, position.y + 35, name, {
+    //       fontSize: 20,
+    //       color: HOUSE_TEXT_COLOR
+    //     })
+    //     .setOrigin(0.5, 0.5);
+    // });
   }
 
   private initWaitingZone() {
@@ -106,15 +106,15 @@ export class Renderer implements AcceptsCommands {
       -16
     ));
 
-    this.scene.add
-      .rectangle(
-        waitingZone.x,
-        waitingZone.y,
-        waitingZone.width,
-        waitingZone.height,
-        WAITING_ZONE_COLOR
-      )
-      .setOrigin(0, 0);
+    // this.scene.add
+    //   .rectangle(
+    //     waitingZone.x,
+    //     waitingZone.y,
+    //     waitingZone.width,
+    //     waitingZone.height,
+    //     WAITING_ZONE_COLOR
+    //   )
+    //   .setOrigin(0, 0);
   }
 
   private initBuses() {
