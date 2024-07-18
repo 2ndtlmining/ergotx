@@ -12,7 +12,6 @@ export class MainScene extends Phaser.Scene {
 
   create() {
     WorldManager.init(this);
-    WorldManager.drawBackground(this);
 
     this.visRenderer = new Renderer(this);
     console.log("STARTED");

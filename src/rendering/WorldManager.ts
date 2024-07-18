@@ -12,6 +12,9 @@ export class WorldManager {
 
   private static tileSize = 0;
 
+  /* ========== Gridlines ========== */
+  private static gridlines: Phaser.GameObjects.Group;
+
   /* ========== Camera ========== */
   private static cameraControls: Phaser.Cameras.Controls.FixedKeyControl;
 
@@ -38,6 +41,22 @@ export class WorldManager {
     return this.tileSize * this.numTilesY;
   }
 
+  private static drawBackground(scene: Phaser.Scene) {
+    const imageNames = ["hex", "floor_check", "floor_stone", "grass", "road"];
+
+    for (let i = 0; i < this.numTilesY; ++i) {
+      let row = level[Math.min(level.length - 1, i)];
+      for (let j = 0; j < this.numTilesX; ++j) {
+        let x = this.tileSize * j;
+        let y = this.tileSize * i;
+
+        let image = scene.add.image(x, y, imageNames[row[j]]).setOrigin(0, 0);
+        let scale = this.tileSize / image.width;
+        image.setScale(scale, scale);
+      }
+    }
+  }
+
   private static setupCameraControls(scene: Phaser.Scene) {
     const cursors = scene.input.keyboard!.createCursorKeys();
     let camera = scene.cameras.main;
@@ -50,6 +69,33 @@ export class WorldManager {
     });
 
     camera.setBounds(0, 0, this.canvasWidth, this.WorldMaxHeight);
+  }
+
+  private static setupGridLines(scene: Phaser.Scene) {
+    const lineWidth = 4;
+    const halfWidth = lineWidth / 2;
+
+    this.gridlines = scene.add.group();
+
+    for (let i = 0; i < this.numTilesX - 1; ++i) {
+      let nextX = this.tileSize * (i + 1);
+      let x = nextX - halfWidth;
+      let line = scene.add
+        .rectangle(x, 0, lineWidth, this.WorldMaxHeight, TILE_GRIDLINES_COLOR)
+        .setOrigin(0, 0);
+
+      this.gridlines.add(line);
+    }
+
+    for (let i = 0; i < this.numTilesY - 1; ++i) {
+      let nextY = this.tileSize * (i + 1);
+      let y = nextY - halfWidth;
+      let line = scene.add
+        .rectangle(0, y, this.WorldMaxWidth, lineWidth, TILE_GRIDLINES_COLOR)
+        .setOrigin(0, 0);
+
+      this.gridlines.add(line);
+    }
   }
 
   private static initRegions() {
@@ -71,51 +117,10 @@ export class WorldManager {
       20
     );
 
+    this.drawBackground(scene);
     this.setupCameraControls(scene);
+    this.setupGridLines(scene);
     this.initRegions();
-  }
-
-  static drawBackground(scene: Phaser.Scene) {
-    const imageNames = ["hex", "floor_check", "floor_stone", "grass", "road"];
-
-    for (let i = 0; i < this.numTilesY; ++i) {
-      let row = level[Math.min(level.length - 1, i)];
-      for (let j = 0; j < this.numTilesX; ++j) {
-        let x = this.tileSize * j;
-        let y = this.tileSize * i;
-
-        let image = scene.add.image(x, y, imageNames[row[j]]).setOrigin(0, 0);
-        let scale = this.tileSize / image.width;
-        image.setScale(scale, scale);
-      }
-    }
-
-    /* ================= */
-
-    const lineWidth = 3;
-    const halfWidth = lineWidth / 2;
-
-    let linesGroup = scene.add.group();
-
-    for (let i = 0; i < this.numTilesX - 1; ++i) {
-      let nextX = this.tileSize * (i + 1);
-      let x = nextX - halfWidth;
-      let line = scene.add
-        .rectangle(x, 0, lineWidth, this.WorldMaxHeight, TILE_GRIDLINES_COLOR)
-        .setOrigin(0, 0);
-
-      linesGroup.add(line);
-    }
-
-    for (let i = 0; i < this.numTilesY - 1; ++i) {
-      let nextY = this.tileSize * (i + 1);
-      let y = nextY - halfWidth;
-      let line = scene.add
-        .rectangle(0, y, this.WorldMaxWidth, lineWidth, TILE_GRIDLINES_COLOR)
-        .setOrigin(0, 0);
-
-      linesGroup.add(line);
-    }
   }
 
   static update(deltaTime: number) {
