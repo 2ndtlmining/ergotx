@@ -14,13 +14,13 @@ let game = new Phaser.Game({
   powerPreference: "high-performance",
   scene: MainScene,
   backgroundColor: SCENE_BG_COLOR,
-  physics: {
-    default: "arcade",
-    arcade: {
-      gravity: { x: 0, y: 0 },
-      debug: false
-    }
-  }
+  // physics: {
+  //   default: "arcade",
+  //   arcade: {
+  //     gravity: { x: 0, y: 0 },
+  //     debug: false
+  //   }
+  // }
 });
 
 Object.defineProperty(window, "fps", {

@@ -29,13 +29,13 @@ let game = new Phaser.Game({
   scene: PlaygroundScene,
   //   backgroundColor: SCENE_BG_COLOR,
   backgroundColor: 0x313131,
-  physics: {
-    default: "arcade",
-    arcade: {
-      gravity: { x: 0, y: 0 },
-      debug: false
-    }
-  },
+  // physics: {
+  //   default: "arcade",
+  //   arcade: {
+  //     gravity: { x: 0, y: 0 },
+  //     debug: false
+  //   }
+  // },
   audio: {
     noAudio: true
   }
