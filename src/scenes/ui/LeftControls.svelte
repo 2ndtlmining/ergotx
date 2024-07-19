@@ -1,8 +1,16 @@
 <script lang="ts">
-  const fps = 60.00;
+  // let fpsContainerRef: HTMLElement;
+  let fps = 0;
+
+  let formattedFps: string;
+  $: formattedFps = (Math.round(fps * 100) / 100).toFixed(2);
+
+  export function setFps(newFps: number) {
+    fps = newFps;
+  }
 </script>
 
 <p>
   FPS:
-  <strong>{fps}</strong>
+  <strong>{formattedFps}</strong>
 </p>

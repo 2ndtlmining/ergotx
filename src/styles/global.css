@@ -6,8 +6,13 @@ body {
   margin: 0;
 }
 
+strong {
+  font-weight: 600;
+}
+
 body {
-  background-color: #131310;
+  background-color: #292929;
+  color: #ffffff;
   min-height: 100vh;
   overflow: hidden;
 }
@@ -26,4 +31,5 @@ body {
 #controls_left {
   padding: 32px 32px;
   font-size: 20px;
+  font-family: "Fira Code";
 }

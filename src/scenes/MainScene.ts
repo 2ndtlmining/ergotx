@@ -7,6 +7,7 @@ import LeftControls from "./ui/LeftControls.svelte";
 
 export class MainScene extends BaseScene {
   private visRenderer: Renderer;
+  private leftControls: LeftControls;
 
   getTitle(): string {
     return "Main"
@@ -17,8 +18,8 @@ export class MainScene extends BaseScene {
   }
 
   init() {
-    const leftControls = new LeftControls({
-      target: document.getElementById("controls_left")!
+    this.leftControls = new LeftControls({
+      target: document.getElementById("controls_left")!,
     });
   }
 
@@ -32,6 +33,8 @@ export class MainScene extends BaseScene {
   update(_currentTime: number, deltaTime: number) {
     Time.setDeltaTime(deltaTime);
     WorldManager.update();
+
+    this.leftControls.setFps(this.game.loop.actualFps);
 
     this.visRenderer.update();
   }
