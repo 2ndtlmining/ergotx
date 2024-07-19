@@ -8,7 +8,6 @@ body {
   background-color: #131310;
   min-height: 100vh;
   overflow: hidden;
-
 }
 
 #root {
@@ -17,6 +16,7 @@ body {
   align-items: start;
 }
 
-#controls_left, #controls_right {
+#controls_left,
+#controls_right {
   flex: 1;
 }
