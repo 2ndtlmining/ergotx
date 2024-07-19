@@ -1,9 +1,9 @@
 import { Renderer } from "~/rendering/Renderer";
 import { WorldManager } from "~/rendering/WorldManager";
 import { BaseScene } from "./BaseScene";
-
-import App from "./ui/App.svelte";
 import { Time } from "~/common/Time";
+
+import LeftControls from "./ui/LeftControls.svelte";
 
 export class MainScene extends BaseScene {
   private visRenderer: Renderer;
@@ -16,11 +16,11 @@ export class MainScene extends BaseScene {
     WorldManager.preloadTiles(this.load);
   }
 
-  // init() {
-  //   const app = new App({
-  //     target: document.getElementById("controls_left")!
-  //   });
-  // }
+  init() {
+    const leftControls = new LeftControls({
+      target: document.getElementById("controls_left")!
+    });
+  }
 
   create() {
     WorldManager.init(this);
