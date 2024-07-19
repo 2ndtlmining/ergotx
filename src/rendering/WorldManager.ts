@@ -2,6 +2,7 @@ import Phaser, { Scenes } from "phaser";
 
 import { Region } from "./Region";
 import { TILE_GRIDLINES_COLOR } from "~/common/theme";
+import { Time } from "~/common/Time";
 
 export class WorldManager {
   private static canvasWidth = 0;
@@ -128,8 +129,8 @@ export class WorldManager {
     this.initRegions();
   }
 
-  static update(deltaTime: number) {
-    this.cameraControls.update(deltaTime);
+  static update() {
+    this.cameraControls.update(Time.DeltaTime);
   }
 
   public static showGridLines(show: boolean) {

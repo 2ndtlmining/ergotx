@@ -1,10 +1,5 @@
-// import { Math, Physics } from "phaser";
-// import { IVector2 } from "~/common/math";
-import { VoidCallback } from "~/common/types";
+import type { VoidCallback } from "~/common/types";
 import { ActorGameObject } from "~/rendering/actors/Actor";
-
-// type ArcadePhysics = Physics.Arcade.ArcadePhysics;
-// type PhysicsBody = Physics.Arcade.Body;
 
 export abstract class Motion {
   private _controller: MotionController | null;
@@ -14,7 +9,7 @@ export abstract class Motion {
   }
 
   public abstract _init(): void;
-  public abstract _update(deltaTime: number): void;
+  public abstract _update(): void;
   public abstract _cancel(): void;
 
   public attachTo(controller: MotionController) {
@@ -68,9 +63,9 @@ export class MotionController {
     this.onComplete = () => {};
   }
 
-  public update(deltaTime: number) {
+  public update() {
     if (this.currentMotion) {
-      this.currentMotion._update(deltaTime);
+      this.currentMotion._update();
     }
   }
 }

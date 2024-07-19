@@ -44,8 +44,8 @@ export class LiveBus extends Actor implements SupportsMotion {
 
   /* ============= */
 
-  public update(deltaTime: number) {
-    this.motionController.update(deltaTime);
+  public update() {
+    this.motionController.update();
   }
 
   public getMotionController(): MotionController {

@@ -35,8 +35,8 @@ export class Person extends Actor implements SupportsMotion {
     this.gameObject.copyPosition(position);
   }
 
-  public update(deltaTime: number) {
-    this.motionController.update(deltaTime);
+  public update() {
+    this.motionController.update();
   }
 
   public getMotionController(): MotionController {

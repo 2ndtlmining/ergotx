@@ -2,6 +2,7 @@ import { Math } from "phaser";
 import { IVector2 } from "~/common/math";
 
 import { Motion } from "./motion";
+import { Time } from "~/common/Time";
 
 const SPEED = 0.5;
 const MAX_DELTA_DIST = 2;
@@ -24,7 +25,7 @@ export class LinearMotion extends Motion {
     this.nextPointIndex = 0;
   }
 
-  public _update(deltaTime: number): void {
+  public _update(): void {
     let source = this.controller.gameObject as IVector2;
     let destination = this.points[this.nextPointIndex];
 
@@ -35,7 +36,7 @@ export class LinearMotion extends Motion {
 
     let distToTarget = direction.length();
 
-    let displacementLength = SPEED * deltaTime;
+    let displacementLength = SPEED * Time.DeltaTime;
     let displacement = direction.clone().normalize().scale(displacementLength);
 
     if (distToTarget <= MAX_DELTA_DIST || displacementLength > distToTarget) {

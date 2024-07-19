@@ -3,6 +3,7 @@ import { WorldManager } from "~/rendering/WorldManager";
 import { BaseScene } from "./BaseScene";
 
 import App from "./ui/App.svelte";
+import { Time } from "~/common/Time";
 
 export class MainScene extends BaseScene {
   private visRenderer: Renderer;
@@ -29,7 +30,9 @@ export class MainScene extends BaseScene {
   }
 
   update(_currentTime: number, deltaTime: number) {
-    this.visRenderer.update(deltaTime);
-    WorldManager.update(deltaTime);
+    Time.setDeltaTime(deltaTime);
+    WorldManager.update();
+
+    this.visRenderer.update();
   }
 }
