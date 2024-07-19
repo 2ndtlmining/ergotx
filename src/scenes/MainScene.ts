@@ -1,21 +1,25 @@
-import Phaser from "phaser";
+import { Renderer } from "~/rendering/Renderer";
+import { WorldManager } from "~/rendering/WorldManager";
+import { BaseScene } from "./BaseScene";
 
-import { Renderer } from "./rendering/Renderer";
-import { WorldManager } from "./rendering/WorldManager";
 import App from "./ui/App.svelte";
 
-export class MainScene extends Phaser.Scene {
+export class MainScene extends BaseScene {
   private visRenderer: Renderer;
+
+  getTitle(): string {
+    return "Main"
+  }
 
   preload() {
     WorldManager.preloadTiles(this.load);
   }
 
-  init() {
-    const app = new App({
-      target: document.getElementById("controls_left")!
-    });
-  }
+  // init() {
+  //   const app = new App({
+  //     target: document.getElementById("controls_left")!
+  //   });
+  // }
 
   create() {
     WorldManager.init(this);
