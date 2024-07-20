@@ -22,9 +22,8 @@ export class MainScene extends BaseScene {
       target: document.getElementById("controls_left")!,
       props: {
         onShowGridlines: shouldShow => {
-          setTimeout(() => {
-            // WorldManager.showGridLines(shouldShow);
-          }, 0);
+          if (WorldManager.IsInitialized)
+            WorldManager.showGridLines(shouldShow);
         }
       }
     });

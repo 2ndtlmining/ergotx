@@ -5,6 +5,8 @@ import { TILE_GRIDLINES_COLOR } from "~/common/theme";
 import { Time } from "~/common/Time";
 
 export class WorldManager {
+  private static isInitialized = false;
+
   private static canvasWidth = 0;
   private static canvasHeight = 0;
 
@@ -40,6 +42,10 @@ export class WorldManager {
 
   public static get WorldMaxHeight() {
     return this.tileSize * this.numTilesY;
+  }
+
+  public static get IsInitialized() {
+    return this.isInitialized;
   }
 
   private static drawBackground(scene: Phaser.Scene) {
@@ -127,6 +133,7 @@ export class WorldManager {
     this.setupCameraControls(scene);
     this.setupGridLines(scene);
     this.initRegions();
+    this.isInitialized = true;
   }
 
   static update() {
