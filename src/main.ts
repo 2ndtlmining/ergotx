@@ -28,7 +28,7 @@ switch (pathname) {
 
 let game = new Phaser.Game({
   type: Phaser.CANVAS,
-  width: 1100,
+  width: 920,
   height: window.innerHeight,
   canvas: document.getElementById("main_canvas")! as HTMLCanvasElement,
   powerPreference: "high-performance",

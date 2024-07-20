@@ -28,6 +28,8 @@ export class WorldManager {
   private static lineUpRoad: Region;
   private static flyOffRoad: Region;
 
+  private static regionDisplays: Phaser.GameObjects.GameObject[];
+
   static preloadTiles(load: Phaser.Loader.LoaderPlugin) {
     load.image("hex", "/tiles/grass.png");
     load.image("floor_check", "/tiles/floor-check.png");
@@ -111,11 +113,27 @@ export class WorldManager {
   }
 
   private static initRegions() {
-    this.homeRegion = new Region(0, 0, 4, 0);
-    this.walkLane = new Region(4, 0, 1, 0);
-    this.waitingZone = new Region(5, 4, 5, 0);
-    this.lineUpRoad = new Region(10, 4, 2, 0);
-    this.flyOffRoad = new Region(10, 0, 2, 4);
+    this.homeRegion = new Region(0, 0, 4, 0, "Home");
+    this.walkLane = new Region(4, 0, 1, 0, "Walk Lane");
+    this.waitingZone = new Region(5, 4, 5, 0, "Waiting Zone");
+    this.lineUpRoad = new Region(10, 4, 2, 0, "Line Up Road");
+    this.flyOffRoad = new Region(10, 0, 2, 4, "Fly Off Road");
+  }
+
+  private static initRegionsDebug() {
+    this.regionDisplays = [];
+
+    let regions = [
+      this.homeRegion,
+      this.walkLane,
+      this.waitingZone,
+      this.lineUpRoad,
+      this.flyOffRoad,
+    ];
+
+    for (const region of regions) {
+      console.log(region.debugName);
+    }
   }
 
   static init(scene: Phaser.Scene) {
@@ -133,6 +151,7 @@ export class WorldManager {
     this.setupCameraControls(scene);
     this.setupGridLines(scene);
     this.initRegions();
+    this.initRegionsDebug();
     this.isInitialized = true;
   }
 

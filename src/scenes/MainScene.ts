@@ -19,7 +19,7 @@ export class MainScene extends BaseScene {
 
   init() {
     this.leftControls = new LeftControls({
-      target: document.getElementById("controls_left")!,
+      target: document.getElementById("controls")!,
       props: {
         onShowGridlines: shouldShow => {
           if (WorldManager.IsInitialized)
