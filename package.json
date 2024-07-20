@@ -12,6 +12,7 @@
     "format": "prettier -uw --cache --ignore-path .prettierignore ."
   },
   "dependencies": {
+    "clsx": "^2.1.1",
     "eventemitter3": "^5.0.1",
     "file-saver": "^2.0.5",
     "ky": "^1.2.4",

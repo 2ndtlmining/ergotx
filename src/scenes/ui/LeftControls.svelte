@@ -1,42 +1,67 @@
 <script lang="ts">
-  // let fpsContainerRef: HTMLElement;
+  import clsx from "clsx";
+
+  function setAndReload(key: string, item: string) {
+    if (item) {
+      let oldVal = localStorage.getItem(key);
+      localStorage.setItem(key, item);
+      if (oldVal !== item) {
+        window.location.reload();
+      }
+    }
+  }
+
+  // ============= FPS =============
   let fps = 0;
-
-  let formattedFps: string;
-  $: formattedFps = (Math.round(fps * 100) / 100).toFixed(2);
-
   export function setFps(newFps: number) {
     fps = newFps;
+  }
+
+  // ============= Update =============
+  let updates = localStorage.getItem("updates") ?? "";
+  $: setAndReload("updates", updates);
+
+  // ============= Replays =============
+  let recordingReplay = false;
+  let replayAvailableForSave = false;
+
+  function startRecordReplay() {
+    recordingReplay = true;
+  }
+
+  function stopRecordReplay() {
+    recordingReplay = false;
+    replayAvailableForSave = true;
   }
 </script>
 
 <p>
   FPS:
-  {formattedFps}
+  {(Math.round(fps * 100) / 100).toFixed(2)}
 </p>
 
 <label class="mt-4 space-y-1">
   <p class="font-medium">Updates</p>
-  <select class="select select-primary">
-    <option>None</option>
-    <option>Realtime</option>
-    <option>Replay</option>
+  <select class="select select-primary" bind:value={updates}>
+    <option value="realtime">Realtime</option>
+    <option value="replay">Replay</option>
   </select>
 </label>
 
 <div class="mt-8">
-  <h2 class="text-lg font-medium">
-    Replay
-  </h2>
+  <h2 class="text-lg font-medium mb-3">Replay</h2>
 
-<!--
-  <button class="btn btn-primary mt-3">
-    Start Recording
-  </button> -->
-  <!-- <button class="btn btn-outline-warning mt-3">
-    Stop Recording
-  </button> -->
-  <button class="btn btn-success mt-3">
-    Save Replay
-  </button>
+  {#if recordingReplay}
+    <button class="btn btn-outline-warning" on:click={stopRecordReplay}
+      >Stop Recording</button
+    >
+  {:else}
+    <button class="btn btn-primary" on:click={startRecordReplay}
+      >Start Recording</button
+    >
+  {/if}
+
+  {#if replayAvailableForSave}
+    <button class="btn btn-success mt-3">Save Replay</button>
+  {/if}
 </div>
