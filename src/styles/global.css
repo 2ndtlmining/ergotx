@@ -1,4 +1,6 @@
-@import './reset.css';
+/* @import './reset.css'; */
+@tailwind components;
+@tailwind utilities;
 
 html,
 body {
