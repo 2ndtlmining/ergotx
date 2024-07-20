@@ -49,6 +49,16 @@ export class WorldManager {
     return this.tileSize * this.numTilesY;
   }
 
+  public static get AllRegions() {
+    return [
+      this.homeRegion,
+      this.walkLane,
+      this.waitingZone,
+      this.lineUpRoad,
+      this.flyOffRoad
+    ];
+  }
+
   public static get IsInitialized() {
     return this.isInitialized;
   }
@@ -57,6 +67,22 @@ export class WorldManager {
     let x = this.tileSize * tileX;
     let y = this.tileSize * tileY;
     return { x, y };
+  }
+
+  public static regionRect(region: Region) {
+    let { x, y } = this.tileToWorld(region.startTileX, region.startTileY);
+
+    let width =
+      region.numTilesX > 0
+        ? this.tileSize * region.numTilesX
+        : this.WorldMaxWidth;
+
+    let height =
+      region.numTilesY > 0
+        ? this.tileSize * region.numTilesY
+        : this.WorldMaxHeight;
+
+    return { x, y, width, height };
   }
 
   private static drawBackground(scene: Phaser.Scene) {
@@ -132,26 +158,8 @@ export class WorldManager {
   private static initRegionsDebug(scene: Phaser.Scene) {
     this.regionDebugDisplay = scene.add.group();
 
-    let regions = [
-      this.homeRegion,
-      this.walkLane,
-      this.waitingZone,
-      this.lineUpRoad,
-      this.flyOffRoad
-    ];
-
-    for (const region of regions) {
-      let { x, y } = this.tileToWorld(region.startTileX, region.startTileY);
-
-      let width =
-        region.numTilesX > 0
-          ? this.tileSize * region.numTilesX
-          : this.WorldMaxWidth;
-
-      let height =
-        region.numTilesY > 0
-          ? this.tileSize * region.numTilesY
-          : this.WorldMaxHeight;
+    for (const region of this.AllRegions) {
+      let { x, y, width, height } = this.regionRect(region);
 
       let color = uniqolor.random().color;
       let colorInt = Color(color).rgbNumber();
@@ -199,6 +207,26 @@ export class WorldManager {
 
   public static showRegionsDebug(show: boolean) {
     this.regionDebugDisplay.setVisible(show);
+  }
+
+  public static regionUnderCursor(scene: Phaser.Scene) {
+    let x = scene.input.mousePointer.x;
+    let y = scene.input.mousePointer.y;
+
+    for (const region of this.AllRegions) {
+      let { x: x1, y: y1, width, height } = this.regionRect(region);
+
+      let x2 = x1 + width;
+      let y2 = y1 + height;
+      // console.log(x, y, x1, y1, x2, y2);
+      // console.log(x2, y2);
+
+      if (x1 <= x && x < x2 && y1 <= y && y < y2) {
+        return region;
+      }
+    }
+
+    return null;
   }
 }
 

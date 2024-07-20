@@ -5,7 +5,7 @@
 
   export let onShowGridlines: VoidCallback<boolean> | undefined;
   export let onDebugRegions: VoidCallback<boolean> | undefined;
-  export let worldToRegion: () => string;
+  export let regionUnderCursor: () => string | null;
 
   function setAndReload(key: string, item: string) {
     if (item) {
@@ -51,13 +51,13 @@
   $: onDebugRegions?.(debugRegions);
 
   // ============= Settings =============
-  let mouseRegion = "";
+  let hoveredRegion: string | null = null;
 </script>
 
 <svelte:document
   on:mousemove={debugRegions
     ? () => {
-        mouseRegion = worldToRegion();
+        hoveredRegion = regionUnderCursor();
       }
     : undefined}
 />
@@ -117,9 +117,9 @@
 
   {#if debugRegions}
     <p class="mt-10">
-      Region Under Mouse:
+      Region Under Cursor:
       <br />
-      {mouseRegion}
+      {hoveredRegion ?? "-none-"}
     </p>
   {/if}
 </main>

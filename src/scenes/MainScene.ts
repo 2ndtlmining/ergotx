@@ -29,8 +29,11 @@ export class MainScene extends BaseScene {
           if (WorldManager.IsInitialized)
             WorldManager.showRegionsDebug(shouldShow);
         },
-        worldToRegion: () => {
-          return "World";
+        regionUnderCursor: () => {
+          if (WorldManager.IsInitialized)
+            return WorldManager.regionUnderCursor(this)?.debugName ?? null;
+
+          return null;
         }
       }
     });
