@@ -10,7 +10,7 @@ export class MainScene extends BaseScene {
   private leftControls: LeftControls;
 
   getTitle(): string {
-    return "Main"
+    return "Main";
   }
 
   preload() {
@@ -20,6 +20,13 @@ export class MainScene extends BaseScene {
   init() {
     this.leftControls = new LeftControls({
       target: document.getElementById("controls_left")!,
+      props: {
+        onShowGridlines: shouldShow => {
+          setTimeout(() => {
+            // WorldManager.showGridLines(shouldShow);
+          }, 0);
+        }
+      }
     });
   }
 

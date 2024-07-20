@@ -1,5 +1,8 @@
 <script lang="ts">
   import clsx from "clsx";
+  import type { VoidCallback } from "~/common/types";
+
+  export let onShowGridlines: VoidCallback<boolean> | undefined;
 
   function setAndReload(key: string, item: string) {
     if (item) {
@@ -33,6 +36,10 @@
     recordingReplay = false;
     replayAvailableForSave = true;
   }
+
+  // ============= Settings =============
+  let showGridLines = false;
+  $: onShowGridlines?.(showGridLines);
 </script>
 
 <p>
@@ -64,4 +71,17 @@
   {#if replayAvailableForSave}
     <button class="btn btn-success mt-3">Save Replay</button>
   {/if}
+</div>
+
+<div class="mt-8">
+  <h2 class="text-lg font-medium mb-3">Settings</h2>
+
+  <label class="flex gap-3 text-sm">
+    <input
+      bind:checked={showGridLines}
+      type="checkbox"
+      class="switch switch-bordered-primary"
+    />
+    Show gridlines
+  </label>
 </div>
