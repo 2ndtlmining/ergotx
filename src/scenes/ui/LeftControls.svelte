@@ -38,8 +38,13 @@
   }
 
   // ============= Settings =============
+
+  // ==== Grid lines ====
   let showGridLines = false;
   $: onShowGridlines?.(showGridLines);
+
+  // ==== Grid lines ====
+  let debugRegions = false;
 </script>
 
 <p>
@@ -76,12 +81,20 @@
 <div class="mt-8">
   <h2 class="text-lg font-medium mb-3">Settings</h2>
 
-  <label class="flex gap-3 text-sm">
+  <label class="flex gap-3 text-sm mb-2">
     <input
       bind:checked={showGridLines}
       type="checkbox"
       class="switch switch-bordered-primary"
     />
     Show gridlines
+  </label>
+  <label class="flex gap-3 text-sm mb-2">
+    <input
+      bind:checked={debugRegions}
+      type="checkbox"
+      class="switch switch-bordered-primary"
+    />
+    Debug Regions
   </label>
 </div>
