@@ -20,6 +20,9 @@ importers:
       phaser:
         specifier: ^3.80.1
         version: 3.80.1
+      rippleui:
+        specifier: ^1.12.1
+        version: 1.12.1
       set-interval-async:
         specifier: ^3.0.3
         version: 3.0.3
@@ -353,6 +356,9 @@ packages:
 
   '@types/file-saver@2.0.7':
     resolution: {integrity: sha512-dNKVfHd/jk0SkR/exKGj2ggkB45MAkzvWCaqLUUgkyjITkGNzH8H+yUwr+BLJUBjZOe9w8X3wgmXhZDRg1ED6A==}
+
+  '@types/postcss-js@4.0.4':
+    resolution: {integrity: sha512-j5+GMZVIPCJpRTwI/mO64mCzv7X+zAEq3JP0EV2lo/BrLWHAohEubUJimIAY23rH27+wKce0fXUYjAdBoqlaYw==}
 
   '@types/pug@2.0.10':
     resolution: {integrity: sha512-Sk/uYFOBAB7mb74XcpizmH0KOR2Pv3D2Hmrh1Dmy5BmK3MpdSa5kqZcg6EKBdklU0bFXX9gCfzvpnyUehrPIuA==}
@@ -834,6 +840,9 @@ packages:
     deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
+  rippleui@1.12.1:
+    resolution: {integrity: sha512-2LLqGQy0Gb+V/XHC+Ucx7rKcgisTr1HBevVc+NiwTiJn4y38Ya1cad8I/ZZHfWbrvKG/bPKYh+XJCM8M4cUs0A==}
+
   rollup@4.18.0:
     resolution: {integrity: sha512-QmJz14PX3rzbJCN1SG4Xe/bAAX2a6NpCP8ab2vfu2GiUr8AQcr2nCV/oEO3yneFarB67zk8ShlIyWb2LGTb3Sg==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
@@ -1261,6 +1270,10 @@ snapshots:
   '@types/estree@1.0.5': {}
 
   '@types/file-saver@2.0.7': {}
+
+  '@types/postcss-js@4.0.4':
+    dependencies:
+      postcss: 8.4.39
 
   '@types/pug@2.0.10': {}
 
@@ -1699,6 +1712,15 @@ snapshots:
   rimraf@2.7.1:
     dependencies:
       glob: 7.2.3
+
+  rippleui@1.12.1:
+    dependencies:
+      '@types/postcss-js': 4.0.4
+      postcss: 8.4.39
+      postcss-js: 4.0.1(postcss@8.4.39)
+      tailwindcss: 3.4.6
+    transitivePeerDependencies:
+      - ts-node
 
   rollup@4.18.0:
     dependencies:

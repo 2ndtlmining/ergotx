@@ -1,1 +1,5 @@
 @tailwind base;
+
+label {
+  display: block;
+}

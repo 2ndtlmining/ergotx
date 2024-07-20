@@ -14,6 +14,7 @@ export class LiveBus extends Actor implements SupportsMotion {
       this.scene.add
         .rectangle(-1000, -1000, width, height, BUS_COLOR)
         .setOrigin(0.5, 0)
+        .setVisible(false)
     );
 
     // This needs to be done after the above call to buildSprite
