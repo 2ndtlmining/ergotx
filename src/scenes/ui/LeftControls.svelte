@@ -3,6 +3,7 @@
   import type { VoidCallback } from "~/common/types";
 
   export let onShowGridlines: VoidCallback<boolean> | undefined;
+  export let onDebugRegions: VoidCallback<boolean> | undefined;
 
   function setAndReload(key: string, item: string) {
     if (item) {
@@ -45,6 +46,7 @@
 
   // ==== Grid lines ====
   let debugRegions = false;
+  $: onDebugRegions?.(debugRegions);
 </script>
 
 <main>

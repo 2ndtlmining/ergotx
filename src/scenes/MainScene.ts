@@ -24,6 +24,10 @@ export class MainScene extends BaseScene {
         onShowGridlines: shouldShow => {
           if (WorldManager.IsInitialized)
             WorldManager.showGridLines(shouldShow);
+        },
+        onDebugRegions: shouldShow => {
+          if (WorldManager.IsInitialized)
+            WorldManager.showRegionsDebug(shouldShow);
         }
       }
     });

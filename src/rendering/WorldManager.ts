@@ -3,6 +3,7 @@ import Phaser, { Scenes } from "phaser";
 import { Region } from "./Region";
 import { TILE_GRIDLINES_COLOR } from "~/common/theme";
 import { Time } from "~/common/Time";
+import { IVector2 } from "~/common/math";
 
 export class WorldManager {
   private static isInitialized = false;
@@ -28,7 +29,7 @@ export class WorldManager {
   private static lineUpRoad: Region;
   private static flyOffRoad: Region;
 
-  private static regionDisplays: Phaser.GameObjects.GameObject[];
+  private static regionDebugDisplay: Phaser.GameObjects.Group;
 
   static preloadTiles(load: Phaser.Loader.LoaderPlugin) {
     load.image("hex", "/tiles/grass.png");
@@ -48,6 +49,12 @@ export class WorldManager {
 
   public static get IsInitialized() {
     return this.isInitialized;
+  }
+
+  public static tileToWorld(tileX: number, tileY: number): IVector2 {
+    let x = this.tileSize * tileX;
+    let y = this.tileSize * tileY;
+    return { x, y };
   }
 
   private static drawBackground(scene: Phaser.Scene) {
@@ -120,19 +127,38 @@ export class WorldManager {
     this.flyOffRoad = new Region(10, 0, 2, 4, "Fly Off Road");
   }
 
-  private static initRegionsDebug() {
-    this.regionDisplays = [];
+  private static initRegionsDebug(scene: Phaser.Scene) {
+    this.regionDebugDisplay = scene.add.group();
 
     let regions = [
       this.homeRegion,
       this.walkLane,
       this.waitingZone,
       this.lineUpRoad,
-      this.flyOffRoad,
+      this.flyOffRoad
     ];
 
     for (const region of regions) {
-      console.log(region.debugName);
+      let { x, y } = this.tileToWorld(region.startTileX, region.startTileY);
+
+      let width =
+        region.numTilesX > 0
+          ? this.tileSize * region.numTilesX
+          : this.WorldMaxWidth;
+
+      let height =
+        region.numTilesY > 0
+          ? this.tileSize * region.numTilesY
+          : this.WorldMaxHeight;
+
+      let rect = scene.add
+        .rectangle(x, y, width, height, 0x901a57)
+        .setOrigin(0, 0)
+        .setAlpha(0.8)
+        .setVisible(false)
+        .setActive(false);
+
+      this.regionDebugDisplay.add(rect);
     }
   }
 
@@ -149,9 +175,9 @@ export class WorldManager {
 
     this.drawBackground(scene);
     this.setupCameraControls(scene);
-    this.setupGridLines(scene);
     this.initRegions();
-    this.initRegionsDebug();
+    this.initRegionsDebug(scene);
+    this.setupGridLines(scene);
     this.isInitialized = true;
   }
 
@@ -161,6 +187,10 @@ export class WorldManager {
 
   public static showGridLines(show: boolean) {
     this.gridlines.setVisible(show);
+  }
+
+  public static showRegionsDebug(show: boolean) {
+    this.regionDebugDisplay.setVisible(show);
   }
 }
 
