@@ -1,9 +1,11 @@
 <script lang="ts">
   import clsx from "clsx";
   import type { VoidCallback } from "~/common/types";
+  import uniqcolor from "uniqolor";
 
   export let onShowGridlines: VoidCallback<boolean> | undefined;
   export let onDebugRegions: VoidCallback<boolean> | undefined;
+  export let worldToRegion: () => string;
 
   function setAndReload(key: string, item: string) {
     if (item) {
@@ -47,7 +49,18 @@
   // ==== Grid lines ====
   let debugRegions = false;
   $: onDebugRegions?.(debugRegions);
+
+  // ============= Settings =============
+  let mouseRegion = "";
 </script>
+
+<svelte:document
+  on:mousemove={debugRegions
+    ? () => {
+        mouseRegion = worldToRegion();
+      }
+    : undefined}
+/>
 
 <main>
   <p>
@@ -101,6 +114,14 @@
       Debug Regions
     </label>
   </div>
+
+  {#if debugRegions}
+    <p class="mt-10">
+      Region Under Mouse:
+      <br />
+      {mouseRegion}
+    </p>
+  {/if}
 </main>
 
 <style lang="postcss">

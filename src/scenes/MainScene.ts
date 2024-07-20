@@ -28,6 +28,9 @@ export class MainScene extends BaseScene {
         onDebugRegions: shouldShow => {
           if (WorldManager.IsInitialized)
             WorldManager.showRegionsDebug(shouldShow);
+        },
+        worldToRegion: () => {
+          return "World";
         }
       }
     });
