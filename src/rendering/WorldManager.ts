@@ -1,4 +1,6 @@
 import Phaser, { Scenes } from "phaser";
+import uniqolor from "uniqolor";
+import Color from "color";
 
 import { Region } from "./Region";
 import { TILE_GRIDLINES_COLOR } from "~/common/theme";
@@ -151,12 +153,18 @@ export class WorldManager {
           ? this.tileSize * region.numTilesY
           : this.WorldMaxHeight;
 
+      let color = uniqolor.random().color;
+      let colorInt = Color(color).rgbNumber();
+
       let rect = scene.add
-        .rectangle(x, y, width, height, 0x901a57)
+        .rectangle(x, y, width, height, colorInt)
         .setOrigin(0, 0)
         .setAlpha(0.8)
         .setVisible(false)
         .setActive(false);
+
+      rect.isStroked = true;
+      rect.setStrokeStyle(4, 0x232323);
 
       this.regionDebugDisplay.add(rect);
     }

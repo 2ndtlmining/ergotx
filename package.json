@@ -13,16 +13,19 @@
   },
   "dependencies": {
     "clsx": "^2.1.1",
+    "color": "^4.2.3",
     "eventemitter3": "^5.0.1",
     "file-saver": "^2.0.5",
     "ky": "^1.2.4",
     "phaser": "^3.80.1",
     "rippleui": "^1.12.1",
-    "set-interval-async": "^3.0.3"
+    "set-interval-async": "^3.0.3",
+    "uniqolor": "^1.1.1"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
     "@tsconfig/svelte": "^5.0.4",
+    "@types/color": "^3.0.6",
     "@types/file-saver": "^2.0.7",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.39",
