@@ -1,4 +1,4 @@
-import Phaser, { Scenes } from "phaser";
+import Phaser from "phaser";
 import uniqolor from "uniqolor";
 import Color from "color";
 
@@ -218,8 +218,6 @@ export class WorldManager {
 
       let x2 = x1 + width;
       let y2 = y1 + height;
-      // console.log(x, y, x1, y1, x2, y2);
-      // console.log(x2, y2);
 
       if (x1 <= x && x < x2 && y1 <= y && y < y2) {
         return region;

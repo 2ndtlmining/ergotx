@@ -53,8 +53,6 @@ export class Renderer implements AcceptsCommands {
     this.engine = new Engine(this);
 
     (<any>window).r = this;
-    (<any>window).e = this.engine;
-    (<any>window).w = watchUpdates(this.engine.getUpdateService());
 
     this.canvasWidth = +this.scene.game.config.width;
     this.canvasHeight = +this.scene.game.config.height;
@@ -62,9 +60,6 @@ export class Renderer implements AcceptsCommands {
     this.initHouses();
     this.initWaitingZone();
     this.initBuses();
-
-    // (<any>window).w.start();
-    this.engine.startListening();
   }
 
   private initHouses() {

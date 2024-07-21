@@ -2,7 +2,6 @@ import ky from "ky";
 
 import { UpdateService } from "./UpdateService";
 import { Update } from "./Update";
-import EventEmitter from "eventemitter3";
 
 export class ReplayUpdateService extends UpdateService {
   private taskId: number | null = null;
@@ -11,20 +10,18 @@ export class ReplayUpdateService extends UpdateService {
   private nextIndex: number = 0;
   private updates: Update[];
 
-  private readyEmitter = new EventEmitter();
-  private isReady = false;
-  private pendingStart = false;
+  private readyPromise: Promise<void>;
   private allEmitted = false;
 
   constructor(replayUrl: string) {
     super();
-    ky.get(replayUrl)
+
+    this.readyPromise = ky
+      .get(replayUrl)
       .json()
       .then(contents => {
         this.updates = contents as Update[];
         this.nextIndex = 0;
-        this.isReady = true;
-        this.readyEmitter.emit("ready");
       });
   }
 
@@ -40,20 +37,9 @@ export class ReplayUpdateService extends UpdateService {
     }
   }
 
-  public start() {
-    if (this.pendingStart) return;
-
-    this.stop();
-
-    if (this.isReady) {
-      this.startTimer();
-    } else {
-      this.pendingStart = true;
-      this.readyEmitter.once("ready", () => {
-        this.pendingStart = false;
-        this.startTimer();
-      });
-    }
+  public async start() {
+    await this.readyPromise;
+    this.startTimer();
   }
 
   private startTimer() {

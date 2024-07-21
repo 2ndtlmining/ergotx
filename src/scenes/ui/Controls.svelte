@@ -95,7 +95,9 @@
     {/if}
 
     {#if replayAvailableForSave}
-      <button class="btn btn-success mt-3">Save Replay</button>
+      <div>
+        <button class="btn btn-success mt-3">Save Replay</button>
+      </div>
     {/if}
   </div>
 
