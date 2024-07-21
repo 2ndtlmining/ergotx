@@ -3,6 +3,7 @@
 
   export let onShowGridlines: VoidCallback<boolean> | undefined;
   export let onDebugRegions: VoidCallback<boolean> | undefined;
+  export let onDebugBus: VoidCallback<boolean> | undefined;
   export let regionUnderCursor: () => string | null;
 
   function setAndReload(key: string, item: string) {
@@ -47,6 +48,10 @@
   let debugRegions = false;
   $: onDebugRegions?.(debugRegions);
   let hoveredRegion: string | null = null;
+
+  // ==== Debug Bus ====
+  let debugBus = false;
+  $: onDebugBus?.(debugBus);
 </script>
 
 <svelte:document
@@ -119,6 +124,14 @@
         class="switch switch-bordered-primary"
       />
       Debug Regions
+    </label>
+    <label class="flex gap-3 text-sm mb-2">
+      <input
+        bind:checked={debugBus}
+        type="checkbox"
+        class="switch switch-bordered-primary"
+      />
+      Debug Buses
     </label>
   </div>
 

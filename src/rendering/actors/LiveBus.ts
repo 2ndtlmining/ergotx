@@ -3,6 +3,7 @@ import { MotionController, SupportsMotion } from "~/movement/motion";
 import { IVector2 } from "~/common/math";
 import { Actor } from "./Actor";
 import { Transform } from "~/common/component-types";
+import { watchSettings } from "../DebugSettings";
 
 export class LiveBus extends Actor implements SupportsMotion {
   private container: GameObjects.Container;
@@ -49,7 +50,8 @@ export class LiveBus extends Actor implements SupportsMotion {
       this.planeDebug = scene.add
         .rectangle(-this.width / 2, 0, this.width, this.height, 0xff0000)
         .setOrigin(0, 0)
-        .setAlpha(0.4);
+        .setAlpha(0.4)
+        .setVisible(false);
 
       this.planeDebug.isStroked = true;
       this.planeDebug.setStrokeStyle(2, 0x090436);
@@ -63,7 +65,8 @@ export class LiveBus extends Actor implements SupportsMotion {
           0xdbeb34
         )
         .setOrigin(0, 0)
-        .setAlpha(0.6);
+        .setAlpha(0.6)
+        .setVisible(false);
 
       this.regionDebug.isStroked = true;
       this.regionDebug.setStrokeStyle(2, 0x090436);
@@ -75,6 +78,11 @@ export class LiveBus extends Actor implements SupportsMotion {
 
       this.container.add(this.planeDebug);
       this.container.add(this.regionDebug);
+
+      watchSettings(settings => {
+        this.planeDebug.setVisible(settings.debugBus);
+        this.regionDebug.setVisible(settings.debugBus);
+      });
     }
 
     this.motionController = new MotionController(this.container);

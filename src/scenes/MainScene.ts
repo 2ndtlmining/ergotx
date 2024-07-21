@@ -4,6 +4,7 @@ import { BaseScene } from "./BaseScene";
 import { Time } from "~/common/Time";
 
 import Controls from "./ui/Controls.svelte";
+import { updateSettings } from "~/rendering/DebugSettings";
 
 export class MainScene extends BaseScene {
   private visRenderer: Renderer;
@@ -32,6 +33,11 @@ export class MainScene extends BaseScene {
         },
         regionUnderCursor: () => {
           return WorldManager.regionUnderCursor(this)?.debugName ?? null;
+        },
+        onDebugBus: shouldShow => {
+          updateSettings((settings) => {
+            settings.debugBus = shouldShow;
+          });
         }
       }
     });
