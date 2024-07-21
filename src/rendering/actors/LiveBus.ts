@@ -39,10 +39,10 @@ export class LiveBus extends Actor implements SupportsMotion {
 
     {
       this.walkInRegion = new Geom.Rectangle(
-        60,
-        50,
-        width - 120,
-        this.height - 80
+        Math.round(0.394736 * this.width),
+        Math.round(0.328947 * this.height),
+        Math.round(0.210526 * this.width),
+        Math.round(0.473684 * this.height),
       );
     }
 
