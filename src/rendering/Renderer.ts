@@ -24,7 +24,6 @@ import { watchUpdates } from "~/engine/watch-updates";
 import { WorldManager } from "./WorldManager";
 
 const SPACING = 16;
-const GLOBAL_FRONTLINE = 48;
 
 export class Renderer implements AcceptsCommands {
   private scene: Scene;
@@ -39,7 +38,6 @@ export class Renderer implements AcceptsCommands {
   private waitingZone: Geom.Rectangle;
   private busLineX: number;
   private newBusWidth: number;
-  private newBusHeight: number;
 
   private buses: LiveBus[];
 
@@ -83,47 +81,24 @@ export class Renderer implements AcceptsCommands {
   }
 
   private initWaitingZone() {
-    let waitingZoneWidth = 300;
-
-    let waitingZone = (this.waitingZone = Geom.Rectangle.Inflate(
-      new Geom.Rectangle(
-        WorldManager.CanvasWidth - waitingZoneWidth - 300,
-        0,
-        waitingZoneWidth,
-        WorldManager.CanvasHeight
-      ),
+    this.waitingZone = Geom.Rectangle.Inflate(
+      Geom.Rectangle.Clone(WorldManager.WaitingZone.rect),
       -15,
       -16
-    ));
-
-    // this.scene.add
-    //   .rectangle(
-    //     waitingZone.x,
-    //     waitingZone.y,
-    //     waitingZone.width,
-    //     waitingZone.height,
-    //     WAITING_ZONE_COLOR
-    //   )
-    //   .setOrigin(0, 0);
+    );
   }
 
   private initBuses() {
     this.buses = [];
 
-    // TODO: Don't need the whole rectangle
-    let busZone = Geom.Rectangle.Clone(this.waitingZone).setPosition(
-      this.waitingZone.x + this.waitingZone.width + 25,
-      this.waitingZone.y
-    );
+    let busZone = WorldManager.LineUpRoad.rect;
 
     this.busLineX = busZone.centerX;
-
     this.newBusWidth = busZone.width;
-    this.newBusHeight = 150;
 
-    let frontline = GLOBAL_FRONTLINE;
+    let frontline = WorldManager.LineUpRoad.rect.top;
     for (let i = 0; i < NUM_FUTURE_BLOCKS; ++i) {
-      let bus = new LiveBus(this.scene, this.newBusWidth, this.newBusHeight);
+      let bus = new LiveBus(this.scene, this.newBusWidth);
 
       bus.place({ x: this.busLineX, y: frontline });
       frontline += bus.getHeight() + SPACING;
@@ -170,7 +145,7 @@ export class Renderer implements AcceptsCommands {
   private async cmdDriveOff() {
     let frontlines = [-this.buses[0].getHeight()];
 
-    let newFrontline = GLOBAL_FRONTLINE;
+    let newFrontline = WorldManager.LineUpRoad.rect.top;
     for (let i = 1; i < this.buses.length; ++i) {
       frontlines.push(newFrontline);
       newFrontline += this.buses[i].getHeight() + SPACING;
@@ -226,8 +201,7 @@ export class Renderer implements AcceptsCommands {
     this.buses.shift()?.destroy();
     let nextSpawnBus = new LiveBus(
       this.scene,
-      this.newBusWidth,
-      this.newBusHeight
+      this.newBusWidth
     );
 
     // this.scene.children.sendToBack(nextSpawnBus.getGameObject());

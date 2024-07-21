@@ -7,24 +7,20 @@ import { IVector2 } from "~/common/math";
 export class LiveBus extends Actor implements SupportsMotion {
   private motionController: MotionController;
 
-  constructor(scene: Scene, width: number, height: number) {
+  constructor(scene: Scene, width: number) {
     super(scene);
 
     super.buildSprite(
       this.scene.add
-        .rectangle(-1000, -1000, width, height, BUS_COLOR)
+        .rectangle(-1000, -1000, width, 150, BUS_COLOR)
         .setOrigin(0.5, 0)
-        // .setVisible(false)
+      // .setVisible(false)
     );
 
     this.gameObject.depth = 1;
 
     // This needs to be done after the above call to buildSprite
-    this.motionController = new MotionController(
-      this.gameObject
-      // this.scene.physics,
-      // this.physicsBody
-    );
+    this.motionController = new MotionController(this.gameObject);
   }
 
   public getHeight() {

@@ -31,6 +31,10 @@ export class WorldManager {
 
   private static tileSize = 0;
 
+  public static get TileSize() {
+    return this.tileSize;
+  }
+
   public static get WorldMaxWidth() {
     return this.tileSize * this.numTilesX;
   }
@@ -95,22 +99,6 @@ export class WorldManager {
     let x = this.tileSize * tileX;
     let y = this.tileSize * tileY;
     return { x, y };
-  }
-
-  public static regionRect(region: Region) {
-    let { x, y } = this.tileToWorld(region.startTileX, region.startTileY);
-
-    let width =
-      region.numTilesX > 0
-        ? this.tileSize * region.numTilesX
-        : this.WorldMaxWidth;
-
-    let height =
-      region.numTilesY > 0
-        ? this.tileSize * region.numTilesY
-        : this.WorldMaxHeight;
-
-    return { x, y, width, height };
   }
 
   private static drawBackground(scene: Phaser.Scene) {
@@ -187,13 +175,19 @@ export class WorldManager {
     this.regionDebugDisplay = scene.add.group();
 
     for (const region of this.AllRegions) {
-      let { x, y, width, height } = this.regionRect(region);
+      // let { x, y, width, height } = this.regionRect(region);
 
       let color = uniqolor.random().color;
       let colorInt = Color(color).rgbNumber();
 
       let rect = scene.add
-        .rectangle(x, y, width, height, colorInt)
+        .rectangle(
+          region.rect.x,
+          region.rect.y,
+          region.rect.width,
+          region.rect.height,
+          colorInt
+        )
         .setOrigin(0, 0)
         .setAlpha(0.8)
         .setVisible(false)
@@ -242,7 +236,7 @@ export class WorldManager {
     let y = scene.input.mousePointer.y;
 
     for (const region of this.AllRegions) {
-      let { x: x1, y: y1, width, height } = this.regionRect(region);
+      let { x: x1, y: y1, width, height } = region.rect;
 
       let x2 = x1 + width;
       let y2 = y1 + height;
