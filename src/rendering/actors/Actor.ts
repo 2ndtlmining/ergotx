@@ -2,7 +2,8 @@ import Phaser from "phaser";
 
 export type ActorGameObject = Phaser.GameObjects.GameObject &
   Phaser.GameObjects.Components.Transform &
-  Phaser.GameObjects.Components.GetBounds;
+  Phaser.GameObjects.Components.GetBounds &
+  Phaser.GameObjects.Components.Depth;
 
 export class Actor {
   protected scene: Phaser.Scene;

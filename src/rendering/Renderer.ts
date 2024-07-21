@@ -230,7 +230,7 @@ export class Renderer implements AcceptsCommands {
       this.newBusHeight
     );
 
-    this.scene.children.sendToBack(nextSpawnBus.getGameObject());
+    // this.scene.children.sendToBack(nextSpawnBus.getGameObject());
     nextSpawnBus.place({ x: this.busLineX, y: newFrontline });
 
     this.buses.push(nextSpawnBus);

@@ -27,6 +27,8 @@ export class Person extends Actor implements SupportsMotion {
       )
     );
 
+    this.gameObject.depth = 2;
+
     // This needs to be done after the above call to buildSprite
     this.motionController = new MotionController(this.gameObject);
   }
