@@ -16,6 +16,6 @@ export class PlaygroundScene extends BaseScene {
   }
 
   update(time: number, delta: number): void {
-    WorldManager.update(delta);
+    WorldManager.update();
   }
 }
