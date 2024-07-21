@@ -8,12 +8,9 @@ import { SCENE_BG_COLOR } from "~/common/theme";
 import type { BaseScene } from "./scenes/BaseScene";
 import { MainScene } from "./scenes/MainScene";
 import { PlaygroundScene } from "./scenes/PlaygroundScene";
+import { Constructor } from "./common/types";
 
-interface Newable<ReturnType> {
-  new (...args: any[]): ReturnType;
-}
-
-let scene: Newable<BaseScene>;
+let scene: Constructor<BaseScene>;
 let pathname = window.location.pathname;
 
 switch (pathname) {

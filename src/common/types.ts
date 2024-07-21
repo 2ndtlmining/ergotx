@@ -1,5 +1,9 @@
 export type VoidCallback<T> = (payload: T) => void;
 
+export interface Constructor<ReturnType> {
+  new (...args: any[]): ReturnType;
+}
+
 /* ====================== */
 
 export interface TransactionInput {
