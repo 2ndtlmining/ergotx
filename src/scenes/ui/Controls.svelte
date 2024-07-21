@@ -1,7 +1,5 @@
 <script lang="ts">
-  import clsx from "clsx";
   import type { VoidCallback } from "~/common/types";
-  import uniqcolor from "uniqolor";
 
   export let onShowGridlines: VoidCallback<boolean> | undefined;
   export let onDebugRegions: VoidCallback<boolean> | undefined;
@@ -24,8 +22,7 @@
   }
 
   // ============= Update =============
-  let updates = localStorage.getItem("updates") ?? "";
-  $: setAndReload("updates", updates);
+  let updates = localStorage.getItem("updates") ?? "realtime";
 
   // ============= Replays =============
   let recordingReplay = false;
@@ -46,11 +43,9 @@
   let showGridLines = false;
   $: onShowGridlines?.(showGridLines);
 
-  // ==== Grid lines ====
+  // ==== Debug Regions ====
   let debugRegions = false;
   $: onDebugRegions?.(debugRegions);
-
-  // ============= Settings =============
   let hoveredRegion: string | null = null;
 </script>
 
@@ -70,7 +65,17 @@
 
   <label class="mt-4 space-y-1">
     <p class="font-medium">Updates</p>
-    <select class="select select-primary" bind:value={updates}>
+    <!--
+    `on:change` must come after `bind:value` to ensure proper events ordering.
+    @See here https://github.com/sveltejs/svelte/issues/4616#issuecomment-606593969
+    -->
+    <select
+      class="select select-primary"
+      bind:value={updates}
+      on:change={() => {
+        setAndReload("updates", updates);
+      }}
+    >
       <option value="realtime">Realtime</option>
       <option value="replay">Replay</option>
     </select>

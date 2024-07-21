@@ -3,11 +3,11 @@ import { WorldManager } from "~/rendering/WorldManager";
 import { BaseScene } from "./BaseScene";
 import { Time } from "~/common/Time";
 
-import LeftControls from "./ui/LeftControls.svelte";
+import Controls from "./ui/Controls.svelte";
 
 export class MainScene extends BaseScene {
   private visRenderer: Renderer;
-  private leftControls: LeftControls;
+  private uiControls: Controls;
 
   getTitle(): string {
     return "Main";
@@ -17,30 +17,23 @@ export class MainScene extends BaseScene {
     WorldManager.preloadTiles(this.load);
   }
 
-  init() {
-    this.leftControls = new LeftControls({
+  create() {
+    WorldManager.init(this);
+
+    this.uiControls = new Controls({
       target: document.getElementById("controls")!,
       props: {
         onShowGridlines: shouldShow => {
-          if (WorldManager.IsInitialized)
-            WorldManager.showGridLines(shouldShow);
+          WorldManager.showGridLines(shouldShow);
         },
         onDebugRegions: shouldShow => {
-          if (WorldManager.IsInitialized)
-            WorldManager.showRegionsDebug(shouldShow);
+          WorldManager.showRegionsDebug(shouldShow);
         },
         regionUnderCursor: () => {
-          if (WorldManager.IsInitialized)
-            return WorldManager.regionUnderCursor(this)?.debugName ?? null;
-
-          return null;
+          return WorldManager.regionUnderCursor(this)?.debugName ?? null;
         }
       }
     });
-  }
-
-  create() {
-    WorldManager.init(this);
 
     this.visRenderer = new Renderer(this);
     console.log("STARTED");
@@ -50,7 +43,7 @@ export class MainScene extends BaseScene {
     Time.setDeltaTime(deltaTime);
     WorldManager.update();
 
-    this.leftControls.setFps(this.game.loop.actualFps);
+    this.uiControls.setFps(this.game.loop.actualFps);
 
     this.visRenderer.update();
   }
