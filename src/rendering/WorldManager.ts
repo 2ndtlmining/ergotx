@@ -167,7 +167,7 @@ export class WorldManager {
   private static initRegions() {
     this.homeRegion = new Region(0, 0, 4, 0, "Home");
     this.walkLane = new Region(4, 0, 1, 0, "Walk Lane");
-    this.waitingZone = new Region(9, 4, 1, 0, "Waiting Zone");
+    this.waitingZone = new Region(9, 4, 1, 8, "Waiting Zone");
     this.lineUpRoad = new Region(10, 4, 2, 0, "Line Up Road");
     this.flyOffRoad = new Region(10, 0, 2, 4, "Fly Off Road");
   }

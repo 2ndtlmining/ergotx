@@ -40,7 +40,7 @@ export class Engine {
     (<any>window).e = this;
     let w = ((<any>window).w = watchUpdates(this.updateService));
 
-    this.startListening();
+    // this.startListening();
   }
 
   public getUpdateService() {

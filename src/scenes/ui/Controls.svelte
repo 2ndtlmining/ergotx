@@ -45,12 +45,12 @@
   $: onShowGridlines?.(showGridLines);
 
   // ==== Debug Regions ====
-  let debugRegions = false;
+  let debugRegions = true;
   $: onDebugRegions?.(debugRegions);
   let hoveredRegion: string | null = null;
 
   // ==== Debug Bus ====
-  let debugBus = false;
+  let debugBus = true;
   $: onDebugBus?.(debugBus);
 </script>
 
