@@ -112,6 +112,7 @@ export class WorldManager {
 
         let image = scene.add.image(x, y, imageNames[row[j]]).setOrigin(0, 0);
         let scale = this.tileSize / image.width;
+        image.setActive(false);
         image.setScale(scale, scale);
       }
     }
