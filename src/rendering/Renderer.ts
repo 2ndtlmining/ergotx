@@ -21,6 +21,7 @@ import { Person } from "./actors/Person";
 import { LiveBus } from "./actors/LiveBus";
 import { NUM_FUTURE_BLOCKS } from "~/common/constants";
 import { watchUpdates } from "~/engine/watch-updates";
+import { WorldManager } from "./WorldManager";
 
 const SPACING = 16;
 const GLOBAL_FRONTLINE = 48;
@@ -35,9 +36,6 @@ export class Renderer implements AcceptsCommands {
   private houseService: HouseService;
 
   // Visuals related fields
-  private canvasWidth: number;
-  private canvasHeight: number;
-
   private waitingZone: Geom.Rectangle;
   private busLineX: number;
   private newBusWidth: number;
@@ -53,9 +51,6 @@ export class Renderer implements AcceptsCommands {
     this.engine = new Engine(this);
 
     (<any>window).r = this;
-
-    this.canvasWidth = +this.scene.game.config.width;
-    this.canvasHeight = +this.scene.game.config.height;
 
     this.initHouses();
     this.initWaitingZone();
@@ -92,10 +87,10 @@ export class Renderer implements AcceptsCommands {
 
     let waitingZone = (this.waitingZone = Geom.Rectangle.Inflate(
       new Geom.Rectangle(
-        this.canvasWidth - waitingZoneWidth - 300,
+        WorldManager.CanvasWidth - waitingZoneWidth - 300,
         0,
         waitingZoneWidth,
-        this.canvasHeight
+        WorldManager.CanvasHeight
       ),
       -15,
       -16

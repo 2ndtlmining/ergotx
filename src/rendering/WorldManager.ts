@@ -9,14 +9,35 @@ import { IVector2 } from "~/common/math";
 
 export class WorldManager {
   private static isInitialized = false;
+  public static get IsInitialized() {
+    return this.isInitialized;
+  }
+
+  /* ========== Canvas ========== */
 
   private static canvasWidth = 0;
   private static canvasHeight = 0;
+
+  public static get CanvasWidth() {
+    return this.canvasWidth;
+  }
+
+  public static get CanvasHeight() {
+    return this.canvasHeight;
+  }
 
   private static numTilesX = 12;
   private static numTilesY = 0;
 
   private static tileSize = 0;
+
+  public static get WorldMaxWidth() {
+    return this.tileSize * this.numTilesX;
+  }
+
+  public static get WorldMaxHeight() {
+    return this.tileSize * this.numTilesY;
+  }
 
   /* ========== Gridlines ========== */
   private static gridlines: Phaser.GameObjects.Group;
@@ -26,27 +47,28 @@ export class WorldManager {
 
   /* ========== Regions ========== */
   private static homeRegion: Region;
+  public static get HomeRegion() {
+    return this.homeRegion;
+  }
+
   private static walkLane: Region;
+  public static get WalkLane() {
+    return this.walkLane;
+  }
+
   private static waitingZone: Region;
+  public static get WaitingZone() {
+    return this.waitingZone;
+  }
+
   private static lineUpRoad: Region;
+  public static get LineUpRoad() {
+    return this.lineUpRoad;
+  }
+
   private static flyOffRoad: Region;
-
-  private static regionDebugDisplay: Phaser.GameObjects.Group;
-
-  static preloadTiles(load: Phaser.Loader.LoaderPlugin) {
-    load.image("hex", "/tiles/grass.png");
-    load.image("floor_check", "/tiles/floor-check.png");
-    load.image("floor_stone", "/tiles/floor-stone.png");
-    load.image("grass", "/tiles/grass.png");
-    load.image("road", "/tiles/road.png");
-  }
-
-  public static get WorldMaxWidth() {
-    return this.tileSize * this.numTilesX;
-  }
-
-  public static get WorldMaxHeight() {
-    return this.tileSize * this.numTilesY;
+  public static get FlyOffRoad() {
+    return this.flyOffRoad;
   }
 
   public static get AllRegions() {
@@ -59,8 +81,14 @@ export class WorldManager {
     ];
   }
 
-  public static get IsInitialized() {
-    return this.isInitialized;
+  private static regionDebugDisplay: Phaser.GameObjects.Group;
+
+  static preloadTiles(load: Phaser.Loader.LoaderPlugin) {
+    load.image("hex", "/tiles/grass.png");
+    load.image("floor_check", "/tiles/floor-check.png");
+    load.image("floor_stone", "/tiles/floor-stone.png");
+    load.image("grass", "/tiles/grass.png");
+    load.image("road", "/tiles/road.png");
   }
 
   public static tileToWorld(tileX: number, tileY: number): IVector2 {
