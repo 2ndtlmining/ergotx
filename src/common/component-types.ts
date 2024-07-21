@@ -1,4 +1,4 @@
-import { GameObjects } from 'phaser';
+import { GameObjects } from "phaser";
 
 // export type Transform = GameObjects.Components.;
 export type Transform = GameObjects.Components.Transform;

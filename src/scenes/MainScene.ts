@@ -35,7 +35,7 @@ export class MainScene extends BaseScene {
           return WorldManager.regionUnderCursor(this)?.debugName ?? null;
         },
         onDebugBus: shouldShow => {
-          updateSettings((settings) => {
+          updateSettings(settings => {
             settings.debugBus = shouldShow;
           });
         }

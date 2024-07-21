@@ -1,10 +1,10 @@
 import { WorldManager } from "~/rendering/WorldManager";
 import { BaseScene } from "./BaseScene";
+import { Time } from "~/common/Time";
 
 export class PlaygroundScene extends BaseScene {
-
   getTitle(): string {
-    return "Playground"
+    return "Playground";
   }
 
   preload() {
@@ -15,7 +15,8 @@ export class PlaygroundScene extends BaseScene {
     WorldManager.init(this);
   }
 
-  update(time: number, delta: number): void {
+  update(_currentTime: number, deltaTime: number) {
+    Time.setDeltaTime(deltaTime);
     WorldManager.update();
   }
 }
