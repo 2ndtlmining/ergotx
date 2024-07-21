@@ -167,7 +167,7 @@ export class WorldManager {
   private static initRegions() {
     this.homeRegion = new Region(0, 0, 4, 0, "Home");
     this.walkLane = new Region(4, 0, 1, 0, "Walk Lane");
-    this.waitingZone = new Region(5, 4, 5, 0, "Waiting Zone");
+    this.waitingZone = new Region(9, 4, 1, 0, "Waiting Zone");
     this.lineUpRoad = new Region(10, 4, 2, 0, "Line Up Road");
     this.flyOffRoad = new Region(10, 0, 2, 4, "Fly Off Road");
   }
@@ -178,7 +178,7 @@ export class WorldManager {
     for (const region of this.AllRegions) {
       // let { x, y, width, height } = this.regionRect(region);
 
-      let color = uniqolor.random().color;
+      let color = uniqolor(region.debugName ?? "").color;
       let colorInt = Color(color).rgbNumber();
 
       let rect = scene.add
