@@ -3,7 +3,6 @@ import { VoidCallback } from "~/common/types";
 
 export const debugSettings = {
   debugBus: false,
-  debugBusWalkIn: false
 };
 
 export type DebugSettings = typeof debugSettings;

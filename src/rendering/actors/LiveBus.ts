@@ -7,23 +7,75 @@ import { Transform } from "~/common/component-types";
 export class LiveBus extends Actor implements SupportsMotion {
   private container: GameObjects.Container;
   private sprite: GameObjects.Image;
+
+  private planeDebug: GameObjects.Rectangle;
+  private regionDebug: GameObjects.Rectangle;
+
+  private width: number;
   private height: number;
 
   private motionController: MotionController;
+
+  // ====================
+
+  private walkInRegion: Geom.Rectangle;
+
   constructor(scene: Scene, width: number) {
     super(scene);
 
     {
-      let sprite = this.sprite = this.scene.add.image(0, 0, "plane");
+      let sprite = (this.sprite = this.scene.add.image(0, 0, "plane"));
       sprite.scale = width / sprite.width;
       sprite.setOrigin(0.5, 0);
+
+      this.width = width;
       this.height = sprite.getBounds().height;
 
       this.container = scene.add.container(-1000, -1000);
       this.container.add(sprite);
+      this.container.depth = 1;
     }
 
-    this.container.depth = 1;
+    {
+      this.walkInRegion = new Geom.Rectangle(
+        60,
+        50,
+        width - 120,
+        this.height - 80
+      );
+    }
+
+    {
+      this.planeDebug = scene.add
+        .rectangle(-this.width / 2, 0, this.width, this.height, 0xff0000)
+        .setOrigin(0, 0)
+        .setAlpha(0.4);
+
+      this.planeDebug.isStroked = true;
+      this.planeDebug.setStrokeStyle(2, 0x090436);
+
+      this.regionDebug = scene.add
+        .rectangle(
+          0,
+          0,
+          this.walkInRegion.width,
+          this.walkInRegion.height,
+          0xdbeb34
+        )
+        .setOrigin(0, 0)
+        .setAlpha(0.6);
+
+      this.regionDebug.isStroked = true;
+      this.regionDebug.setStrokeStyle(2, 0x090436);
+
+      this.regionDebug.x -= this.width / 2;
+      this.regionDebug.x += this.walkInRegion.x;
+
+      this.regionDebug.y += this.walkInRegion.y;
+
+      this.container.add(this.planeDebug);
+      this.container.add(this.regionDebug);
+    }
 
     this.motionController = new MotionController(this.container);
   }
@@ -37,12 +89,11 @@ export class LiveBus extends Actor implements SupportsMotion {
   }
 
   public getWalkInTargetPoint() {
-    // TODO: cache region (and update when moved) for faster
-    // point calculation
-    let allowedRegion = this.sprite.getBounds();
+    let point = this.walkInRegion.getRandomPoint();
+    point.x += this.getX() - this.width / 2;
+    point.y += this.getY();
 
-    Geom.Rectangle.Inflate(allowedRegion, -100, -100);
-    return allowedRegion.getRandomPoint();
+    return point;
   }
 
   /* ============= */
