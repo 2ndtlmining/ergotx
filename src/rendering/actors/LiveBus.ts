@@ -13,7 +13,6 @@ export class LiveBus extends Actor implements SupportsMotion {
       let image = this.scene.add.image(-1000, -1000, "plane");
       image.scale = width / image.width;
       image.setOrigin(0.5, 0);
-      super.buildSprite(image);
     }
 
     this.gameObject.depth = 1;

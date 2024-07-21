@@ -20,16 +20,8 @@ import { Person } from "./actors/Person";
 import { LiveBus } from "./actors/LiveBus";
 import { NUM_FUTURE_BLOCKS } from "~/common/constants";
 import { WorldManager } from "./WorldManager";
-import EventEmitter from "eventemitter3";
 
 const SPACING = 16;
-
-export class RendererDebugSettings {
-  public debugBus = false;
-  public debugBusWalkIn = false;
-
-  private _emitter = new EventEmitter();
-}
 
 export class Renderer implements AcceptsCommands {
   private scene: Scene;
