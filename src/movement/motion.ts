@@ -1,5 +1,6 @@
+import { Transform } from "~/common/component-types";
 import type { VoidCallback } from "~/common/types";
-import { ActorGameObject } from "~/rendering/actors/Actor";
+// import { ActorGameObject } from "~/rendering/actors/Actor";
 
 export abstract class Motion {
   private _controller: MotionController | null;
@@ -30,12 +31,12 @@ export abstract class Motion {
 export class MotionController {
   // public readonly physics: ArcadePhysics;
   // public readonly body: PhysicsBody;
-  public readonly gameObject: ActorGameObject;
+  public readonly gameObject: Transform;
 
   private currentMotion: Motion | null;
   private onComplete: VoidCallback<void>;
 
-  constructor(gameObject: ActorGameObject) {
+  constructor(gameObject: Transform) {
     // this.physics = physics;
     // this.body = body;
     this.gameObject = gameObject;

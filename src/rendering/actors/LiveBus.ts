@@ -1,9 +1,11 @@
-import { Geom, Scene } from "phaser";
-import { Actor } from "./Actor";
+import { Geom, Scene, GameObjects } from "phaser";
 import { MotionController, SupportsMotion } from "~/movement/motion";
 import { IVector2 } from "~/common/math";
+import { Actor } from "./Actor";
+import { Transform } from "~/common/component-types";
 
 export class LiveBus extends Actor implements SupportsMotion {
+  private gameObject: GameObjects.Image;
   private motionController: MotionController;
 
   constructor(scene: Scene, width: number) {
@@ -13,12 +15,11 @@ export class LiveBus extends Actor implements SupportsMotion {
       let image = this.scene.add.image(-1000, -1000, "plane");
       image.scale = width / image.width;
       image.setOrigin(0.5, 0);
-      super.buildSprite(image);
+      this.gameObject = image;
     }
 
     this.gameObject.depth = 1;
 
-    // This needs to be done after the above call to buildSprite
     this.motionController = new MotionController(this.gameObject);
   }
 
@@ -44,6 +45,14 @@ export class LiveBus extends Actor implements SupportsMotion {
 
   public update() {
     this.motionController.update();
+  }
+
+  public destroy() {
+    this.gameObject.destroy();
+  }
+
+  public getTransform(): Transform {
+    return this.gameObject;
   }
 
   public getMotionController(): MotionController {

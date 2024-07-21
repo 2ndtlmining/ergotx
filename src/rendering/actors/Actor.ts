@@ -1,38 +1,41 @@
 import Phaser from "phaser";
+import { Transform } from "~/common/component-types";
 
-export type ActorGameObject = Phaser.GameObjects.GameObject &
-  Phaser.GameObjects.Components.Transform &
-  Phaser.GameObjects.Components.GetBounds &
-  Phaser.GameObjects.Components.Depth;
+// export type ActorGameObject = Phaser.GameObjects.GameObject &
+//   Phaser.GameObjects.Components.Transform &
+//   Phaser.GameObjects.Components.Depth;
 
-export class Actor {
+export abstract class Actor {
   protected scene: Phaser.Scene;
-  protected gameObject: ActorGameObject;
-  // protected gameObject: Phaser.GameObjects.GameObject;
-  // protected physicsBody: Phaser.Physics.Arcade.Body;
+  // protected gameObject: T;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
   }
 
-  protected buildSprite(gameObject: ActorGameObject) {
-    this.gameObject = gameObject;
-    // this.physicsBody = this.scene.physics.add.existing(gameObject).body as any;
-  }
-
-  public destroy() {
-    this.gameObject.destroy();
-  }
+  public abstract getTransform(): Transform;
 
   public getX() {
-    return this.gameObject.x;
+    return this.getTransform().x;
   }
 
   public getY() {
-    return this.gameObject.y;
+    return this.getTransform().y;
   }
 
-  public getGameObject() {
-    return this.gameObject;
-  }
+  // protected buildSprite(gameObject: T) {
+  //   this.gameObject = gameObject;
+  // }
+
+  // public getX() {
+  //   return this.gameObject.x;
+  // }
+
+  // public getY() {
+  //   return this.gameObject.y;
+  // }
+
+  // public getGameObject() {
+  //   return this.gameObject;
+  // }
 }
