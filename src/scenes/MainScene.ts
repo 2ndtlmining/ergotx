@@ -15,6 +15,7 @@ export class MainScene extends BaseScene {
 
   preload() {
     WorldManager.preloadTiles(this.load);
+    this.load.image("plane", "/planes/plane-2.png");
   }
 
   create() {

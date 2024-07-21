@@ -1,7 +1,6 @@
-import { GameObjects, Geom, Scene } from "phaser";
+import { Geom, Scene } from "phaser";
 import { Actor } from "./Actor";
 import { MotionController, SupportsMotion } from "~/movement/motion";
-import { BUS_COLOR } from "~/common/theme";
 import { IVector2 } from "~/common/math";
 
 export class LiveBus extends Actor implements SupportsMotion {
@@ -10,12 +9,12 @@ export class LiveBus extends Actor implements SupportsMotion {
   constructor(scene: Scene, width: number) {
     super(scene);
 
-    super.buildSprite(
-      this.scene.add
-        .rectangle(-1000, -1000, width, 150, BUS_COLOR)
-        .setOrigin(0.5, 0)
-      // .setVisible(false)
-    );
+    {
+      let image = this.scene.add.image(-1000, -1000, "plane");
+      image.scale = width / image.width;
+      image.setOrigin(0.5, 0);
+      super.buildSprite(image);
+    }
 
     this.gameObject.depth = 1;
 

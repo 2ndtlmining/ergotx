@@ -7,8 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit",
-    "sveltecheck": "svelte-check --tsconfig ./tsconfig.json",
+    "typecheck": "svelte-check --tsconfig ./tsconfig.json",
     "format": "prettier -uw --cache --ignore-path .prettierignore ."
   },
   "dependencies": {

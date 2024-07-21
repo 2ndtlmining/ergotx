@@ -12,5 +12,3 @@ export const HOUSE_COLOR = WHITE;
 export const HOUSE_TEXT_COLOR = "#69f542";
 
 export const WAITING_ZONE_COLOR = 0x435153;
-
-export const BUS_COLOR = 0x553c69;
