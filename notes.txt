@@ -53,10 +53,27 @@ block update:
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
-spacing = 16 // spacing between blocks
-frontline
+pa = none | wait | block(a)
+pb = wait | block(b)
 
-Bus:
-    height
+none => wait:
+    house(const y) -> walklane
+    walklane(const x) -> y of wait
+    walklane(const y) -> x of wait
 
+none => block(b)
+    house(const y) -> walklane
+    walklane(const x) -> y of block(b)
+    walklane(const y) -> x of block(b)
 
+wait => block(b)
+    wait(const x) -> y of block(b)
+    wait(const y) -> x of block(b)
+
+block(a) => wait
+    block(a)(const y) -> x of wait
+    wait -> y of wait
+
+block(a) => block(b)
+    block(a)(const y) -> x of wait
+    wait => block(b)

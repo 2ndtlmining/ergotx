@@ -20,6 +20,7 @@ import { Person } from "./actors/Person";
 import { LiveBus } from "./actors/LiveBus";
 import { NUM_FUTURE_BLOCKS } from "~/common/constants";
 import { WorldManager } from "./WorldManager";
+import { createWalkPoints } from "./walks";
 
 const SPACING = 16;
 
@@ -137,7 +138,17 @@ export class Renderer implements AcceptsCommands {
         break;
     }
 
-    let motion = new LinearMotion([targetPosition]);
+    let beforePlacement = this.engine.getPlacement(tx);
+
+    let walkPoints = createWalkPoints(
+      {
+        placement: beforePlacement,
+        position: { x: person.getX(), y: person.getY() }
+      },
+      { placement: placement, position: targetPosition }
+    );
+
+    let motion = new LinearMotion(walkPoints);
     return attachMotion(person, motion).run();
   }
 

@@ -13,6 +13,7 @@ import { BlockFoundTick } from "./BlockFoundTick";
 import { SkipTick } from "./SkipTick";
 import { delay } from "~/common/utils";
 import { watchUpdates } from "./watch-updates";
+import { Transaction } from "~/common/types";
 
 export class Engine {
   private assembly: AssemblySnapshot;
@@ -37,9 +38,9 @@ export class Engine {
     this.updateService = new ReplayUpdateService("/replays/replay-01.json");
 
     (<any>window).e = this;
-    let w = (<any>window).w = watchUpdates(this.updateService);
+    let w = ((<any>window).w = watchUpdates(this.updateService));
 
-    // this.startListening();
+    this.startListening();
   }
 
   public getUpdateService() {
@@ -62,6 +63,10 @@ export class Engine {
   public resume() {
     this.startListening();
     this.isPaused = false;
+  }
+
+  public getPlacement(tx: Transaction) {
+    return this.assembly.states.getState(tx)?.placement ?? null;
   }
 
   private createNextTick(): Tick {

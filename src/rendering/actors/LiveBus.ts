@@ -7,7 +7,7 @@ import { watchSettings } from "../DebugSettings";
 
 export class LiveBus extends Actor implements SupportsMotion {
   private container: GameObjects.Container;
-  private sprite: GameObjects.Image;
+  // private sprite: GameObjects.Image;
 
   private planeDebug: GameObjects.Rectangle;
   private regionDebug: GameObjects.Rectangle;
@@ -25,7 +25,7 @@ export class LiveBus extends Actor implements SupportsMotion {
     super(scene);
 
     {
-      let sprite = (this.sprite = this.scene.add.image(0, 0, "plane"));
+      let sprite = this.scene.add.image(0, 0, "plane");
       sprite.scale = width / sprite.width;
       sprite.setOrigin(0.5, 0);
 
@@ -112,6 +112,8 @@ export class LiveBus extends Actor implements SupportsMotion {
 
   public destroy() {
     this.container.destroy();
+    this.planeDebug.destroy();
+    this.regionDebug.destroy();
   }
 
   public getTransform(): Transform {
