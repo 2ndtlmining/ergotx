@@ -48,7 +48,8 @@ export class BlockTick extends Tick {
         walks.push({
           type: "walk",
           tx,
-          placement: pAfter
+          prevPlacement: null,
+          placement: pAfter,
         });
       }
       // Otherwise (placement did exist before) check if it was
@@ -57,6 +58,7 @@ export class BlockTick extends Tick {
         walks.push({
           type: "walk",
           tx,
+          prevPlacement: pBefore,
           placement: pAfter
         });
       }
@@ -87,6 +89,7 @@ export class BlockTick extends Tick {
         walks.push({
           type: "walk",
           tx,
+          prevPlacement: pBefore,
           placement: pShiftedAfter
         });
       }
@@ -108,6 +111,7 @@ export class BlockTick extends Tick {
         yieldOuts.push({
           type: "walk",
           tx,
+          prevPlacement: pBefore,
           placement: {
             type: "waiting"
           }
@@ -116,6 +120,7 @@ export class BlockTick extends Tick {
       yieldIns.push({
         type: "walk",
         tx,
+        prevPlacement: pBefore,
         placement: {
           type: "block",
           index: NUM_FUTURE_BLOCKS - 1

@@ -56,6 +56,7 @@ export class TransactionsTick extends Tick {
           walks.push({
             type: "walk",
             tx,
+            prevPlacement: placementBefore,
             placement: placementAfter!
           });
         }
@@ -77,6 +78,7 @@ export class TransactionsTick extends Tick {
         walks.push({
           type: "walk",
           tx,
+          prevPlacement: placementBefore,
           placement: placementAfter!
         });
       }

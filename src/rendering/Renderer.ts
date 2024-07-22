@@ -116,7 +116,7 @@ export class Renderer implements AcceptsCommands {
     this.blockGroups.delete(tx.id);
   }
 
-  private async cmdWalk(tx: Transaction, placement: Placement) {
+  private async cmdWalk(tx: Transaction, placement: Placement, prevPlacement: Placement | null) {
     let person = this.getTxPerson(tx);
 
     let targetPosition: Geom.Point;
@@ -132,11 +132,9 @@ export class Renderer implements AcceptsCommands {
         break;
     }
 
-    let beforePlacement = this.engine.getPlacement(tx);
-
     let walkPoints = createWalkPoints(
       {
-        placement: beforePlacement,
+        placement: prevPlacement,
         position: { x: person.getX(), y: person.getY() }
       },
       { placement: placement, position: targetPosition }
@@ -227,7 +225,7 @@ export class Renderer implements AcceptsCommands {
         case "kill":
           return this.cmdKill(cmd.tx);
         case "walk":
-          return this.cmdWalk(cmd.tx, cmd.placement);
+          return this.cmdWalk(cmd.tx, cmd.placement, cmd.prevPlacement);
         case "drive_off":
           return this.cmdDriveOff();
       }

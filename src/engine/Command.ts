@@ -4,7 +4,12 @@ import type { Placement } from "~/common/Placement";
 export type Command =
   | { type: "spawn"; tx: Transaction }
   | { type: "kill"; tx: Transaction }
-  | { type: "walk"; tx: Transaction; placement: Placement }
+  | {
+      type: "walk";
+      tx: Transaction;
+      placement: Placement;
+      prevPlacement: Placement | null;
+    }
   | { type: "drive_off" };
 
 export interface AcceptsCommands {
