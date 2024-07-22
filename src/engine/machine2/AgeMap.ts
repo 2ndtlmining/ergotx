@@ -76,6 +76,11 @@ export class AgeMap {
       includedTransactions.push(tx);
     }
 
+    newMap.map.forEach((value, key) => {
+      if (value === -1)
+        newMap.remove(key);
+    });
+
     return [newMap, includedTransactions];
   }
 }

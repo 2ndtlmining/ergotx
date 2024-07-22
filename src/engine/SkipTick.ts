@@ -1,9 +1,9 @@
 import { AcceptsCommands } from "./Command";
-import { AssemblySnapshot } from "./state-snapshot";
+import { Assembly } from "./machine2/Assembly";
 import { Tick } from "./Tick";
 
 export class SkipTick extends Tick {
-  getNextAssembly(): AssemblySnapshot {
+  getNextAssembly(): Assembly {
     return this.assembly;
   }
 

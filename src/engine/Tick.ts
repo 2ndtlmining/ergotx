@@ -1,14 +1,14 @@
 import { AssembleStrategy } from "~/assemble/AssembleStrategy";
 
 import { AcceptsCommands } from "./Command";
-import { AssemblySnapshot } from "./state-snapshot";
+import { Assembly } from "./machine2/Assembly";
 
 export abstract class Tick {
   constructor(
-    protected readonly assembly: AssemblySnapshot,
+    protected readonly assembly: Assembly,
     protected readonly assembleStrategy: AssembleStrategy
   ) {}
 
-  abstract getNextAssembly(): AssemblySnapshot;
+  abstract getNextAssembly(): Assembly;
   abstract applyCommands(cmdExecutor: AcceptsCommands): Promise<void>;
 }

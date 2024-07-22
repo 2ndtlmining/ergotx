@@ -3,6 +3,7 @@
 /.pnp
 .pnp.js
 /public
+/old
 
 pnpm-lock.yaml
 package-lock.json

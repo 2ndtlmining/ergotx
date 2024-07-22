@@ -1,62 +1,32 @@
 import { AssembleStrategy } from "~/assemble/AssembleStrategy";
-import { PropSet } from "~/common/PropSet";
-import { TX_MAX_AGE } from "~/common/constants";
+import { AcceptsCommands, Command } from "../Command";
+import { Tick } from "../Tick";
+import { Assembly } from "./Assembly";
 import { Transaction } from "~/common/types";
-import { AcceptsCommands, Command } from "./Command";
-import { arePlacementsEqual } from "./Placement";
-import { AssemblySnapshot, TxStateSet } from "./state-snapshot";
-import { Tick } from "./Tick";
-import { assembleWith } from "./utils";
+import { PropSet } from "~/common/PropSet";
+import { arePlacementsEqual } from "../Placement";
 
 export class UnconfirmedTransactionsTick extends Tick {
-  private targetAssembly: AssemblySnapshot;
+  private targetAssembly: Assembly;
 
   constructor(
-    assembly: AssemblySnapshot,
+    assembly: Assembly,
     assembleStrategy: AssembleStrategy,
     protected readonly incomingTxs: Transaction[]
   ) {
     super(assembly, assembleStrategy);
 
-    let newStates = assembly.states.clone();
-    let newTransactions = this.mergeIncomingInto(newStates);
-    this.targetAssembly = assembleWith(
-      this.assembleStrategy,
-      newStates,
-      newTransactions
-    );
-  }
-
-  private mergeIncomingInto(newStates: TxStateSet) {
-    // 1. Increment all
-    newStates.incrementAll();
-
-    // 2. Append, or reset age, of new
-    for (const tx of this.incomingTxs) {
-      newStates.markSeen(tx);
-    }
-
-    // 3. Remove those with age >= MAX_AGE
-    let combinedSet = PropSet.fromArray(
-      [...this.assembly.transactions, ...this.incomingTxs],
-      tx => tx.id
+    let [newAgeMap, newTransactions] = assembly.ageMap.extended(
+      assembly.transactions,
+      incomingTxs
     );
 
-    let newTransactions: Transaction[] = [];
+    let pMap = this.assembleStrategy.assembleTransactions(newTransactions);
 
-    for (const tx of combinedSet.getItems()) {
-      let state = newStates.getState(tx)!;
-      if (state.age >= TX_MAX_AGE) {
-        newStates.remove(tx);
-      } else {
-        newTransactions.push(tx);
-      }
-    }
-
-    return newTransactions;
+    this.targetAssembly = new Assembly(newTransactions, newAgeMap, pMap);
   }
 
-  getNextAssembly(): AssemblySnapshot {
+  getNextAssembly(): Assembly {
     return this.targetAssembly;
   }
 
@@ -73,8 +43,8 @@ export class UnconfirmedTransactionsTick extends Tick {
     let walks: Command[] = [];
 
     for (const tx of combinedSet.getItems()) {
-      let placementBefore = snapshotA.states.getState(tx)?.placement ?? null;
-      let placementAfter = snapshotB.states.getState(tx)?.placement ?? null;
+      let placementBefore = snapshotA.placementMap.get(tx.id);
+      let placementAfter = snapshotB.placementMap.get(tx.id);
 
       let aliveBefore = Boolean(placementBefore);
       let aliveNow = Boolean(placementAfter);

@@ -5,18 +5,19 @@ import { ReplayUpdateService } from "~/ergoapi/ReplayUpdateService";
 import type { AssembleStrategy } from "~/assemble/AssembleStrategy";
 import { DefaultAssembleStrategy } from "~/assemble/DefaultAssembleStrategy";
 
-import { AssemblySnapshot, TxStateSet } from "./state-snapshot";
+// import { AssemblySnapshot, TxStateSet } from "./state-snapshot";
+import { Assembly } from "./machine2/Assembly";
 import type { AcceptsCommands } from "./Command";
-import { UnconfirmedTransactionsTick } from "./UnconfirmedTransactionsTick";
+import { UnconfirmedTransactionsTick } from "./machine2/UnconfirmedTransactionsTick2";
 import { Tick } from "./Tick";
-import { BlockFoundTick } from "./BlockFoundTick";
+// import { BlockFoundTick } from "./BlockFoundTick";
 import { SkipTick } from "./SkipTick";
 import { delay } from "~/common/utils";
 import { watchUpdates } from "./watch-updates";
 import { Transaction } from "~/common/types";
 
 export class Engine {
-  private assembly: AssemblySnapshot;
+  private assembly: Assembly;
   private assembleStrategy: AssembleStrategy;
 
   private cmdExecutor: AcceptsCommands;
@@ -27,7 +28,7 @@ export class Engine {
 
   constructor(cmdExecutor: AcceptsCommands) {
     // Starts with empty assembly
-    this.assembly = new AssemblySnapshot([], new TxStateSet());
+    this.assembly = Assembly.empty();
     this.assembleStrategy = new DefaultAssembleStrategy();
 
     this.cmdExecutor = cmdExecutor;
@@ -36,7 +37,7 @@ export class Engine {
 
     // this.updateService = new PollUpdateService();
     this.updateService = new ReplayUpdateService("/replays/replay-01.json");
-    // this.startListening();
+    this.startListening();
 
     (<any>window).e = this;
     let w = ((<any>window).w = watchUpdates(this.updateService));
@@ -65,7 +66,7 @@ export class Engine {
   }
 
   public getPlacement(tx: Transaction) {
-    return this.assembly.states.getState(tx)?.placement ?? null;
+    return this.assembly.placementMap.get(tx.id);
   }
 
   private createNextTick(): Tick {
@@ -80,12 +81,12 @@ export class Engine {
         );
 
       case "block":
-        // return new SkipTick(this.assembly, this.assembleStrategy);
-        return new BlockFoundTick(
-          this.assembly,
-          this.assembleStrategy,
-          nextUpdate.block
-        );
+        return new SkipTick(this.assembly, this.assembleStrategy);
+      // return new BlockFoundTick(
+      //   this.assembly,
+      //   this.assembleStrategy,
+      //   nextUpdate.block
+      // );
     }
   }
 

@@ -1,14 +1,6 @@
 import type { Transaction } from "~/common/types";
-
-export type AssemblyPlacement =
-  | { type: "waiting" }
-  | { type: "block"; index: number };
-
-export interface AssembledTransaction {
-  tx: Transaction;
-  placement: AssemblyPlacement;
-}
+import { PlacementMap } from "~/engine/machine2/PlacementMap";
 
 export interface AssembleStrategy {
-  assembleTransactions(transactions: Transaction[]): AssembledTransaction[];
+  assembleTransactions(transactions: Transaction[]): PlacementMap;
 }

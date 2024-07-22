@@ -1,18 +1,15 @@
 import type { Transaction } from "~/common/types";
-import type {
-  AssembleStrategy,
-  AssembledTransaction
-} from "./AssembleStrategy";
+import type { AssembleStrategy } from "./AssembleStrategy";
 import { NUM_FUTURE_BLOCKS } from "~/common/constants";
+import { PlacementMap } from "~/engine/machine2/PlacementMap";
 
 export class DefaultAssembleStrategy implements AssembleStrategy {
-  public assembleTransactions(
-    transactions: Transaction[]
-  ): AssembledTransaction[] {
+  public assembleTransactions(transactions: Transaction[]): PlacementMap {
     const NODES_PER_BLOCK = 5;
     const MAX_BLOCKS = NUM_FUTURE_BLOCKS;
 
-    let nodes: AssembledTransaction[] = [];
+    let pMap = new PlacementMap();
+
     let filledBlocks = 0;
 
     let i = 0;
@@ -20,10 +17,7 @@ export class DefaultAssembleStrategy implements AssembleStrategy {
     while (i < transactions.length && filledBlocks < MAX_BLOCKS) {
       let slice = transactions.slice(i, i + NODES_PER_BLOCK);
       for (const tx of slice) {
-        nodes.push({
-          tx,
-          placement: { type: "block", index: filledBlocks }
-        });
+        pMap.placeBlock(tx.id, filledBlocks);
       }
 
       i += NODES_PER_BLOCK;
@@ -31,13 +25,10 @@ export class DefaultAssembleStrategy implements AssembleStrategy {
     }
 
     while (i < transactions.length) {
-      nodes.push({
-        tx: transactions[i],
-        placement: { type: "waiting" }
-      });
+      pMap.placeWaiting(transactions[i].id);
       i++;
     }
 
-    return nodes;
+    return pMap;
   }
 }
