@@ -45,7 +45,7 @@
   $: onShowGridlines?.(showGridLines);
 
   // ==== Debug Regions ====
-  let debugRegions = true;
+  let debugRegions = false;
   $: onDebugRegions?.(debugRegions);
   let hoveredRegion: string | null = null;
 
