@@ -11,6 +11,7 @@ import { DefaultAssembleStrategy } from "~/assemble/DefaultAssembleStrategy";
 import type { AcceptsCommands } from "./Command";
 import type { Tick } from "./Tick";
 import { TransactionsTick } from "./TransactionsTick";
+import { BlockTick } from "./BlockTick";
 import { Assembly } from "./Assembly";
 import { SkipTick } from "./SkipTick";
 import { watchUpdates } from "./watch-updates";
@@ -80,12 +81,12 @@ export class Engine {
         );
 
       case "block":
-        return new SkipTick(this.assembly, this.assembleStrategy);
-      // return new BlockFoundTick(
-      //   this.assembly,
-      //   this.assembleStrategy,
-      //   nextUpdate.block
-      // );
+        // return new SkipTick(this.assembly, this.assembleStrategy);
+        return new BlockTick(
+          this.assembly,
+          this.assembleStrategy,
+          nextUpdate.block
+        );
     }
   }
 

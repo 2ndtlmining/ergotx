@@ -171,6 +171,9 @@ export class Renderer implements AcceptsCommands {
       motions.push(busMotion);
     }
 
+
+    const dyingTxIds: string[] = []
+
     // update block groups and add animations
     for (const [txId, currentBlock] of this.blockGroups.entries()) {
       const newBlock = currentBlock - 1;
@@ -178,6 +181,7 @@ export class Renderer implements AcceptsCommands {
       if (newBlock === -1) {
         // this is going out of screen
         this.blockGroups.delete(txId);
+        dyingTxIds.push(txId);
       } else {
         // this is going to the block above
         this.blockGroups.set(txId, newBlock);
@@ -201,6 +205,11 @@ export class Renderer implements AcceptsCommands {
     }
 
     await Promise.all(motions.map(m => m.run()));
+    for (const txId of dyingTxIds) {
+      // TODO: make this into one function call
+      this.getTxIdPerson(txId).destroy();
+      this.personMap.delete(txId);
+    }
 
     this.buses.shift()?.destroy();
     let nextSpawnBus = new LiveBus(this.scene, this.busZoneWidth);
