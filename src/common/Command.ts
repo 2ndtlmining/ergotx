@@ -10,8 +10,7 @@ export type Command =
     placement: Placement;
     prevPlacement: Placement | null;
   }
-  | { type: "drive_off" }
-  | { type: "kill_all" };
+  | { type: "drive_off" };
 
 export interface AcceptsCommands {
   executeCommands(commands: Command[]): Promise<unknown>;

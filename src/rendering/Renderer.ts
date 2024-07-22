@@ -235,8 +235,6 @@ export class Renderer implements AcceptsCommands {
           return this.cmdWalk(cmd.tx, cmd.placement, cmd.prevPlacement);
         case "drive_off":
           return this.cmdDriveOff();
-        case "kill_all":
-          return this.reset();
       }
     });
 
@@ -244,10 +242,6 @@ export class Renderer implements AcceptsCommands {
   }
 
   /* ======================================= */
-
-  private async reset() {
-    // this.personMap.forEach((person, key) => )
-  }
 
   public update() {
     this.personMap.forEach(person => {
