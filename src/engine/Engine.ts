@@ -1,3 +1,6 @@
+import { Transaction } from "~/common/types";
+import { delay } from "~/common/utils";
+
 import type { UpdateService } from "~/ergoapi/UpdateService";
 import { PollUpdateService } from "~/ergoapi/PollUpdateService";
 import { ReplayUpdateService } from "~/ergoapi/ReplayUpdateService";
@@ -5,16 +8,12 @@ import { ReplayUpdateService } from "~/ergoapi/ReplayUpdateService";
 import type { AssembleStrategy } from "~/assemble/AssembleStrategy";
 import { DefaultAssembleStrategy } from "~/assemble/DefaultAssembleStrategy";
 
-// import { AssemblySnapshot, TxStateSet } from "./state-snapshot";
-import { Assembly } from "./machine2/Assembly";
 import type { AcceptsCommands } from "./Command";
-import { UnconfirmedTransactionsTick } from "./machine2/UnconfirmedTransactionsTick2";
-import { Tick } from "./Tick";
-// import { BlockFoundTick } from "./BlockFoundTick";
+import type { Tick } from "./Tick";
+import { TransactionsTick } from "./TransactionsTick";
+import { Assembly } from "./Assembly";
 import { SkipTick } from "./SkipTick";
-import { delay } from "~/common/utils";
 import { watchUpdates } from "./watch-updates";
-import { Transaction } from "~/common/types";
 
 export class Engine {
   private assembly: Assembly;
@@ -74,7 +73,7 @@ export class Engine {
 
     switch (nextUpdate.type) {
       case "txs":
-        return new UnconfirmedTransactionsTick(
+        return new TransactionsTick(
           this.assembly,
           this.assembleStrategy,
           nextUpdate.transactions

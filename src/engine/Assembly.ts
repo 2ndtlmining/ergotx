@@ -1,6 +1,6 @@
 import { Transaction } from "~/common/types";
+import { PlacementMap } from "~/common/Placement";
 import { AgeMap } from "./AgeMap";
-import { PlacementMap } from "./PlacementMap";
 
 export class Assembly {
   constructor(

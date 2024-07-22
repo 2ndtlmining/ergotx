@@ -1,7 +1,8 @@
-import type { Transaction } from "~/common/types";
-import type { AssembleStrategy } from "./AssembleStrategy";
 import { NUM_FUTURE_BLOCKS } from "~/common/constants";
-import { PlacementMap } from "~/engine/machine2/PlacementMap";
+import { PlacementMap } from "~/common/Placement";
+import type { Transaction } from "~/common/types";
+
+import type { AssembleStrategy } from "./AssembleStrategy";
 
 export class DefaultAssembleStrategy implements AssembleStrategy {
   public assembleTransactions(transactions: Transaction[]): PlacementMap {

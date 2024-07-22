@@ -1,5 +1,5 @@
-import { AcceptsCommands } from "./Command";
-import { Assembly } from "./machine2/Assembly";
+import type { AcceptsCommands } from "./Command";
+import type { Assembly } from "./Assembly";
 import { Tick } from "./Tick";
 
 export class SkipTick extends Tick {
@@ -7,5 +7,5 @@ export class SkipTick extends Tick {
     return this.assembly;
   }
 
-  async applyCommands(cmdExecutor: AcceptsCommands): Promise<void> {}
+  async applyCommands(_cmdExecutor: AcceptsCommands): Promise<void> {}
 }

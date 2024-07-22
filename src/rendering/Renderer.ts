@@ -4,7 +4,7 @@ import { Transaction } from "~/common/types";
 
 import { Engine } from "~/engine/Engine";
 import type { AcceptsCommands, Command } from "~/engine/Command";
-import type { Placement } from "~/engine/Placement";
+import type { Placement } from "~/common/Placement";
 
 import { attachMotion, Motion } from "~/movement/motion";
 import { LinearMotion } from "~/movement/LinearMotion";

@@ -1,12 +1,14 @@
-import { AssembleStrategy } from "~/assemble/AssembleStrategy";
-import { AcceptsCommands, Command } from "../Command";
-import { Tick } from "../Tick";
-import { Assembly } from "./Assembly";
 import { Transaction } from "~/common/types";
 import { PropSet } from "~/common/PropSet";
-import { arePlacementsEqual } from "../Placement";
+import { arePlacementsEqual } from "~/common/Placement";
 
-export class UnconfirmedTransactionsTick extends Tick {
+import { AssembleStrategy } from "~/assemble/AssembleStrategy";
+
+import { AcceptsCommands, Command } from "./Command";
+import { Tick } from "./Tick";
+import { Assembly } from "./Assembly";
+
+export class TransactionsTick extends Tick {
   private targetAssembly: Assembly;
 
   constructor(

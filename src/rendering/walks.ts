@@ -1,5 +1,5 @@
 import { IVector2 } from "~/common/math";
-import { Placement } from "~/engine/Placement";
+import { Placement } from "~/common/Placement";
 import { WorldManager } from "./WorldManager";
 
 function edgePathX(source: IVector2, dest: IVector2): IVector2[] {
