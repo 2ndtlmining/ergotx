@@ -50,7 +50,7 @@
   let hoveredRegion: string | null = null;
 
   // ==== Debug Bus ====
-  let debugBus = true;
+  let debugBus = false;
   $: onDebugBus?.(debugBus);
 </script>
 

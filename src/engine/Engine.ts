@@ -35,8 +35,8 @@ export class Engine {
     this.isIdle = true;
     this.isPaused = false;
 
-    // this.updateService = new PollUpdateService();
-    this.updateService = new ReplayUpdateService("/replays/replay-01.json");
+    this.updateService = new PollUpdateService();
+    // this.updateService = new ReplayUpdateService("/replays/replay-01.json");
     this.startListening();
 
     (<any>window).e = this;
