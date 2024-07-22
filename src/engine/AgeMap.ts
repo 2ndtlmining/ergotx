@@ -67,7 +67,7 @@ export class AgeMap {
     }
 
     for (const tx of currentTransactions) {
-      if (newMap.has(tx.id)) {
+      if (newMap.get(tx.id) === -1) {
         newMap.remove(tx.id);
         continue;
       }

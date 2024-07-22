@@ -12,4 +12,8 @@ export class Assembly {
   public static empty(): Assembly {
     return new Assembly([], new AgeMap(), new PlacementMap());
   }
+
+  public contains(txId: string) {
+    return this.ageMap.has(txId);
+  }
 }
