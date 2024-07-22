@@ -4,6 +4,7 @@ import { IVector2 } from "~/common/math";
 import { Actor } from "./Actor";
 import { Transform } from "~/common/component-types";
 import { watchSettings } from "../DebugSettings";
+import { VoidCallback } from "~/common/types";
 
 export class LiveBus extends Actor implements SupportsMotion {
   private container: GameObjects.Container;
@@ -20,6 +21,10 @@ export class LiveBus extends Actor implements SupportsMotion {
   // ====================
 
   private walkInRegion: Geom.Rectangle;
+
+  // ====================
+
+  private _debugCancel: VoidCallback;
 
   constructor(scene: Scene, width: number) {
     super(scene);
@@ -81,7 +86,7 @@ export class LiveBus extends Actor implements SupportsMotion {
       this.container.add(this.planeDebug);
       this.container.add(this.regionDebug);
 
-      watchSettings(settings => {
+      this._debugCancel = watchSettings(settings => {
         this.planeDebug.setVisible(settings.debugBus);
         this.regionDebug.setVisible(settings.debugBus);
       });
@@ -116,6 +121,7 @@ export class LiveBus extends Actor implements SupportsMotion {
     this.container.destroy();
     this.planeDebug.destroy();
     this.regionDebug.destroy();
+    this._debugCancel();
   }
 
   public getTransform(): Transform {
