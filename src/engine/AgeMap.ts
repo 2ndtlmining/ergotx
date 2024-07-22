@@ -24,7 +24,7 @@ export class AgeMap {
     this.map.delete(txId);
   }
 
-  public extended(
+  public union(
     currentTransactions: Transaction[],
     newTransactions: Transaction[]
   ): [AgeMap, Transaction[]] {
@@ -55,7 +55,7 @@ export class AgeMap {
     return [newMap, includedTransactions];
   }
 
-  public shrinked(
+  public difference(
     currentTransactions: Transaction[],
     removeTransactions: Transaction[]
   ): [AgeMap, Transaction[]] {

@@ -16,7 +16,7 @@ export class BlockTick extends Tick {
   ) {
     super(assembly, assembleStrategy);
 
-    let [newAgeMap, newTransactions] = assembly.ageMap.shrinked(
+    let [newAgeMap, newTransactions] = assembly.ageMap.difference(
       assembly.transactions,
       block.transactions
     );

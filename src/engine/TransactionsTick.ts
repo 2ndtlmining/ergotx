@@ -18,7 +18,7 @@ export class TransactionsTick extends Tick {
   ) {
     super(assembly, assembleStrategy);
 
-    let [newAgeMap, newTransactions] = assembly.ageMap.extended(
+    let [newAgeMap, newTransactions] = assembly.ageMap.union(
       assembly.transactions,
       incomingTxs
     );
