@@ -48,8 +48,8 @@ export class MainScene extends BaseScene {
       }
     });
 
-    let updateService = new PollUpdateService();
-    // let updateService = new ReplayUpdateService("/replays/replay-01.json");
+    // let updateService = new PollUpdateService();
+    let updateService = new ReplayUpdateService("/replays/replay-01.json");
 
     this.appRenderer = new Renderer(this);
     this.engine = new Engine(this.appRenderer, updateService);

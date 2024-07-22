@@ -13,6 +13,7 @@ import { LiveBus } from "./actors/LiveBus";
 import { NUM_FUTURE_BLOCKS } from "~/common/constants";
 import { WorldManager } from "./WorldManager";
 import { createWalkPoints } from "./walks";
+import { IVector2 } from "~/common/math";
 
 const SPACING = 16;
 
@@ -94,12 +95,17 @@ export class Renderer implements AcceptsCommands {
     }
   }
 
-  private async cmdSpawn(tx: Transaction) {
+  private async cmdSpawn(tx: Transaction, placement: Placement | null) {
     let person = new Person(this.scene, tx);
     this.personMap.set(tx.id, person);
 
-    let house = this.houseService.getTxHouse(tx);
-    person.place(house.position);
+    let position: IVector2;
+    if (placement === null) {
+      position = this.houseService.getTxHouse(tx).position;
+    } else {
+      position = this.allocatePlacement(tx.id, placement);
+    }
+    person.place(position);
   }
 
   private async cmdKill(tx: Transaction) {
@@ -109,25 +115,30 @@ export class Renderer implements AcceptsCommands {
     this.blockGroups.delete(tx.id);
   }
 
+  private allocatePlacement(txId: string, placement: Placement): IVector2 {
+    let targetPosition: Geom.Point;
+
+    switch (placement.type) {
+      case "waiting":
+        targetPosition = this.waitingZone.getRandomPoint();
+        this.blockGroups.delete(txId);
+        break;
+      case "block":
+        targetPosition = this.buses[placement.index].getWalkInTargetPoint();
+        this.blockGroups.set(txId, placement.index);
+        break;
+    }
+
+    return targetPosition;
+  }
+
   private async cmdWalk(
     tx: Transaction,
     placement: Placement,
     prevPlacement: Placement | null
   ) {
     let person = this.getTxPerson(tx);
-
-    let targetPosition: Geom.Point;
-
-    switch (placement.type) {
-      case "waiting":
-        targetPosition = this.waitingZone.getRandomPoint();
-        this.blockGroups.delete(tx.id);
-        break;
-      case "block":
-        targetPosition = this.buses[placement.index].getWalkInTargetPoint();
-        this.blockGroups.set(tx.id, placement.index);
-        break;
-    }
+    let targetPosition = this.allocatePlacement(tx.id, placement);
 
     let walkPoints = createWalkPoints(
       {
@@ -217,13 +228,15 @@ export class Renderer implements AcceptsCommands {
     let cmdPromises = commands.map(cmd => {
       switch (cmd.type) {
         case "spawn":
-          return this.cmdSpawn(cmd.tx);
+          return this.cmdSpawn(cmd.tx, cmd.placement ?? null);
         case "kill":
           return this.cmdKill(cmd.tx);
         case "walk":
           return this.cmdWalk(cmd.tx, cmd.placement, cmd.prevPlacement);
         case "drive_off":
           return this.cmdDriveOff();
+        case "kill_all":
+          return this.reset();
       }
     });
 
@@ -231,6 +244,10 @@ export class Renderer implements AcceptsCommands {
   }
 
   /* ======================================= */
+
+  private async reset() {
+    // this.personMap.forEach((person, key) => )
+  }
 
   public update() {
     this.personMap.forEach(person => {
