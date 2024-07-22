@@ -20,7 +20,6 @@ export class Person extends Actor implements SupportsMotion {
     this.tx = tx;
 
     this.gameObject = this.scene.add.circle(
-      //
       -1000,
       -1000,
       PERSON_RADIUS,
@@ -29,7 +28,6 @@ export class Person extends Actor implements SupportsMotion {
 
     this.gameObject.depth = 2;
 
-    // This needs to be done after the above call to buildSprite
     this.motionController = new MotionController(this.gameObject);
   }
 

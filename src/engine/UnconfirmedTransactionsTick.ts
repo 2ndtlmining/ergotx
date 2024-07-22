@@ -1,13 +1,12 @@
 import { AssembleStrategy } from "~/assemble/AssembleStrategy";
 import { PropSet } from "~/common/PropSet";
+import { TX_MAX_AGE } from "~/common/constants";
 import { Transaction } from "~/common/types";
 import { AcceptsCommands, Command } from "./Command";
 import { arePlacementsEqual } from "./Placement";
 import { AssemblySnapshot, TxStateSet } from "./state-snapshot";
 import { Tick } from "./Tick";
 import { assembleWith } from "./utils";
-
-const TX_MAX_AGE = 4;
 
 export class UnconfirmedTransactionsTick extends Tick {
   private targetAssembly: AssemblySnapshot;

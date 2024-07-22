@@ -9,7 +9,6 @@ import { NUM_FUTURE_BLOCKS } from "~/common/constants";
 
 export class BlockFoundTick extends Tick {
   private targetAssembly: AssemblySnapshot;
-  // private remainingTransactions: Transaction[];
 
   constructor(
     assembly: AssemblySnapshot,

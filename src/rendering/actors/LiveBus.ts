@@ -42,10 +42,10 @@ export class LiveBus extends Actor implements SupportsMotion {
         Math.round(0.394736 * this.width),
         Math.round(0.359947 * this.height),
         Math.round(0.210526 * this.width),
-        Math.round(0.383684 * this.height),
+        Math.round(0.383684 * this.height)
       );
 
-      Geom.Rectangle.Inflate(this.walkInRegion, -0.092105 * this.height , 0);
+      Geom.Rectangle.Inflate(this.walkInRegion, -0.092105 * this.height, 0);
     }
 
     {

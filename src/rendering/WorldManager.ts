@@ -118,7 +118,7 @@ export class WorldManager {
     }
   }
 
-  private static setupCameraControls(scene: Phaser.Scene) {
+  private static initCameraControls(scene: Phaser.Scene) {
     const cursors = scene.input.keyboard!.createCursorKeys();
     let camera = scene.cameras.main;
 
@@ -132,7 +132,7 @@ export class WorldManager {
     camera.setBounds(0, 0, this.canvasWidth, this.WorldMaxHeight);
   }
 
-  private static setupGridLines(scene: Phaser.Scene) {
+  private static initGridLines(scene: Phaser.Scene) {
     const lineWidth = 4;
     const halfWidth = lineWidth / 2;
 
@@ -213,10 +213,10 @@ export class WorldManager {
     );
 
     this.drawBackground(scene);
-    this.setupCameraControls(scene);
+    this.initCameraControls(scene);
     this.initRegions();
     this.initRegionsDebug(scene);
-    this.setupGridLines(scene);
+    this.initGridLines(scene);
     this.isInitialized = true;
   }
 
@@ -237,12 +237,7 @@ export class WorldManager {
     let y = scene.input.mousePointer.y;
 
     for (const region of this.AllRegions) {
-      let { x: x1, y: y1, width, height } = region.rect;
-
-      let x2 = x1 + width;
-      let y2 = y1 + height;
-
-      if (x1 <= x && x < x2 && y1 <= y && y < y2) {
+      if (region.rect.contains(x, y)) {
         return region;
       }
     }

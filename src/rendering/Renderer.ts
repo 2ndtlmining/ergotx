@@ -1,12 +1,6 @@
 import { Scene, Math, Geom } from "phaser";
 
-import { Constructor, Transaction } from "~/common/types";
-import {
-  HOUSE_COLOR,
-  HOUSE_RADIUS,
-  HOUSE_TEXT_COLOR,
-  WAITING_ZONE_COLOR
-} from "~/common/theme";
+import { Transaction } from "~/common/types";
 
 import { Engine } from "~/engine/Engine";
 import type { AcceptsCommands, Command } from "~/engine/Command";
@@ -82,7 +76,7 @@ export class Renderer implements AcceptsCommands {
   private initWaitingZone() {
     this.waitingZone = Geom.Rectangle.Inflate(
       Geom.Rectangle.Clone(WorldManager.WaitingZone.rect),
-      -15,
+      -16,
       -16
     );
   }
@@ -211,14 +205,12 @@ export class Renderer implements AcceptsCommands {
     this.buses.shift()?.destroy();
     let nextSpawnBus = new LiveBus(this.scene, this.busZoneWidth);
 
-    // this.scene.children.sendToBack(nextSpawnBus.getGameObject());
     nextSpawnBus.place({ x: this.busLineX, y: newFrontline });
 
     this.buses.push(nextSpawnBus);
   }
 
   public executeCommands(commands: Command[]) {
-    // console.log("CMDS: ", commands);
     let cmdPromises = commands.map(cmd => {
       switch (cmd.type) {
         case "spawn":

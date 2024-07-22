@@ -36,11 +36,10 @@ export class Engine {
 
     // this.updateService = new PollUpdateService();
     this.updateService = new ReplayUpdateService("/replays/replay-01.json");
+    // this.startListening();
 
     (<any>window).e = this;
     let w = ((<any>window).w = watchUpdates(this.updateService));
-
-    // this.startListening();
   }
 
   public getUpdateService() {
