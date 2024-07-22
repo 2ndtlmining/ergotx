@@ -1,10 +1,10 @@
 import { Transaction } from "~/common/types";
 import { PropSet } from "~/common/PropSet";
 import { arePlacementsEqual } from "~/common/Placement";
+import { AcceptsCommands, Command } from "~/common/Command";
 
 import { AssembleStrategy } from "~/assemble/AssembleStrategy";
 
-import { AcceptsCommands, Command } from "./Command";
 import { Tick } from "./Tick";
 import { Assembly } from "./Assembly";
 

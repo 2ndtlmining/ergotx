@@ -1,12 +1,10 @@
 import { Scene, Math, Geom } from "phaser";
 
-import { Transaction } from "~/common/types";
-
-import { Engine } from "~/engine/Engine";
-import type { AcceptsCommands, Command } from "~/engine/Command";
+import type { Transaction } from "~/common/types";
+import type { AcceptsCommands, Command } from "~/common/Command";
 import type { Placement } from "~/common/Placement";
 
-import { attachMotion, Motion } from "~/movement/motion";
+import { attachMotion, type Motion } from "~/movement/motion";
 import { LinearMotion } from "~/movement/LinearMotion";
 import { HouseService, getRegisteredHouses } from "./housing";
 
@@ -25,7 +23,6 @@ export class Renderer implements AcceptsCommands {
   private blockGroups: Map<string, number>;
   private buses: LiveBus[];
 
-  private engine: Engine;
   private houseService: HouseService;
 
   // Visuals related fields
@@ -38,10 +35,6 @@ export class Renderer implements AcceptsCommands {
     this.scene = scene;
     this.personMap = new Map();
     this.blockGroups = new Map();
-
-    this.engine = new Engine(this);
-
-    (<any>window).r = this;
 
     this.initHouses();
     this.initWaitingZone();
@@ -116,7 +109,11 @@ export class Renderer implements AcceptsCommands {
     this.blockGroups.delete(tx.id);
   }
 
-  private async cmdWalk(tx: Transaction, placement: Placement, prevPlacement: Placement | null) {
+  private async cmdWalk(
+    tx: Transaction,
+    placement: Placement,
+    prevPlacement: Placement | null
+  ) {
     let person = this.getTxPerson(tx);
 
     let targetPosition: Geom.Point;
@@ -169,8 +166,7 @@ export class Renderer implements AcceptsCommands {
       motions.push(busMotion);
     }
 
-
-    const dyingTxIds: string[] = []
+    const dyingTxIds: string[] = [];
 
     // update block groups and add animations
     for (const [txId, currentBlock] of this.blockGroups.entries()) {
@@ -237,7 +233,6 @@ export class Renderer implements AcceptsCommands {
   /* ======================================= */
 
   public update() {
-    this.engine.update();
     this.personMap.forEach(person => {
       person.update();
     });

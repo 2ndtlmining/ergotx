@@ -1,4 +1,4 @@
-import type { AcceptsCommands } from "./Command";
+import type { AcceptsCommands } from "~/common/Command";
 import type { Assembly } from "./Assembly";
 import { Tick } from "./Tick";
 

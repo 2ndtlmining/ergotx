@@ -5,9 +5,11 @@ import { Time } from "~/common/Time";
 
 import Controls from "./ui/Controls.svelte";
 import { updateSettings } from "~/rendering/DebugSettings";
+import { Engine } from "~/engine/Engine";
 
 export class MainScene extends BaseScene {
-  private visRenderer: Renderer;
+  private appRenderer: Renderer;
+  private engine: Engine;
   private uiControls: Controls;
 
   getTitle(): string {
@@ -42,16 +44,17 @@ export class MainScene extends BaseScene {
       }
     });
 
-    this.visRenderer = new Renderer(this);
-    console.log("STARTED");
+    this.appRenderer = new Renderer(this);
+    this.engine = new Engine(this.appRenderer);
   }
 
   update(_currentTime: number, deltaTime: number) {
     Time.setDeltaTime(deltaTime);
-    WorldManager.update();
 
     this.uiControls.setFps(this.game.loop.actualFps);
 
-    this.visRenderer.update();
+    WorldManager.update();
+    this.engine.update();
+    this.appRenderer.update();
   }
 }

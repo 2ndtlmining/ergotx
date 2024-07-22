@@ -1,6 +1,6 @@
 import { AssembleStrategy } from "~/assemble/AssembleStrategy";
+import { AcceptsCommands, Command } from "~/common/Command";
 import { Assembly } from "./Assembly";
-import { AcceptsCommands, Command } from "./Command";
 import { Tick } from "./Tick";
 import { TransactedBlock, Transaction } from "~/common/types";
 import { arePlacementsEqual, Placement } from "~/common/Placement";

@@ -8,7 +8,7 @@ import { ReplayUpdateService } from "~/ergoapi/ReplayUpdateService";
 import type { AssembleStrategy } from "~/assemble/AssembleStrategy";
 import { DefaultAssembleStrategy } from "~/assemble/DefaultAssembleStrategy";
 
-import type { AcceptsCommands } from "./Command";
+import type { AcceptsCommands } from "~/common/Command";
 import type { Tick } from "./Tick";
 import { TransactionsTick } from "./TransactionsTick";
 import { BlockTick } from "./BlockTick";

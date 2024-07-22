@@ -1,5 +1,5 @@
 import type { AssembleStrategy } from "~/assemble/AssembleStrategy";
-import type { AcceptsCommands } from "./Command";
+import type { AcceptsCommands } from "~/common/Command";
 import type { Assembly } from "./Assembly";
 
 export abstract class Tick {
