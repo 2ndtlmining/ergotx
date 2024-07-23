@@ -42,6 +42,8 @@ export class Renderer implements AcceptsCommands {
     this.initBuses();
   }
 
+  // =========== Initialization ===========
+
   private initHouses() {
     // Init house service
     this.houseService = new HouseService([
@@ -95,6 +97,8 @@ export class Renderer implements AcceptsCommands {
     }
   }
 
+  // =========== Commands ===========
+
   private async cmdSpawn(tx: Transaction, placement: Placement | null) {
     let person = new Person(this.scene, tx);
     this.personMap.set(tx.id, person);
@@ -113,35 +117,6 @@ export class Renderer implements AcceptsCommands {
     person.destroy();
     this.personMap.delete(tx.id);
     this.blockGroups.delete(tx.id);
-  }
-
-  private allocatePlacement(
-    txId: string,
-    source: Placement | null,
-    dest: Placement
-  ): IVector2 {
-    let targetPosition: Geom.Point;
-
-    switch (dest.type) {
-      case "waiting":
-        targetPosition = this.waitingZone.getRandomPoint();
-
-        if (source?.type === 'block')
-          // When moving out from a block to waiting zone, we
-          // just do a quick horizontal movement.
-          //
-          // TODO: is this right ?
-          targetPosition.y = this.getTxIdPerson(txId).getY();
-
-        this.blockGroups.delete(txId);
-        break;
-      case "block":
-        targetPosition = this.buses[dest.index].getWalkInTargetPoint();
-        this.blockGroups.set(txId, dest.index);
-        break;
-    }
-
-    return targetPosition;
   }
 
   private async cmdWalk(
@@ -222,6 +197,7 @@ export class Renderer implements AcceptsCommands {
     }
 
     await Promise.all(motions.map(m => m.run()));
+
     for (const txId of dyingTxIds) {
       // TODO: make this into one function call
       this.getTxIdPerson(txId).destroy();
@@ -253,6 +229,46 @@ export class Renderer implements AcceptsCommands {
     return Promise.all(cmdPromises);
   }
 
+  // =========== Common ===========
+
+  private allocatePlacement(
+    txId: string,
+    source: Placement | null,
+    dest: Placement
+  ): IVector2 {
+    let targetPosition: Geom.Point;
+
+    switch (dest.type) {
+      case "waiting":
+        targetPosition = this.waitingZone.getRandomPoint();
+
+        if (source?.type === 'block')
+          // When moving out from a block to waiting zone, we
+          // just do a quick horizontal movement.
+          //
+          // TODO: is this right ?
+          targetPosition.y = this.getTxIdPerson(txId).getY();
+
+        this.blockGroups.delete(txId);
+        break;
+      case "block":
+        targetPosition = this.buses[dest.index].getWalkInTargetPoint();
+        this.blockGroups.set(txId, dest.index);
+        break;
+    }
+
+    return targetPosition;
+  }
+
+  private getTxPerson(tx: Transaction) {
+    return this.personMap.get(tx.id)!;
+  }
+
+  // TODO: make this and the one above a single function
+  private getTxIdPerson(txId: string) {
+    return this.personMap.get(txId)!;
+  }
+
   /* ======================================= */
 
   public update() {
@@ -262,16 +278,5 @@ export class Renderer implements AcceptsCommands {
     this.buses.forEach(bus => {
       bus.update();
     });
-  }
-
-  /* ======================================= */
-
-  private getTxPerson(tx: Transaction) {
-    return this.personMap.get(tx.id)!;
-  }
-
-  // TODO: make this and the one above a single function
-  private getTxIdPerson(txId: string) {
-    return this.personMap.get(txId)!;
   }
 }
