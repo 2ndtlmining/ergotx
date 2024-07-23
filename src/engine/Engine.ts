@@ -1,5 +1,5 @@
 import { delay } from "~/common/utils";
-import type { AcceptsCommands } from "~/common/Command";
+import type { AcceptsCommands, Command } from "~/common/Command";
 import type { UpdateService } from "~/ergoapi/UpdateService";
 
 import type { AssembleStrategy } from "~/assemble/AssembleStrategy";
@@ -92,6 +92,23 @@ export class Engine {
         .then(() => {
           this.currentAssembly = targetAssembly;
           this.isIdle = true;
+        })
+        .catch(() => {
+          this.cmdExecutor.reset();
+          alert("An error occured");
+
+          let commands: Command[] = targetAssembly.transactions.map(tx => ({
+            type: "spawn",
+            tx,
+            at: targetAssembly.placementMap.get(tx.id)
+          }));
+
+          // We assume that this call to executeCommands will
+          // never throw
+          this.cmdExecutor.executeCommands(commands).then(() => {
+            this.currentAssembly = targetAssembly;
+            this.isIdle = true;
+          });
         });
     }
   }

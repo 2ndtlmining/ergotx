@@ -18,4 +18,5 @@ export type Command =
 
 export interface AcceptsCommands {
   executeCommands(commands: Command[]): Promise<unknown>;
+  reset(): void;
 }

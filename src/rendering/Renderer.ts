@@ -211,7 +211,7 @@ export class Renderer implements AcceptsCommands {
     this.buses.push(nextSpawnBus);
   }
 
-  public executeCommands(commands: Command[]) {
+  public async executeCommands(commands: Command[]) {
     let cmdPromises = commands.map(cmd => {
       switch (cmd.type) {
         case "spawn":
@@ -225,7 +225,7 @@ export class Renderer implements AcceptsCommands {
       }
     });
 
-    return Promise.all(cmdPromises);
+    await Promise.all(cmdPromises);
   }
 
   // =========== Common ===========
