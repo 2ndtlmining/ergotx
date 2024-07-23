@@ -34,6 +34,10 @@ export class Renderer implements AcceptsCommands {
 
   constructor(scene: Scene) {
     this.scene = scene;
+    this.init();
+  }
+
+  private init() {
     this.personMap = new Map();
     this.blockGroups = new Map();
 
@@ -113,7 +117,7 @@ export class Renderer implements AcceptsCommands {
   }
 
   private async cmdKill(tx: Transaction) {
-    this.killPerson(tx.id);
+    this.destroyPerson(tx.id);
   }
 
   private async cmdWalk(
@@ -196,7 +200,7 @@ export class Renderer implements AcceptsCommands {
     await Promise.all(motions.map(m => m.run()));
 
     for (const txId of dyingTxIds) {
-      this.killPerson(txId);
+      this.destroyPerson(txId);
     }
 
     this.buses.shift()?.destroy();
@@ -237,7 +241,7 @@ export class Renderer implements AcceptsCommands {
       case "waiting":
         targetPosition = this.waitingZone.getRandomPoint();
 
-        if (source?.type === 'block')
+        if (source?.type === "block")
           // When moving out from a block to waiting zone, we
           // just do a quick horizontal movement.
           //
@@ -259,11 +263,22 @@ export class Renderer implements AcceptsCommands {
     return this.personMap.get(txId)!;
   }
 
-  private killPerson(txId: string) {
+  private destroyPerson(txId: string) {
     let person = this.getPerson(txId);
     person?.destroy();
     this.personMap.delete(txId);
     this.blockGroups.delete(txId);
+  }
+
+  public reset() {
+    this.personMap.forEach(p => p.destroy());
+    this.personMap = new Map();
+
+    this.buses.forEach(b => b.destroy());
+
+    this.blockGroups = new Map();
+
+    this.initBuses();
   }
 
   /* ======================================= */

@@ -40,6 +40,7 @@ export class Person extends Actor implements SupportsMotion {
   }
 
   public destroy() {
+    this.motionController.destroy();
     this.gameObject.destroy();
   }
 

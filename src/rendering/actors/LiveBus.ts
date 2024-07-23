@@ -120,6 +120,7 @@ export class LiveBus extends Actor implements SupportsMotion {
   }
 
   public destroy() {
+    this.motionController.destroy();
     this.container.destroy();
     this.planeDebug.destroy();
     this.regionDebug.destroy();

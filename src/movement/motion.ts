@@ -42,7 +42,7 @@ export class MotionController {
   public startMotion(motion: Motion): Promise<void> {
     if (this.currentMotion) {
       this.currentMotion._cancel();
-      // TODO: call onComplete ?
+      this.onComplete(); // TODO: should call onComplete ?
     }
 
     this.currentMotion = motion;
@@ -62,6 +62,13 @@ export class MotionController {
   public update() {
     if (this.currentMotion) {
       this.currentMotion._update();
+    }
+  }
+
+  public destroy() {
+    if (this.currentMotion) {
+      this.currentMotion._cancel();
+      this.onComplete();
     }
   }
 }
