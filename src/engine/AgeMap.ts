@@ -78,6 +78,7 @@ export class AgeMap {
 
     newMap.map.forEach((value, key) => {
       if (value === -1)
+        // ...
         newMap.remove(key);
     });
 

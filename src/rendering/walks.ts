@@ -21,10 +21,7 @@ type WalkHead = {
   position: IVector2;
 };
 
-export function createWalkPoints(
-  source: WalkHead,
-  dest: WalkHead
-): IVector2[] {
+export function createWalkPoints(source: WalkHead, dest: WalkHead): IVector2[] {
   let pa = source.placement?.type ?? null;
   let pb = dest.placement!.type;
 

@@ -40,10 +40,10 @@ export class PlacementMap {
   }
 
   public placeWaiting(txId: string) {
-    this.map.set(txId, { type: 'waiting' })
+    this.map.set(txId, { type: "waiting" });
   }
 
   public placeBlock(txId: string, index: number) {
-    this.map.set(txId, { type: 'block', index });
+    this.map.set(txId, { type: "block", index });
   }
 }
