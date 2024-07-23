@@ -17,4 +17,6 @@ export abstract class Actor {
   public getY() {
     return this.getTransform().y;
   }
+
+  public destroy(): void {}
 }

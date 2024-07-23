@@ -113,10 +113,7 @@ export class Renderer implements AcceptsCommands {
   }
 
   private async cmdKill(tx: Transaction) {
-    let person = this.getTxPerson(tx);
-    person.destroy();
-    this.personMap.delete(tx.id);
-    this.blockGroups.delete(tx.id);
+    this.killPerson(tx.id);
   }
 
   private async cmdWalk(
@@ -124,7 +121,7 @@ export class Renderer implements AcceptsCommands {
     source: Placement | null,
     dest: Placement
   ) {
-    let person = this.getTxPerson(tx);
+    let person = this.getPerson(tx.id);
     let targetPosition = this.allocatePlacement(tx.id, source, dest);
 
     let walkPoints = createWalkPoints(
@@ -182,7 +179,7 @@ export class Renderer implements AcceptsCommands {
       let displacement =
         frontlines[currentBlock] - this.buses[currentBlock].getY();
 
-      let person = this.getTxIdPerson(txId);
+      let person = this.getPerson(txId);
       let personMotion = attachMotion(
         person,
         new LinearMotion([
@@ -199,9 +196,7 @@ export class Renderer implements AcceptsCommands {
     await Promise.all(motions.map(m => m.run()));
 
     for (const txId of dyingTxIds) {
-      // TODO: make this into one function call
-      this.getTxIdPerson(txId).destroy();
-      this.personMap.delete(txId);
+      this.killPerson(txId);
     }
 
     this.buses.shift()?.destroy();
@@ -247,7 +242,7 @@ export class Renderer implements AcceptsCommands {
           // just do a quick horizontal movement.
           //
           // TODO: is this right ?
-          targetPosition.y = this.getTxIdPerson(txId).getY();
+          targetPosition.y = this.getPerson(txId).getY();
 
         this.blockGroups.delete(txId);
         break;
@@ -260,13 +255,15 @@ export class Renderer implements AcceptsCommands {
     return targetPosition;
   }
 
-  private getTxPerson(tx: Transaction) {
-    return this.personMap.get(tx.id)!;
+  private getPerson(txId: string) {
+    return this.personMap.get(txId)!;
   }
 
-  // TODO: make this and the one above a single function
-  private getTxIdPerson(txId: string) {
-    return this.personMap.get(txId)!;
+  private killPerson(txId: string) {
+    let person = this.getPerson(txId);
+    person?.destroy();
+    this.personMap.delete(txId);
+    this.blockGroups.delete(txId);
   }
 
   /* ======================================= */
