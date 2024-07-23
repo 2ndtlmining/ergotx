@@ -99,8 +99,8 @@ export class BlockTick extends Tick {
         yieldOuts.push({
           type: "walk",
           tx,
-          prevPlacement: pBefore,
-          placement: {
+          source: pBefore,
+          dest: {
             type: "waiting"
           }
         });
@@ -108,8 +108,8 @@ export class BlockTick extends Tick {
       yieldIns.push({
         type: "walk",
         tx,
-        prevPlacement: pBefore,
-        placement: {
+        source: pBefore,
+        dest: {
           type: "block",
           index: NUM_FUTURE_BLOCKS - 1
         }

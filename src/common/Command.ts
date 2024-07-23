@@ -2,14 +2,18 @@ import type { Transaction } from "~/common/types";
 import type { Placement } from "~/common/Placement";
 
 export type Command =
-  | { type: "spawn"; tx: Transaction; placement?: Placement | null }
-  | { type: "kill"; tx: Transaction }
   | {
-    type: "walk";
-    tx: Transaction;
-    placement: Placement;
-    prevPlacement: Placement | null;
-  }
+      type: "spawn";
+      tx: Transaction;
+      at?: Placement | null;
+    }
+  | {
+      type: "walk";
+      tx: Transaction;
+      source: Placement | null;
+      dest: Placement;
+    }
+  | { type: "kill"; tx: Transaction }
   | { type: "drive_off" };
 
 export interface AcceptsCommands {

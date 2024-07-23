@@ -103,7 +103,7 @@ export class Renderer implements AcceptsCommands {
     if (placement === null) {
       position = this.houseService.getTxHouse(tx).position;
     } else {
-      position = this.allocatePlacement(tx.id, placement);
+      position = this.allocatePlacement(tx.id, null, placement);
     }
     person.place(position);
   }
@@ -115,17 +115,29 @@ export class Renderer implements AcceptsCommands {
     this.blockGroups.delete(tx.id);
   }
 
-  private allocatePlacement(txId: string, placement: Placement): IVector2 {
+  private allocatePlacement(
+    txId: string,
+    source: Placement | null,
+    dest: Placement
+  ): IVector2 {
     let targetPosition: Geom.Point;
 
-    switch (placement.type) {
+    switch (dest.type) {
       case "waiting":
         targetPosition = this.waitingZone.getRandomPoint();
+
+        if (source?.type === 'block')
+          // When moving out from a block to waiting zone, we
+          // just do a quick horizontal movement.
+          //
+          // TODO: is this right ?
+          targetPosition.y = this.getTxIdPerson(txId).getY();
+
         this.blockGroups.delete(txId);
         break;
       case "block":
-        targetPosition = this.buses[placement.index].getWalkInTargetPoint();
-        this.blockGroups.set(txId, placement.index);
+        targetPosition = this.buses[dest.index].getWalkInTargetPoint();
+        this.blockGroups.set(txId, dest.index);
         break;
     }
 
@@ -134,18 +146,18 @@ export class Renderer implements AcceptsCommands {
 
   private async cmdWalk(
     tx: Transaction,
-    placement: Placement,
-    prevPlacement: Placement | null
+    source: Placement | null,
+    dest: Placement
   ) {
     let person = this.getTxPerson(tx);
-    let targetPosition = this.allocatePlacement(tx.id, placement);
+    let targetPosition = this.allocatePlacement(tx.id, source, dest);
 
     let walkPoints = createWalkPoints(
       {
-        placement: prevPlacement,
+        placement: source,
         position: { x: person.getX(), y: person.getY() }
       },
-      { placement: placement, position: targetPosition }
+      { placement: dest, position: targetPosition }
     );
 
     let motion = new LinearMotion(walkPoints);
@@ -228,11 +240,11 @@ export class Renderer implements AcceptsCommands {
     let cmdPromises = commands.map(cmd => {
       switch (cmd.type) {
         case "spawn":
-          return this.cmdSpawn(cmd.tx, cmd.placement ?? null);
+          return this.cmdSpawn(cmd.tx, cmd.at ?? null);
         case "kill":
           return this.cmdKill(cmd.tx);
         case "walk":
-          return this.cmdWalk(cmd.tx, cmd.placement, cmd.prevPlacement);
+          return this.cmdWalk(cmd.tx, cmd.source, cmd.dest);
         case "drive_off":
           return this.cmdDriveOff();
       }

@@ -5,15 +5,15 @@ import { Transaction } from "~/common/types";
 export function walkIfNeeded(
   cmds: Command[],
   tx: Transaction,
-  placementA: Placement | null,
-  placementB: Placement
+  source: Placement | null,
+  dest: Placement
 ) {
-  if (!placementA || !arePlacementsEqual(placementA, placementB)) {
+  if (!source || !arePlacementsEqual(source, dest)) {
     cmds.push({
       type: "walk",
       tx,
-      prevPlacement: placementA,
-      placement: placementB
+      source,
+      dest
     });
   }
 }

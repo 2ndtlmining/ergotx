@@ -23,18 +23,18 @@ type WalkHead = {
 
 export function createWalkPoints(
   source: WalkHead,
-  destination: WalkHead
+  dest: WalkHead
 ): IVector2[] {
   let pa = source.placement?.type ?? null;
-  let pb = destination.placement!.type;
+  let pb = dest.placement!.type;
 
   let wa = source.position;
-  let wb = destination.position;
+  let wb = dest.position;
 
   let points: IVector2[] = [];
 
   if (pa === null) {
-    // Destination could be either waiting zone or a bus
+    // dest could be either waiting zone or a bus
     // in both case the shape of the path is the same
 
     // L path from source to walk lane
@@ -45,18 +45,18 @@ export function createWalkPoints(
       })
     );
 
-    // Walk lane to destination (waiting or block)
+    // Walk lane to dest (waiting or block)
     points.push(wb);
   } else if (pa === "waiting" && pb === "block") {
     points.push(...edgePathY(wa, wb));
   } else if (pa === "block" && pb === "waiting") {
     points.push(...edgePathX(wa, wb));
   } else if (pa === "block" && pb === "block") {
-    // First move out to waiting at destination Y
+    // First move out to waiting at dest Y
     let waitingX = WorldManager.WaitingZone.rect.right - 50;
     points.push(...edgePathX(wa, { x: waitingX, y: wb.y }));
 
-    // Then move to destination
+    // Then move to dest
     points.push(wb);
   }
 
