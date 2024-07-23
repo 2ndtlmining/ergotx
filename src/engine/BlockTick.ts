@@ -3,8 +3,9 @@ import { AcceptsCommands, Command } from "~/common/Command";
 import { Assembly } from "./Assembly";
 import { Tick } from "./Tick";
 import { TransactedBlock, Transaction } from "~/common/types";
-import { arePlacementsEqual, Placement } from "~/common/Placement";
+import { Placement } from "~/common/Placement";
 import { NUM_FUTURE_BLOCKS } from "~/common/constants";
+import { walkIfNeeded } from "./utils";
 
 export class BlockTick extends Tick {
   private targetAssembly: Assembly;
@@ -37,31 +38,22 @@ export class BlockTick extends Tick {
     let spawns: Command[] = [];
     let walks: Command[] = [];
 
+    // ========== Block transactions ==========
+
     for (const tx of blockTransactions) {
       let pBefore = this.assembly.placementMap.get(tx.id);
-      let pAfter: Placement = { type: "block", index: 0 };
 
-      // If the transaction did not exist in the last snapshot
+      // If the transaction did not exist in the last snapshot then
+      // make sure to spawn it first
       if (!pBefore) {
-        // First spawn and the move to top block
         spawns.push({ type: "spawn", tx });
-        walks.push({
-          type: "walk",
-          tx,
-          prevPlacement: null,
-          placement: pAfter,
-        });
       }
-      // Otherwise (placement did exist before) check if it was
-      // anywhere other than top block. If so, then move it to top block
-      else if (!arePlacementsEqual(pBefore, pAfter)) {
-        walks.push({
-          type: "walk",
-          tx,
-          prevPlacement: pBefore,
-          placement: pAfter
-        });
-      }
+
+      // Move it to top block
+      walkIfNeeded(walks, tx, pBefore, {
+        type: "block",
+        index: 0
+      });
     }
 
     // ========== Active transactions ==========
@@ -70,29 +62,25 @@ export class BlockTick extends Tick {
 
     for (const tx of activeTransactions) {
       let pBefore = this.assembly.placementMap.get(tx.id)!;
-      let pAfter = this.targetAssembly.placementMap.get(tx.id)!;
+      let pAfter = {
+        // Clone as it will be modified below
+        ...this.targetAssembly.placementMap.get(tx.id)!
+      };
 
-      let pShiftedAfter: Placement =
-        pAfter.type === "waiting"
-          ? { type: "waiting" }
-          : { type: "block", index: pAfter.index + 1 };
+      if (pAfter.type === "block") {
+        // Shift it to the block below.
+        // It will be moved back up after drive off
+        pAfter.index++;
 
-      if (
-        pShiftedAfter.type === "block" &&
-        pShiftedAfter.index === NUM_FUTURE_BLOCKS
-      ) {
-        yielding.push(tx);
-        continue;
+        // If it goes out of bounds after shifting then we
+        // will handle it later
+        if (pAfter.index === NUM_FUTURE_BLOCKS) {
+          yielding.push(tx);
+          continue;
+        }
       }
 
-      if (!arePlacementsEqual(pBefore, pShiftedAfter)) {
-        walks.push({
-          type: "walk",
-          tx,
-          prevPlacement: pBefore,
-          placement: pShiftedAfter
-        });
-      }
+      walkIfNeeded(walks, tx, pBefore, pAfter);
     }
 
     // ========== Yielding transactions ==========
@@ -107,7 +95,7 @@ export class BlockTick extends Tick {
       // reassembly. These need to first go to waiting zone and then, after
       // driving off, need to go to the last future block
 
-      if (pBefore.type === "block")
+      if (pBefore.type !== "waiting")
         yieldOuts.push({
           type: "walk",
           tx,
@@ -137,59 +125,9 @@ export class BlockTick extends Tick {
     ];
 
     for (const batch of sequence) {
-      if (batch) await cmdExecutor.executeCommands(batch);
+      if (batch)
+        // ...
+        await cmdExecutor.executeCommands(batch);
     }
   }
 }
-
-/*
-export class BlockFoundTick extends Tick {
-  private targetAssembly: AssemblySnapshot;
-
-  async applyCommands(cmdExecutor: AcceptsCommands): Promise<void> {
-    let spawns: Command[] = [];
-    let walks: Command[] = [];
-    let yieldOuts: Command[] = [];
-    let yieldIns: Command[] = [];
-
-    for (const tx of this.targetAssembly.transactions) {
-      let pBefore = this.assembly.states.getState(tx)!.placement;
-      let pAfter = this.targetAssembly.states.getState(tx)!.placement;
-
-      let nextPlacment: Placement =
-        pAfter.type === "waiting"
-          ? { type: "waiting" }
-          : { type: "block", index: pAfter.index + 1 };
-
-      if (!arePlacementsEqual(pBefore, nextPlacment)) {
-        if (nextPlacment.type === "block") {
-          if (nextPlacment.index === NUM_FUTURE_BLOCKS) {
-            yieldOuts.push({
-              type: "walk",
-              tx,
-              placement: { type: "waiting" }
-            });
-            yieldIns.push({
-              type: "walk",
-              tx,
-              placement: { type: "block", index: NUM_FUTURE_BLOCKS - 1 }
-            });
-          }
-        }
-      }
-    }
-
-    let sequence: Command[][] = [
-      spawns,
-      walks,
-      yieldOuts,
-      [{ type: "drive_off" }],
-      yieldIns
-    ];
-
-    for (const batch of sequence) {
-      if (batch) await cmdExecutor.executeCommands(batch);
-    }
-  }
-}
- */

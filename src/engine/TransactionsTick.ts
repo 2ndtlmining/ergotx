@@ -1,12 +1,12 @@
 import { Transaction } from "~/common/types";
 import { PropSet } from "~/common/PropSet";
-import { arePlacementsEqual } from "~/common/Placement";
 import { AcceptsCommands, Command } from "~/common/Command";
 
 import { AssembleStrategy } from "~/assemble/AssembleStrategy";
 
 import { Tick } from "./Tick";
 import { Assembly } from "./Assembly";
+import { walkIfNeeded } from "./utils";
 
 export class TransactionsTick extends Tick {
   private targetAssembly: Assembly;
@@ -45,21 +45,14 @@ export class TransactionsTick extends Tick {
     let walks: Command[] = [];
 
     for (const tx of combinedSet.getItems()) {
-      let placementBefore = snapshotA.placementMap.get(tx.id);
-      let placementAfter = snapshotB.placementMap.get(tx.id);
+      let pBefore = snapshotA.placementMap.get(tx.id);
+      let pAfter = snapshotB.placementMap.get(tx.id);
 
-      let aliveBefore = Boolean(placementBefore);
-      let aliveNow = Boolean(placementAfter);
+      let aliveBefore = Boolean(pBefore);
+      let aliveNow = Boolean(pAfter);
 
       if (aliveBefore && aliveNow) {
-        if (!arePlacementsEqual(placementBefore!, placementAfter!)) {
-          walks.push({
-            type: "walk",
-            tx,
-            prevPlacement: placementBefore,
-            placement: placementAfter!
-          });
-        }
+        walkIfNeeded(walks, tx, pBefore, pAfter!);
       } else if (aliveBefore && !aliveNow) {
         // register destroy move
         lifespans.push({
@@ -78,14 +71,18 @@ export class TransactionsTick extends Tick {
         walks.push({
           type: "walk",
           tx,
-          prevPlacement: placementBefore,
-          placement: placementAfter!
+          prevPlacement: pBefore,
+          placement: pAfter!
         });
       }
     }
 
-    if (lifespans.length > 0) await cmdExecutor.executeCommands(lifespans);
+    if (lifespans.length > 0)
+      // ...
+      await cmdExecutor.executeCommands(lifespans);
 
-    if (walks.length > 0) await cmdExecutor.executeCommands(walks);
+    if (walks.length > 0)
+      // ...
+      await cmdExecutor.executeCommands(walks);
   }
 }
