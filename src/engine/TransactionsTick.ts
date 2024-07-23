@@ -33,11 +33,12 @@ export class TransactionsTick extends Tick {
   }
 
   async applyCommands(cmdExecutor: AcceptsCommands): Promise<void> {
-    let snapshotA = this.assembly;
-    let snapshotB = this.targetAssembly!;
-
     let combinedSet = PropSet.fromArray(
-      [...snapshotA.transactions, ...snapshotB.transactions],
+      [
+        // ...
+        ...this.assembly.transactions,
+        ...this.targetAssembly!.transactions
+      ],
       tx => tx.id
     );
 
@@ -45,35 +46,20 @@ export class TransactionsTick extends Tick {
     let walks: Command[] = [];
 
     for (const tx of combinedSet.getItems()) {
-      let pBefore = snapshotA.placementMap.get(tx.id);
-      let pAfter = snapshotB.placementMap.get(tx.id);
+      let pBefore = this.assembly.placementMap.get(tx.id);
+      let pAfter = this.targetAssembly.placementMap.get(tx.id);
 
-      let aliveBefore = Boolean(pBefore);
-      let aliveNow = Boolean(pAfter);
+      // If the transaction did not exist in the last snapshot then
+      // make sure to spawn it first
+      if (!pBefore) {
+        lifespans.push({ type: "spawn", tx });
+      }
 
-      if (aliveBefore && aliveNow) {
-        walkIfNeeded(walks, tx, pBefore, pAfter!);
-      } else if (aliveBefore && !aliveNow) {
-        // register destroy move
-        lifespans.push({
-          type: "kill",
-          tx
-        });
-      } else if (!aliveBefore && aliveNow) {
-        // First spawn
-        lifespans.push({
-          type: "spawn",
-          tx
-        });
-
-        // and then register 'waiting' or 'block' depending
-        // on placement
-        walks.push({
-          type: "walk",
-          tx,
-          prevPlacement: pBefore,
-          placement: pAfter!
-        });
+      // Either move it or kill it depending on target assembly
+      if (pAfter) {
+        walkIfNeeded(walks, tx, pBefore, pAfter);
+      } else {
+        lifespans.push({ type: "kill", tx });
       }
     }
 
