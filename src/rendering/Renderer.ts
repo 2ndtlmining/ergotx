@@ -9,7 +9,7 @@ import { LinearMotion } from "~/movement/LinearMotion";
 import { HouseService, getRegisteredHouses } from "./housing";
 
 import { Person } from "./actors/Person";
-import { LiveBus } from "./actors/LiveBus";
+import { Plane } from "./actors/Plane";
 import { NUM_FUTURE_BLOCKS } from "~/common/constants";
 import { WorldManager } from "./WorldManager";
 import { createWalkPoints } from "./walks";
@@ -22,15 +22,15 @@ export class Renderer implements AcceptsCommands {
 
   private personMap: Map<string, Person>;
   private blockGroups: Map<string, number>;
-  private buses: LiveBus[];
+  private planes: Plane[];
 
   private houseService: HouseService;
 
   // Visuals related fields
   private waitingZone: Geom.Rectangle;
-  private busLineX: number;
-  private busZoneWidth: number;
-  private busZoneTop: number;
+  private runwayLineX: number;
+  private runwayWidth: number;
+  private runwayTop: number;
 
   constructor(scene: Scene) {
     this.scene = scene;
@@ -43,7 +43,7 @@ export class Renderer implements AcceptsCommands {
 
     this.initHouses();
     this.initWaitingZone();
-    this.initBuses();
+    this.initPlanes();
   }
 
   // =========== Initialization ===========
@@ -60,17 +60,6 @@ export class Renderer implements AcceptsCommands {
         position: new Math.Vector2(150, 150 + 200 * (index + 1))
       }))
     ]);
-
-    // Draw houses
-    // this.houseService.getHouses().forEach(({ name, position }) => {
-    //   this.scene.add.circle(position.x, position.y, HOUSE_RADIUS, HOUSE_COLOR);
-    //   this.scene.add
-    //     .text(position.x, position.y + 35, name, {
-    //       fontSize: 20,
-    //       color: HOUSE_TEXT_COLOR
-    //     })
-    //     .setOrigin(0.5, 0.5);
-    // });
   }
 
   private initWaitingZone() {
@@ -81,23 +70,23 @@ export class Renderer implements AcceptsCommands {
     );
   }
 
-  private initBuses() {
-    this.buses = [];
+  private initPlanes() {
+    this.planes = [];
 
-    let busZone = WorldManager.LineUpRoad.rect;
+    let runway = WorldManager.LineUpRoad.rect;
 
-    this.busLineX = busZone.centerX;
-    this.busZoneWidth = busZone.width;
-    this.busZoneTop = busZone.top;
+    this.runwayLineX = runway.centerX;
+    this.runwayWidth = runway.width;
+    this.runwayTop = runway.top;
 
-    let frontline = this.busZoneTop;
+    let frontline = this.runwayTop;
     for (let i = 0; i < NUM_FUTURE_BLOCKS; ++i) {
-      let bus = new LiveBus(this.scene, this.busZoneWidth);
+      let plane = new Plane(this.scene, this.runwayWidth);
 
-      bus.place({ x: this.busLineX, y: frontline });
-      frontline += bus.getHeight() + SPACING;
+      plane.place({ x: this.runwayLineX, y: frontline });
+      frontline += plane.getHeight() + SPACING;
 
-      this.buses.push(bus);
+      this.planes.push(plane);
     }
   }
 
@@ -141,28 +130,28 @@ export class Renderer implements AcceptsCommands {
   }
 
   private async cmdDriveOff() {
-    let frontlines = [-this.buses[0].getHeight()];
+    let frontlines = [-this.planes[0].getHeight()];
 
-    let newFrontline = this.busZoneTop;
-    for (let i = 1; i < this.buses.length; ++i) {
+    let newFrontline = this.runwayTop;
+    for (let i = 1; i < this.planes.length; ++i) {
       frontlines.push(newFrontline);
-      newFrontline += this.buses[i].getHeight() + SPACING;
+      newFrontline += this.planes[i].getHeight() + SPACING;
     }
 
     let motions: Motion[] = [];
 
-    for (let i = 0; i < this.buses.length; ++i) {
-      let busMotion = attachMotion(
-        this.buses[i],
+    for (let i = 0; i < this.planes.length; ++i) {
+      let planeMotion = attachMotion(
+        this.planes[i],
         new LinearMotion([
           {
-            x: this.busLineX,
+            x: this.runwayLineX,
             y: frontlines[i]
           }
         ])
       );
 
-      motions.push(busMotion);
+      motions.push(planeMotion);
     }
 
     const dyingTxIds: string[] = [];
@@ -181,7 +170,7 @@ export class Renderer implements AcceptsCommands {
       }
 
       let displacement =
-        frontlines[currentBlock] - this.buses[currentBlock].getY();
+        frontlines[currentBlock] - this.planes[currentBlock].getY();
 
       let person = this.getPerson(txId);
       let personMotion = attachMotion(
@@ -203,12 +192,11 @@ export class Renderer implements AcceptsCommands {
       this.destroyPerson(txId);
     }
 
-    this.buses.shift()?.destroy();
-    let nextSpawnBus = new LiveBus(this.scene, this.busZoneWidth);
+    this.planes.shift()?.destroy();
 
-    nextSpawnBus.place({ x: this.busLineX, y: newFrontline });
-
-    this.buses.push(nextSpawnBus);
+    let nextSpawnedPlane = new Plane(this.scene, this.runwayWidth);
+    nextSpawnedPlane.place({ x: this.runwayLineX, y: newFrontline });
+    this.planes.push(nextSpawnedPlane);
   }
 
   public async executeCommands(commands: Command[]) {
@@ -251,7 +239,7 @@ export class Renderer implements AcceptsCommands {
         this.blockGroups.delete(txId);
         break;
       case "block":
-        targetPosition = this.buses[dest.index].getWalkInTargetPoint();
+        targetPosition = this.planes[dest.index].getWalkInTargetPoint();
         this.blockGroups.set(txId, dest.index);
         break;
     }
@@ -274,11 +262,11 @@ export class Renderer implements AcceptsCommands {
     this.personMap.forEach(p => p.destroy());
     this.personMap = new Map();
 
-    this.buses.forEach(b => b.destroy());
+    this.planes.forEach(b => b.destroy());
 
     this.blockGroups = new Map();
 
-    this.initBuses();
+    this.initPlanes();
   }
 
   /* ======================================= */
@@ -287,8 +275,8 @@ export class Renderer implements AcceptsCommands {
     this.personMap.forEach(person => {
       person.update();
     });
-    this.buses.forEach(bus => {
-      bus.update();
+    this.planes.forEach(plane => {
+      plane.update();
     });
   }
 }

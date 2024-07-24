@@ -2,7 +2,7 @@ import EventEmitter from "eventemitter3";
 import { VoidCallback } from "~/common/types";
 
 export const debugSettings = {
-  debugBus: false
+  debugBlockActors: false
 };
 
 export type DebugSettings = typeof debugSettings;

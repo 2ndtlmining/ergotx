@@ -42,7 +42,7 @@ export class MainScene extends BaseScene {
         },
         onDebugBus: shouldShow => {
           updateSettings(settings => {
-            settings.debugBus = shouldShow;
+            settings.debugBlockActors = shouldShow;
           });
         }
       }

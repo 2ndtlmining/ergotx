@@ -31,7 +31,7 @@ export function createWalkPoints(source: WalkHead, dest: WalkHead): IVector2[] {
   let points: IVector2[] = [];
 
   if (pa === null) {
-    // dest could be either waiting zone or a bus
+    // dest could be either waiting zone or a plane
     // in both case the shape of the path is the same
 
     // L path from source to walk lane

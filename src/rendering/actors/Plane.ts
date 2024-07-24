@@ -6,7 +6,7 @@ import { Transform } from "~/common/component-types";
 import { watchSettings } from "../DebugSettings";
 import { VoidCallback } from "~/common/types";
 
-export class LiveBus extends Actor implements SupportsMotion {
+export class Plane extends Actor implements SupportsMotion {
   private container: GameObjects.Container;
   // private sprite: GameObjects.Image;
 
@@ -89,8 +89,8 @@ export class LiveBus extends Actor implements SupportsMotion {
       this.container.add(this.regionDebug);
 
       this._debugCancel = watchSettings(settings => {
-        this.planeDebug.setVisible(settings.debugBus);
-        this.regionDebug.setVisible(settings.debugBus);
+        this.planeDebug.setVisible(settings.debugBlockActors);
+        this.regionDebug.setVisible(settings.debugBlockActors);
       });
     }
 
