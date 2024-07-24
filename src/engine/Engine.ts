@@ -95,7 +95,6 @@ export class Engine {
         })
         .catch(() => {
           this.cmdExecutor.reset();
-          alert("An error occured");
 
           let commands: Command[] = targetAssembly.transactions.map(tx => ({
             type: "spawn",
