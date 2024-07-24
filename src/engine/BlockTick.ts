@@ -69,7 +69,7 @@ export class BlockTick extends Tick {
 
       if (pAfter.type === "block") {
         // Shift it to the block below.
-        // It will be moved back up after drive off
+        // It will be moved back up after step_forward command
         pAfter.index++;
 
         // If it goes out of bounds after shifting then we
@@ -120,7 +120,7 @@ export class BlockTick extends Tick {
       spawns,
       walks,
       yieldOuts,
-      [{ type: "drive_off" }],
+      [{ type: "step_forward" }],
       yieldIns
     ];
 

@@ -14,7 +14,7 @@ export type Command =
       dest: Placement;
     }
   | { type: "kill"; tx: Transaction }
-  | { type: "drive_off" };
+  | { type: "step_forward" };
 
 export interface AcceptsCommands {
   executeCommands(commands: Command[]): Promise<unknown>;

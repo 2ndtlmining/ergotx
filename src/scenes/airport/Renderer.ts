@@ -129,7 +129,7 @@ export class Renderer implements AcceptsCommands {
     return attachMotion(person, motion).run();
   }
 
-  private async cmdDriveOff() {
+  private async cmdStepForward() {
     let frontlines = [-this.planes[0].getHeight()];
 
     let newFrontline = this.runwayTop;
@@ -208,8 +208,8 @@ export class Renderer implements AcceptsCommands {
           return this.cmdKill(cmd.tx);
         case "walk":
           return this.cmdWalk(cmd.tx, cmd.source, cmd.dest);
-        case "drive_off":
-          return this.cmdDriveOff();
+        case "step_forward":
+          return this.cmdStepForward();
       }
     });
 
