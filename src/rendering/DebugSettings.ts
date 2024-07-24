@@ -2,7 +2,9 @@ import EventEmitter from "eventemitter3";
 import { VoidCallback } from "~/common/types";
 
 export const debugSettings = {
-  debugBlockActors: false
+  showGridlines: false,
+  debugBlockActors: false,
+  debugRegions: false,
 };
 
 export type DebugSettings = typeof debugSettings;
@@ -20,7 +22,7 @@ export function watchSettings(callback: VoidCallback<Readonly<DebugSettings>>) {
   };
 }
 
-export function updateSettings(callback: VoidCallback<DebugSettings>) {
-  callback(debugSettings);
+export function updateSettings(updates: Partial<DebugSettings>) {
+  Object.assign(debugSettings, updates);
   emitter.emit("settings");
 }

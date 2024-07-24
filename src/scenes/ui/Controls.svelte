@@ -1,10 +1,5 @@
 <script lang="ts">
-  import type { VoidCallback } from "~/common/types";
-
-  export let onShowGridlines: VoidCallback<boolean> | undefined;
-  export let onDebugRegions: VoidCallback<boolean> | undefined;
-  export let onDebugBus: VoidCallback<boolean> | undefined;
-  export let regionUnderCursor: () => string | null;
+  import { updateSettings } from "~/rendering/DebugSettings";
 
   function setAndReload(key: string, item: string) {
     if (item) {
@@ -41,26 +36,15 @@
   // ============= Settings =============
 
   // ==== Grid lines ====
-  let showGridLines = false;
-  $: onShowGridlines?.(showGridLines);
+  let showGridlines = false;
+  $: updateSettings({ showGridlines });
 
-  // ==== Debug Regions ====
   let debugRegions = false;
-  $: onDebugRegions?.(debugRegions);
-  let hoveredRegion: string | null = null;
+  $: updateSettings({ debugRegions });
 
-  // ==== Debug Bus ====
-  let debugBus = false;
-  $: onDebugBus?.(debugBus);
+  let debugBlockActors = false;
+  $: updateSettings({ debugBlockActors });
 </script>
-
-<svelte:document
-  on:mousemove={debugRegions
-    ? () => {
-        hoveredRegion = regionUnderCursor();
-      }
-    : undefined}
-/>
 
 <main>
   <p>
@@ -111,7 +95,7 @@
 
     <label class="flex gap-3 text-sm mb-2">
       <input
-        bind:checked={showGridLines}
+        bind:checked={showGridlines}
         type="checkbox"
         class="switch switch-bordered-primary"
       />
@@ -127,21 +111,13 @@
     </label>
     <label class="flex gap-3 text-sm mb-2">
       <input
-        bind:checked={debugBus}
+        bind:checked={debugBlockActors}
         type="checkbox"
         class="switch switch-bordered-primary"
       />
-      Debug Buses
+      Debug Block Actors
     </label>
   </div>
-
-  {#if debugRegions}
-    <p class="mt-10">
-      Region Under Cursor:
-      <br />
-      {hoveredRegion ?? "-none-"}
-    </p>
-  {/if}
 </main>
 
 <style lang="postcss">

@@ -7,9 +7,9 @@ import { PollUpdateService } from "~/ergoapi/PollUpdateService";
 import { ReplayUpdateService } from "~/ergoapi/ReplayUpdateService";
 
 import Controls from "./ui/Controls.svelte";
-import { updateSettings } from "~/rendering/DebugSettings";
 import { Engine } from "~/engine/Engine";
 import { watchUpdates } from "~/ergoapi/watch-updates";
+import { watchSettings } from "~/rendering/DebugSettings";
 
 export class MainScene extends BaseScene {
   private appRenderer: Renderer;
@@ -30,22 +30,11 @@ export class MainScene extends BaseScene {
 
     this.uiControls = new Controls({
       target: document.getElementById("controls")!,
-      props: {
-        onShowGridlines: shouldShow => {
-          WorldManager.showGridLines(shouldShow);
-        },
-        onDebugRegions: shouldShow => {
-          WorldManager.showRegionsDebug(shouldShow);
-        },
-        regionUnderCursor: () => {
-          return WorldManager.regionUnderCursor(this)?.debugName ?? null;
-        },
-        onDebugBus: shouldShow => {
-          updateSettings(settings => {
-            settings.debugBlockActors = shouldShow;
-          });
-        }
-      }
+    });
+
+    watchSettings((settings) => {
+      WorldManager.showGridLines(settings.showGridlines);
+      WorldManager.showRegionsDebug(settings.debugRegions);
     });
 
     // let updateService = new PollUpdateService();
