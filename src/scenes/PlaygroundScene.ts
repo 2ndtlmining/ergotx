@@ -1,22 +1,13 @@
-import { WorldManager } from "~/rendering/WorldManager";
 import { BaseScene } from "./BaseScene";
-import { Time } from "~/common/Time";
 
 export class PlaygroundScene extends BaseScene {
   getTitle(): string {
     return "Playground";
   }
 
-  preload() {
-    WorldManager.preloadTiles(this.load);
-  }
+  preload() {}
 
-  create() {
-    WorldManager.init(this);
-  }
+  create() {}
 
-  update(_currentTime: number, deltaTime: number) {
-    Time.setDeltaTime(deltaTime);
-    WorldManager.update();
-  }
+  sceneUpdate() {}
 }

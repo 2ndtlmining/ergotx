@@ -6,7 +6,7 @@ import Phaser from "phaser";
 import { SCENE_BG_COLOR } from "~/common/theme";
 
 import type { BaseScene } from "./scenes/BaseScene";
-import { MainScene } from "./scenes/MainScene";
+import { AirportScene } from "./scenes/airport/AirportScene";
 import { PlaygroundScene } from "./scenes/PlaygroundScene";
 import { Constructor } from "./common/types";
 
@@ -20,7 +20,7 @@ switch (pathname) {
     break;
 
   default:
-    scene = MainScene;
+    scene = AirportScene;
 }
 
 let game = new Phaser.Game({

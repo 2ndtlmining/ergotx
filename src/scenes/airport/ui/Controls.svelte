@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { updateSettings } from "~/rendering/DebugSettings";
+  import { updateSettings } from "../DebugSettings";
 
   function setAndReload(key: string, item: string) {
     if (item) {

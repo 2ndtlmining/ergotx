@@ -1,7 +1,6 @@
-import { Renderer } from "~/rendering/Renderer";
-import { WorldManager } from "~/rendering/WorldManager";
-import { BaseScene } from "./BaseScene";
-import { Time } from "~/common/Time";
+import { Renderer } from "./Renderer";
+import { WorldManager } from "./WorldManager";
+import { BaseScene } from "../BaseScene";
 
 import { PollUpdateService } from "~/ergoapi/PollUpdateService";
 import { ReplayUpdateService } from "~/ergoapi/ReplayUpdateService";
@@ -9,9 +8,9 @@ import { ReplayUpdateService } from "~/ergoapi/ReplayUpdateService";
 import Controls from "./ui/Controls.svelte";
 import { Engine } from "~/engine/Engine";
 import { watchUpdates } from "~/ergoapi/watch-updates";
-import { watchSettings } from "~/rendering/DebugSettings";
+import { watchSettings } from "./DebugSettings";
 
-export class MainScene extends BaseScene {
+export class AirportScene extends BaseScene {
   private appRenderer: Renderer;
   private engine: Engine;
   private uiControls: Controls;
@@ -48,9 +47,7 @@ export class MainScene extends BaseScene {
     (<any>window).w = watchUpdates(updateService);
   }
 
-  update(_currentTime: number, deltaTime: number) {
-    Time.setDeltaTime(deltaTime);
-
+  sceneUpdate() {
     this.uiControls.setFps(this.game.loop.actualFps);
 
     WorldManager.update();
