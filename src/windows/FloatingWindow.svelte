@@ -5,6 +5,7 @@
   import interact from "interactjs";
   import type { IRect, IVector2 } from "~/common/math";
   import { createEventDispatcher, onMount } from "svelte";
+  import clsx from "clsx";
 
   export let initialPosition: IVector2 | null = null;
   export let initialSize: IRect | null = null;
@@ -122,12 +123,14 @@
 
 <div
   bind:this={box}
-  class="absolute left-0 top-0 flex flex-col bg-black w-40 h-40 border-2"
+  class={clsx(
+    "absolute left-0 top-0",
+    "flex flex-col overflow-hidden",
+    "rounded-lg border-2 shadow-md shadow-[#282829] border-[#0B0E13]"
+  )}
 >
-  <div bind:this={titleBar} class="h-10 w-full bg-purple-700"></div>
-  <div
-    class="flex-1 bg-red-500 p-2 text-black w-full overflow-hidden select-none"
-  >
+  <div bind:this={titleBar} class="h-10 w-full bg-[#0B0E13] shrink-0"></div>
+  <div class="flex-1 bg-[#222838] p-2 w-full select-none overflow-hidden">
     <p>x = {currentX}</p>
     <p>y = {currentY}</p>
     <p>w = {currentWidth}</p>
