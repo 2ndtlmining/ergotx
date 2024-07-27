@@ -14,39 +14,49 @@
 
 <script lang="ts">
   import interact from "interactjs";
-  import { onMount } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
+
+  let dispatch = createEventDispatcher();
+
+  function requestFocus() {
+    dispatch("focus");
+  }
 
   let box: HTMLElement | null = null;
   let titleBar: HTMLElement | null = null;
 
   onMount(() => {
-    interact(box!).resizable({
-      inertia: true,
-      edges: { left: true, right: true, bottom: true, top: false },
+    interact(box!)
+      .resizable({
+        inertia: true,
+        edges: { left: true, right: true, bottom: true, top: false },
 
-      modifiers: [
-        // keep the edges inside the parent
-        interact.modifiers.restrictEdges({
-          outer: "parent"
-        }),
+        modifiers: [
+          // keep the edges inside the parent
+          interact.modifiers.restrictEdges({
+            outer: "parent"
+          }),
 
-        // minimum size
-        interact.modifiers.restrictSize({
-          min: { width: 100, height: 50 }
-        })
-      ],
+          // minimum size
+          interact.modifiers.restrictSize({
+            min: { width: 100, height: 50 }
+          })
+        ],
 
-      listeners: {
-        move(event) {
-          let target = box!;
+        listeners: {
+          move(event) {
+            let target = box!;
 
-          target.style.width = event.rect.width + "px";
-          target.style.height = event.rect.height + "px";
+            target.style.width = event.rect.width + "px";
+            target.style.height = event.rect.height + "px";
 
-          moveBy(target, event.deltaRect.left, event.deltaRect.top);
+            moveBy(target, event.deltaRect.left, event.deltaRect.top);
+          }
         }
-      }
-    });
+      })
+      .on("pointerdown", () => {
+        requestFocus();
+      });
 
     interact(titleBar!).draggable({
       inertia: true,
@@ -58,7 +68,7 @@
       ],
 
       listeners: {
-        move: event => moveBy(box!, event.dx, event.dy)
+        move: event => moveBy(box!, event.dx, event.dy),
       }
     });
   });

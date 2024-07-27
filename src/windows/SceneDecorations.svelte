@@ -36,13 +36,23 @@
   let activeWindows: WindowEntry[] = [];
 
   onMount(() => {
-    activeWindows = [buildWindow('stats')];
+    activeWindows = [
+      buildWindow("stats"),
+      buildWindow("stats"),
+      buildWindow("stats"),
+    ];
     return windowEmitter.on("CreteWindow", entry => {
       activeWindows = [...activeWindows, entry];
     });
   });
 </script>
 
-{#each activeWindows as win (win.id)}
-  <FloatingWindow />
+{#each activeWindows as win, index (win.id)}
+  <FloatingWindow on:focus={() => {
+    let entry = activeWindows.splice(index, 1)[0];
+    activeWindows = [
+      ...activeWindows,
+      entry
+    ];
+  }} />
 {/each}
