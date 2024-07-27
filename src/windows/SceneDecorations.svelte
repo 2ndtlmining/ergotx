@@ -18,7 +18,10 @@
 
   let nextWindowId = 1;
 
-  function buildWindow(winType: WindowEntry["type"], initialPosition?: IVector2) {
+  function buildWindow(
+    winType: WindowEntry["type"],
+    initialPosition?: IVector2
+  ) {
     return {
       id: nextWindowId++,
       type: winType,
@@ -36,12 +39,13 @@
 <script lang="ts">
   import FloatingWindow from "./FloatingWindow.svelte";
   import { onMount } from "svelte";
+  import clsx from "clsx";
 
   let activeWindows: WindowEntry[] = [];
 
   onMount(() => {
     activeWindows = [
-      buildWindow("stats", { x: 0, y: 0 }),
+      // buildWindow("stats", { x: 0, y: 0 })
       // buildWindow("stats"),
       // buildWindow("stats")
     ];
@@ -60,3 +64,17 @@
     }}
   />
 {/each}
+
+<button
+  class={clsx(
+    "absolute left-2 bottom-2",
+    "px-8 py-2 rounded",
+    "bg-[#5C398F] hover:bg-[#392359] active:bg-[#462b6e]",
+    "text-white font-medium text-lg tc"
+  )}
+  on:click={() => {
+    createWindow('stats');
+  }}
+>
+  Stats
+</button>

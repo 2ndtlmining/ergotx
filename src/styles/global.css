@@ -21,6 +21,12 @@ body {
   overflow: hidden;
 }
 
+@layer utilities {
+  .tc {
+    @apply transition-colors;
+  }
+}
+
 #root {
   display: flex;
   min-height: 100%;

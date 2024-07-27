@@ -28,13 +28,11 @@ function getScene(): Constructor<BaseScene> {
 }
 
 function createGame() {
-  let canvasHeight = canvasContainer!.getBoundingClientRect().height;
-
   let game = new Phaser.Game({
     scene: getScene(),
     canvas: mainCanvas!,
     width: 920,
-    height: canvasHeight,
+    height: window.innerHeight,
     backgroundColor: SCENE_BG_COLOR,
     type: Phaser.CANVAS,
     powerPreference: "high-performance",
