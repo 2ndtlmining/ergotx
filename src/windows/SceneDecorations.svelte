@@ -1,21 +1,8 @@
 <script lang="ts" context="module">
   import type { VoidCallback } from "~/common/types";
-  import type { IRect, IVector2 } from "~/common/math";
+  import type { WindowEntry } from "./win-types";
 
   import EventEmitter from "eventemitter3";
-
-  // prettier-ignore
-  type WindowDetails =
-    | { type: "stats" }
-    | { type: "tx" }
-    | { type: "block" };
-
-  interface WindowEntry {
-    id: number;
-    details: WindowDetails;
-    initialPosition?: IVector2 | undefined | null;
-    initialSize?: IRect | undefined | null;
-  }
 
   interface WindowEvents {
     CreteWindow: VoidCallback<WindowEntry>;
@@ -40,28 +27,25 @@
 </script>
 
 <script lang="ts">
-  import FloatingWindow from "./FloatingWindow.svelte";
   import { onMount } from "svelte";
   import clsx from "clsx";
+
+  import FloatingWindow from "./FloatingWindow.svelte";
+  import StatWindow from "./StatWindow.svelte";
 
   let activeWindows: WindowEntry[] = [];
 
   onMount(() => {
-    activeWindows = [
-      // buildWindow("stats", { x: 0, y: 0 })
-      // buildWindow("stats"),
-      // buildWindow("stats")
-    ];
+    activeWindows = [];
     return windowEmitter.on("CreteWindow", entry => {
       activeWindows = [...activeWindows, entry];
     });
   });
 </script>
 
-{#each activeWindows as win, index (win.id)}
+{#each activeWindows as winEntry, index (winEntry.id)}
   <FloatingWindow
-    initialPosition={win.initialPosition}
-    initialSize={win.initialSize}
+    entry={winEntry}
     on:focus={() => {
       let entry = activeWindows.splice(index, 1)[0];
       activeWindows = [...activeWindows, entry];
@@ -70,7 +54,9 @@
       activeWindows.splice(index, 1);
       activeWindows = activeWindows;
     }}
-  />
+  >
+    <StatWindow />
+  </FloatingWindow>
 {/each}
 
 <button
@@ -86,6 +72,7 @@
       return;
 
     createWindow({
+      title: "Stats",
       details: { type: "stats" },
       initialPosition: { x: 150, y: -50 },
       initialSize: { width: 370, height: 370 }

@@ -8,10 +8,9 @@
 
   import { IconX } from "@tabler/icons-svelte";
 
-  import type { IRect, IVector2 } from "~/common/math";
+  import type { WindowEntry } from "./win-types";
 
-  export let initialPosition: IVector2 | null = null;
-  export let initialSize: IRect | null = null;
+  export let entry: WindowEntry;
 
   let dispatch = createEventDispatcher();
 
@@ -108,15 +107,17 @@
           move: event => moveBy(event.dx, event.dy)
         }
       })
-      .on("tap", event => {
+      .on("click", event => {
         let target = event.target as HTMLElement | null;
-        if (target && target.hasAttribute('data-title-action')) {
+        if (target && target.hasAttribute("data-title-action")) {
           closeWindow();
         }
       });
 
     let { width: containerWidth, height: containerHeight } =
       container!.getBoundingClientRect();
+
+    let { initialPosition, initialSize } = entry;
 
     if (initialPosition) {
       let { x, y } = initialPosition;
@@ -152,7 +153,7 @@
       "flex items-center px-4"
     )}
   >
-    <h3 class="font-medium text-lg">Table</h3>
+    <h3 class="font-medium text-lg">{entry.title}</h3>
     <span class="flex-1" />
     <button
       class={clsx(
@@ -165,9 +166,10 @@
   </div>
 
   <div class="flex-1 bg-[#232B40] p-4 w-full select-none overflow-hidden">
-    <p>x = {currentX}</p>
+    <slot></slot>
+    <!-- <p>x = {currentX}</p>
     <p>y = {currentY}</p>
     <p>w = {currentWidth}</p>
-    <p>h = {currentHeight}</p>
+    <p>h = {currentHeight}</p> -->
   </div>
 </div>
