@@ -1,3 +1,3 @@
 <main>
-  Hello There
+  This is stat window
 </main>

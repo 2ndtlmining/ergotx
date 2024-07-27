@@ -167,9 +167,5 @@
 
   <div class="flex-1 bg-[#232B40] p-4 w-full select-none overflow-hidden">
     <slot></slot>
-    <!-- <p>x = {currentX}</p>
-    <p>y = {currentY}</p>
-    <p>w = {currentWidth}</p>
-    <p>h = {currentHeight}</p> -->
   </div>
 </div>

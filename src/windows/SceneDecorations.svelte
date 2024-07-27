@@ -55,7 +55,13 @@
       activeWindows = activeWindows;
     }}
   >
-    <StatWindow />
+    {#if winEntry.details.type === "stats"}
+      <StatWindow />
+    {:else if winEntry.details.type === "tx"}
+      Transaction info
+    {:else if winEntry.details.type === "block"}
+      Block info
+    {/if}
   </FloatingWindow>
 {/each}
 
