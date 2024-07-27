@@ -15,11 +15,13 @@
     "color": "^4.2.3",
     "eventemitter3": "^5.0.1",
     "file-saver": "^2.0.5",
+    "interactjs": "^1.10.27",
     "ky": "^1.2.4",
     "phaser": "^3.80.1",
     "rippleui": "^1.12.1",
     "set-interval-async": "^3.0.3",
-    "uniqolor": "^1.1.1"
+    "uniqolor": "^1.1.1",
+    "when-dom-ready": "^1.2.12"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
