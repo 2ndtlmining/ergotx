@@ -98,7 +98,8 @@
       }
     });
 
-    let { width: containerWidth, height: containerHeight } = container!.getBoundingClientRect();
+    let { width: containerWidth, height: containerHeight } =
+      container!.getBoundingClientRect();
 
     if (initialPosition) {
       let { x, y } = initialPosition;
@@ -110,7 +111,7 @@
     }
 
     if (initialSize) {
-      let {width, height } = initialSize;
+      let { width, height } = initialSize;
       width = Math.min(width, containerWidth - currentX);
       height = Math.min(height, containerHeight - currentY);
 
