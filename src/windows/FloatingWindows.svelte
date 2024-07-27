@@ -1,3 +1,17 @@
+<script lang="ts" context="module">
+  function moveBy(element: HTMLElement, dx: number, dy: number) {
+    let x = parseFloat(element.getAttribute("data-x") ?? "") || 0;
+    let y = parseFloat(element.getAttribute("data-y") ?? "") || 0;
+
+    x += dx;
+    y += dy;
+
+    element.style.transform = "translate(" + x + "px," + y + "px)";
+    element.setAttribute("data-x", x.toString());
+    element.setAttribute("data-y", y.toString());
+  }
+</script>
+
 <script lang="ts">
   import interact from "interactjs";
   import { onMount } from "svelte";
@@ -7,29 +21,9 @@
 
   onMount(() => {
     interact(box!).resizable({
-      // resize from all edges and corners
-      edges: { left: true, right: true, bottom: true, top: true },
+      inertia: true,
+      edges: { left: true, right: true, bottom: true, top: false },
 
-      listeners: {
-        move(event) {
-          var target = event.target;
-          var x = parseFloat(target.getAttribute("data-x")) || 0;
-          var y = parseFloat(target.getAttribute("data-y")) || 0;
-
-          // update the element's style
-          target.style.width = event.rect.width + "px";
-          target.style.height = event.rect.height + "px";
-
-          // translate when resizing from top or left edges
-          x += event.deltaRect.left;
-          y += event.deltaRect.top;
-
-          target.style.transform = "translate(" + x + "px," + y + "px)";
-
-          target.setAttribute("data-x", x);
-          target.setAttribute("data-y", y);
-        }
-      },
       modifiers: [
         // keep the edges inside the parent
         interact.modifiers.restrictEdges({
@@ -42,7 +36,16 @@
         })
       ],
 
-      inertia: true
+      listeners: {
+        move(event) {
+          let target = box!;
+
+          target.style.width = event.rect.width + "px";
+          target.style.height = event.rect.height + "px";
+
+          moveBy(target, event.deltaRect.left, event.deltaRect.top);
+        }
+      }
     });
 
     interact(titleBar!).draggable({
@@ -50,26 +53,12 @@
 
       modifiers: [
         interact.modifiers.restrictRect({
-          restriction: box?.parentElement!,
+          restriction: box?.parentElement!
         })
       ],
 
       listeners: {
-        // call this function on every dragmove event
-        move: event => {
-          var target = box!;
-
-          // keep the dragged position in the data-x/data-y attributes
-          var x = (parseFloat(target.getAttribute("data-x") ?? "") || 0) + event.dx;
-          var y = (parseFloat(target.getAttribute("data-y") ?? "") || 0) + event.dy;
-
-          // translate the element
-          target.style.transform = "translate(" + x + "px, " + y + "px)";
-
-          // update the posiion attributes
-          target.setAttribute("data-x", x);
-          target.setAttribute("data-y", y);
-        }
+        move: event => moveBy(box!, event.dx, event.dy)
       }
     });
   });
