@@ -15,12 +15,17 @@
 
   let nextWindowId = 1;
 
-  export function createWindow(winType: WindowEntry["type"]) {
-    windowEmitter.emit("CreteWindow", {
+  function buildWindow(winType: WindowEntry["type"]) {
+    return {
       id: nextWindowId++,
       type: winType
-    });
+    };
   }
+
+  export function createWindow(winType: WindowEntry["type"]) {
+    windowEmitter.emit("CreteWindow", buildWindow(winType));
+  }
+
   (<any>window).createWindow = createWindow;
 </script>
 
@@ -31,6 +36,7 @@
   let activeWindows: WindowEntry[] = [];
 
   onMount(() => {
+    activeWindows = [buildWindow('stats')];
     return windowEmitter.on("CreteWindow", entry => {
       activeWindows = [...activeWindows, entry];
     });

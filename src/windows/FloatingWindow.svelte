@@ -66,7 +66,7 @@
 
 <div
   bind:this={box}
-  class="absolute left-10 flex flex-col top-10 bg-black w-40 h-40"
+  class="absolute left-10 flex flex-col top-10 bg-black w-40 h-40 border-2"
 >
   <div bind:this={titleBar} class="h-10 w-full bg-purple-700"></div>
   <div class="flex-1 bg-red-500"></div>
