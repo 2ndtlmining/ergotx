@@ -33,8 +33,6 @@ export class Engine {
     this.isPaused = false;
 
     this.updateService = updateService;
-    // this.updateService = new PollUpdateService();
-    // this.updateService = new ReplayUpdateService("/replays/replay-01.json");
 
     if (startUpdates) {
       updateService.start();
