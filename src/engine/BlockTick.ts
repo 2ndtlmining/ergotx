@@ -1,4 +1,4 @@
-import { AssembleStrategy } from "~/assemble/AssembleStrategy";
+import { AssembleStrategy } from "./assemble/AssembleStrategy";
 import { AcceptsCommands, Command } from "~/common/Command";
 import { Assembly } from "./Assembly";
 import { Tick } from "./Tick";

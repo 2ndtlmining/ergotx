@@ -2,7 +2,7 @@ import { Transaction } from "~/common/types";
 import { PropSet } from "~/common/PropSet";
 import { AcceptsCommands, Command } from "~/common/Command";
 
-import { AssembleStrategy } from "~/assemble/AssembleStrategy";
+import type { AssembleStrategy } from "./assemble/AssembleStrategy";
 
 import { Tick } from "./Tick";
 import { Assembly } from "./Assembly";

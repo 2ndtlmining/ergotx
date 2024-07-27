@@ -2,8 +2,8 @@ import { delay } from "~/common/utils";
 import type { AcceptsCommands, Command } from "~/common/Command";
 import type { UpdateService } from "~/ergoapi/UpdateService";
 
-import type { AssembleStrategy } from "~/assemble/AssembleStrategy";
-import { DefaultAssembleStrategy } from "~/assemble/DefaultAssembleStrategy";
+import type { AssembleStrategy } from "./assemble/AssembleStrategy";
+import { DefaultAssembleStrategy } from "./assemble/DefaultAssembleStrategy";
 
 import type { Tick } from "./Tick";
 import { Assembly } from "./Assembly";
