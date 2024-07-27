@@ -14,7 +14,10 @@
 
 <script lang="ts">
   import interact from "interactjs";
+  import type { IVector2 } from "~/common/math";
   import { createEventDispatcher, onMount } from "svelte";
+
+  export let initialPosition: IVector2 | null = null;
 
   let dispatch = createEventDispatcher();
 
@@ -71,12 +74,15 @@
         move: event => moveBy(box!, event.dx, event.dy),
       }
     });
+
+    if (initialPosition)
+      moveBy(box!, initialPosition.x, initialPosition.y);
   });
 </script>
 
 <div
   bind:this={box}
-  class="absolute left-10 flex flex-col top-10 bg-black w-40 h-40 border-2"
+  class="absolute left-0 top-0 flex flex-col bg-black w-40 h-40 border-2"
 >
   <div bind:this={titleBar} class="h-10 w-full bg-purple-700"></div>
   <div class="flex-1 bg-red-500"></div>
