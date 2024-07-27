@@ -3,10 +3,11 @@
 
 <script lang="ts">
   import interact from "interactjs";
-  import type { IVector2 } from "~/common/math";
+  import type { IRect, IVector2 } from "~/common/math";
   import { createEventDispatcher, onMount } from "svelte";
 
   export let initialPosition: IVector2 | null = null;
+  export let initialSize: IRect | null = null;
 
   let dispatch = createEventDispatcher();
 
@@ -92,6 +93,9 @@
 
     if (initialPosition)
       moveBy(initialPosition.x, initialPosition.y);
+
+    if (initialSize)
+      sizeTo(initialSize.width, initialSize.height);
   });
 </script>
 

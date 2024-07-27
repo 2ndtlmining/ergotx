@@ -1,13 +1,20 @@
 <script lang="ts" context="module">
   import type { VoidCallback } from "~/common/types";
-  import type { IVector2 } from "~/common/math";
+  import type { IRect, IVector2 } from "~/common/math";
 
   import EventEmitter from "eventemitter3";
 
+  // prettier-ignore
+  type WindowDetails =
+    | { type: "stats" }
+    | { type: "tx" }
+    | { type: "block" };
+
   interface WindowEntry {
     id: number;
-    type: "stats" | "tx" | "block";
+    details: WindowDetails;
     initialPosition?: IVector2 | undefined | null;
+    initialSize?: IRect | undefined | null;
   }
 
   interface WindowEvents {
@@ -18,19 +25,15 @@
 
   let nextWindowId = 1;
 
-  function buildWindow(
-    winType: WindowEntry["type"],
-    initialPosition?: IVector2
-  ) {
+  function buildWindow(windowData: Omit<WindowEntry, "id">) {
     return {
       id: nextWindowId++,
-      type: winType,
-      initialPosition
-    };
+      ...windowData
+    } as WindowEntry;
   }
 
-  export function createWindow(winType: WindowEntry["type"]) {
-    windowEmitter.emit("CreteWindow", buildWindow(winType));
+  export function createWindow(windowData: Omit<WindowEntry, "id">) {
+    windowEmitter.emit("CreteWindow", buildWindow(windowData));
   }
 
   (<any>window).createWindow = createWindow;
@@ -58,6 +61,7 @@
 {#each activeWindows as win, index (win.id)}
   <FloatingWindow
     initialPosition={win.initialPosition}
+    initialSize={win.initialSize}
     on:focus={() => {
       let entry = activeWindows.splice(index, 1)[0];
       activeWindows = [...activeWindows, entry];
@@ -73,7 +77,11 @@
     "text-white font-medium text-lg tc"
   )}
   on:click={() => {
-    createWindow('stats');
+    createWindow({
+      details: { type: 'stats' },
+      initialPosition: { x: 400, y: 10 },
+      initialSize: { width: 600, height: 600 }
+    });
   }}
 >
   Stats
