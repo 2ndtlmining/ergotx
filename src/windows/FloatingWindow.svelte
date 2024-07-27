@@ -165,7 +165,7 @@
     </button>
   </div>
 
-  <div class="flex-1 bg-[#232B40] p-4 w-full select-none overflow-hidden">
+  <div class="flex-1 bg-[#232B40] p-4 w-full select-noned overflow-hidden">
     <slot></slot>
   </div>
 </div>
