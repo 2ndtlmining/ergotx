@@ -66,6 +66,10 @@
       let entry = activeWindows.splice(index, 1)[0];
       activeWindows = [...activeWindows, entry];
     }}
+    on:close={() => {
+      activeWindows.splice(index, 1);
+      activeWindows = activeWindows;
+    }}
   />
 {/each}
 

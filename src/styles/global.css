@@ -25,6 +25,10 @@ body {
   .tc {
     @apply transition-colors;
   }
+
+  .d {
+    @apply bg-red-500;
+  }
 }
 
 #root {
