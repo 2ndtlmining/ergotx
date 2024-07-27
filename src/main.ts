@@ -2,7 +2,7 @@ import "./styles/reset.css";
 import "./styles/global.css";
 
 import Phaser from "phaser";
-import whenDomReady from 'when-dom-ready';
+import whenDomReady from "when-dom-ready";
 
 import { SCENE_BG_COLOR } from "~/common/theme";
 
@@ -10,37 +10,35 @@ import type { BaseScene } from "./scenes/BaseScene";
 import { AirportScene } from "./scenes/airport/AirportScene";
 import { PlaygroundScene } from "./scenes/PlaygroundScene";
 import { Constructor } from "./common/types";
+import FloatingWindows from "./windows/FloatingWindows.svelte";
 
-async function createGame() {
-  let scene: Constructor<BaseScene>;
+let canvasContainer: HTMLElement | null = null;
+let mainCanvas: HTMLCanvasElement | null = null;
+
+function getScene(): Constructor<BaseScene> {
   let pathname = window.location.pathname;
-
   switch (pathname) {
     case "/p":
     case "/playground":
-      scene = PlaygroundScene;
-      break;
+      return PlaygroundScene;
 
     default:
-      scene = AirportScene;
+      return AirportScene;
   }
+}
 
-  await whenDomReady();
-
-  let canvasContainer = document.getElementById("canvas_container")!;
-  let canvas = document.getElementById("main_canvas")! as HTMLCanvasElement;
-
-  let canvasHeight = canvasContainer.getBoundingClientRect().height;
+function createGame() {
+  let canvasHeight = canvasContainer!.getBoundingClientRect().height;
 
   let game = new Phaser.Game({
-    scene,
-    canvas: canvas!,
+    scene: getScene(),
+    canvas: mainCanvas!,
     width: 920,
     height: canvasHeight,
     backgroundColor: SCENE_BG_COLOR,
     type: Phaser.CANVAS,
     powerPreference: "high-performance",
-    audio: { noAudio: true },
+    audio: { noAudio: true }
   });
 
   if (typeof window["fps"] === "undefined")
@@ -50,7 +48,16 @@ async function createGame() {
       }
     });
 
-  (<any>window).game = game;
+  return game;
 }
 
-createGame();
+whenDomReady(() => {
+  canvasContainer = document.getElementById("canvas_container")!;
+  mainCanvas = document.getElementById("main_canvas") as any;
+
+  (<any>window).game = createGame();
+
+  // This will append new content in `canvasContainer`. The mainCanvas
+  // will be left intact
+  new FloatingWindows({ target: canvasContainer });
+});
