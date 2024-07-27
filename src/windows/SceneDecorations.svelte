@@ -77,10 +77,14 @@
     "text-white font-medium text-lg tc"
   )}
   on:click={() => {
+    if (activeWindows.find(win => win.details.type === "stats"))
+      // Do not open a stats window if another one is open
+      return;
+
     createWindow({
-      details: { type: 'stats' },
-      initialPosition: { x: 400, y: 10 },
-      initialSize: { width: 600, height: 600 }
+      details: { type: "stats" },
+      initialPosition: { x: 150, y: -50 },
+      initialSize: { width: 370, height: 370 }
     });
   }}
 >
