@@ -23,6 +23,7 @@
   let currentY = 0;
   let currentWidth = 0;
   let currentHeight = 0;
+  let isDragging = false;
 
   function requestFocus() {
     dispatch("focus");
@@ -93,6 +94,12 @@
       })
       .on("pointerdown", () => {
         requestFocus();
+      })
+      .on("resizestart", () => {
+        isDragging = true;
+      })
+      .on("resizeend", () => {
+        isDragging = false;
       });
 
     interact(titleBar!)
@@ -153,7 +160,7 @@
       "flex items-center px-4"
     )}
   >
-    <h3 class="font-medium text-lg">{entry.title}</h3>
+    <h3 class="font-medium text-lg">{entry.title} {isDragging}</h3>
     <span class="flex-1" />
     <button
       class={clsx(
@@ -165,7 +172,10 @@
     </button>
   </div>
 
-  <div class="flex-1 bg-[#232B40] p-4 w-full select-noned overflow-hidden">
+  <div
+    class:select-none={isDragging}
+    class="flex-1 bg-[#232B40] p-4 w-full overflow-hidden"
+  >
     <slot></slot>
   </div>
 </div>

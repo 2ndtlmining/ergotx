@@ -33,7 +33,7 @@
 <style lang="postcss">
   .stat {
     @apply flex justify-between items-center gap-x-2;
-    @apply py-2 border-b border-slate-600;
+    @apply py-2 border-b last:border-none border-slate-600;
   }
 
   h4 {
