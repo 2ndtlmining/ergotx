@@ -10,7 +10,7 @@ import type { BaseScene } from "./scenes/BaseScene";
 import { AirportScene } from "./scenes/airport/AirportScene";
 import { PlaygroundScene } from "./scenes/PlaygroundScene";
 import { Constructor } from "./common/types";
-import FloatingWindows from "./windows/FloatingWindows.svelte";
+import SceneDecorations from "./windows/SceneDecorations.svelte";
 
 let canvasContainer: HTMLElement | null = null;
 let mainCanvas: HTMLCanvasElement | null = null;
@@ -59,5 +59,5 @@ whenDomReady(() => {
 
   // This will append new content in `canvasContainer`. The mainCanvas
   // will be left intact
-  new FloatingWindows({ target: canvasContainer });
+  new SceneDecorations({ target: canvasContainer });
 });
