@@ -1,15 +1,4 @@
 <script lang="ts" context="module">
-  function moveBy(element: HTMLElement, dx: number, dy: number) {
-    let x = parseFloat(element.getAttribute("data-x") ?? "") || 0;
-    let y = parseFloat(element.getAttribute("data-y") ?? "") || 0;
-
-    x += dx;
-    y += dy;
-
-    element.style.transform = "translate(" + x + "px," + y + "px)";
-    element.setAttribute("data-x", x.toString());
-    element.setAttribute("data-y", y.toString());
-  }
 </script>
 
 <script lang="ts">
@@ -21,14 +10,44 @@
 
   let dispatch = createEventDispatcher();
 
+  let box: HTMLElement | null = null;
+  let titleBar: HTMLElement | null = null;
+  let interactInitialized = false;
+
   function requestFocus() {
     dispatch("focus");
   }
 
-  let box: HTMLElement | null = null;
-  let titleBar: HTMLElement | null = null;
+  function moveBy(dx: number, dy: number) {
+
+    let element: HTMLElement = box!;
+
+    let x = parseFloat(element.getAttribute("data-x") ?? "") || 0;
+    let y = parseFloat(element.getAttribute("data-y") ?? "") || 0;
+
+    x += dx;
+    y += dy;
+
+    element.style.transform = "translate(" + x + "px," + y + "px)";
+    element.setAttribute("data-x", x.toString());
+    element.setAttribute("data-y", y.toString());
+  }
+
+  function sizeTo(width: number, height: number) {
+    let element: HTMLElement = box!;
+
+    element.style.width = width + "px";
+    element.style.height = height + "px";
+  }
 
   onMount(() => {
+    // To prevent this function from re-running during hot reload
+    if (interactInitialized) {
+      return;
+    }
+
+    interactInitialized = true;
+
     interact(box!)
       .resizable({
         inertia: true,
@@ -48,12 +67,8 @@
 
         listeners: {
           move(event) {
-            let target = box!;
-
-            target.style.width = event.rect.width + "px";
-            target.style.height = event.rect.height + "px";
-
-            moveBy(target, event.deltaRect.left, event.deltaRect.top);
+            sizeTo(event.rect.width, event.rect.height);
+            moveBy(event.deltaRect.left, event.deltaRect.top);
           }
         }
       })
@@ -71,12 +86,12 @@
       ],
 
       listeners: {
-        move: event => moveBy(box!, event.dx, event.dy),
+        move: event => moveBy(event.dx, event.dy),
       }
     });
 
     if (initialPosition)
-      moveBy(box!, initialPosition.x, initialPosition.y);
+      moveBy(initialPosition.x, initialPosition.y);
   });
 </script>
 
