@@ -72,7 +72,7 @@
 
     interact(box!)
       .resizable({
-        inertia: true,
+        inertia: false,
         edges: { left: true, right: true, bottom: true, top: false },
 
         modifiers: [
@@ -104,7 +104,7 @@
 
     interact(titleBar!)
       .draggable({
-        inertia: true,
+        inertia: false,
         ignoreFrom: "[data-title-action]",
         modifiers: [
           interact.modifiers.restrictRect({ restriction: container })
