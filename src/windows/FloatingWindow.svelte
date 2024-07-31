@@ -116,8 +116,12 @@
       })
       .on("click", event => {
         let target = event.target as HTMLElement | null;
-        if (target && target.hasAttribute("data-title-action")) {
-          closeWindow();
+        while (target && target !== titleBar) {
+          if (target.hasAttribute("data-fw-close")) {
+            closeWindow();
+            break;
+          }
+          target = target.parentElement;
         }
       });
 
@@ -163,12 +167,13 @@
     <h3 class="font-medium text-lg">{entry.title}</h3>
     <span class="flex-1" />
     <button
+      data-fw-close="close"
       class={clsx(
         "p-1 rounded-full tc",
         "bg-[#272727] hover:bg-[#4b4b4b] active:bg-[#272727]"
       )}
     >
-      <IconX data-title-action="close" size={20} />
+      <IconX size={20} />
     </button>
   </div>
 
