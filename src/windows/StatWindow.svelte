@@ -1,17 +1,5 @@
 <script lang="ts" context="module">
-
-</script>
-
-<script lang="ts">
-  import {
-    IconClockRecord,
-    IconCurrencyDollar,
-    IconHash,
-    IconReceiptDollar,
-    IconReplaceFilled,
-    IconRosetteDiscountCheck
-  } from "@tabler/icons-svelte";
-  import { getNetworkInfo, getNetworkStats } from "~/ergoapi/apiconn";
+  import { writable } from "svelte/store";
 
   type Stats = {
     price: number;
@@ -22,7 +10,7 @@
     transactionToday: number;
   };
 
-  async function loadStats(): Promise<Stats> {
+  async function fetchStats(): Promise<Stats> {
     let [netInfo, netStats] = await Promise.all([
       getNetworkInfo(),
       getNetworkStats()
@@ -38,13 +26,28 @@
     };
   }
 
-  let statsPromise = loadStats().then(stats => {
-    console.log(stats);
-    return stats;
-  });
+  let statsPromise = writable<Promise<Stats>>(new Promise(() => {}));
+
+  export function reloadStats() {
+    statsPromise.set(fetchStats());
+  }
+
+  reloadStats();
 </script>
 
-{#await statsPromise}
+<script lang="ts">
+  import {
+    IconClockRecord,
+    IconCurrencyDollar,
+    IconHash,
+    IconReceiptDollar,
+    IconReplaceFilled,
+    IconRosetteDiscountCheck
+  } from "@tabler/icons-svelte";
+  import { getNetworkInfo, getNetworkStats } from "~/ergoapi/apiconn";
+</script>
+
+{#await $statsPromise}
   Loading ...
 {:then stats}
   <main>
