@@ -64,3 +64,17 @@ export async function getBlockTransactions(blockId: string) {
 
   return result.block.blockTransactions;
 }
+
+/* ================== */
+
+export async function getNetworkInfo() {
+  return await kyInstance
+    .get("api/v0/info")
+    .json<any>();
+}
+
+export async function getNetworkStats() {
+  return await kyInstance
+    .get("api/v0/stats")
+    .json<any>();
+}

@@ -81,7 +81,7 @@
       title: "Stats",
       details: { type: "stats" },
       initialPosition: { x: 150, y: -50 },
-      initialSize: { width: 370, height: 370 }
+      initialSize: { width: 470, height: 370 }
     });
   }}
 >
