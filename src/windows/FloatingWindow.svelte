@@ -81,7 +81,7 @@
 
           // minimum size
           interact.modifiers.restrictSize({
-            min: { width: 100, height: 50 }
+            min: { width: 150, height: 150 }
           })
         ],
 
@@ -161,16 +161,19 @@
     bind:this={titleBar}
     class={clsx(
       "h-10 w-full bg-[#0B0E13] shrink-0 select-none",
-      "flex items-center px-4"
+      "flex items-center px-4 gap-x-4"
     )}
   >
-    <h3 class="font-medium text-lg">{entry.title}</h3>
-    <span class="flex-1" />
+    <div class="flex-1 overflow-hidden">
+      <h3 class="font-medium text-lg">
+        {entry.title}
+      </h3>
+    </div>
     <button
       data-fw-close="close"
       class={clsx(
-        "p-1 rounded-full tc",
-        "bg-[#272727] hover:bg-[#4b4b4b] active:bg-[#272727]"
+        "p-1 rounded-full tc shrink-0",
+        "bg-[#272727] hover:bg-[#d65151] active:bg-[#a83a3a]"
       )}
     >
       <IconX size={20} />

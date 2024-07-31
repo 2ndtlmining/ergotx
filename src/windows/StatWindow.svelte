@@ -15,7 +15,7 @@
       <IconCurrencyDollar />
     </span>
     <h4>Price</h4>
-    <span class="value">43534</span>
+    <span class="value">N/A</span>
   </div>
 
   <div class="stat">
@@ -23,7 +23,7 @@
       <IconClockRecord />
     </span>
     <h4>Average Block Times</h4>
-    <span class="value">43534</span>
+    <span class="value">N/A</span>
   </div>
 
   <div class="stat">
@@ -31,7 +31,7 @@
       <IconHash />
     </span>
     <h4>Hashrate</h4>
-    <span class="value">43534</span>
+    <span class="value">N/A</span>
   </div>
 
   <div class="stat">
@@ -39,7 +39,7 @@
       <IconReplaceFilled />
     </span>
     <h4>Circulating Supply</h4>
-    <span class="value">43534</span>
+    <span class="value">N/A</span>
   </div>
 
   <div class="stat">
@@ -47,7 +47,7 @@
       <IconReceiptDollar />
     </span>
     <h4>Average Fee</h4>
-    <span class="value">43534</span>
+    <span class="value">N/A</span>
   </div>
 
   <div class="stat">
@@ -55,7 +55,7 @@
       <IconRosetteDiscountCheck />
     </span>
     <h4>Total Transaction Today</h4>
-    <span class="value">43534</span>
+    <span class="value">N/A</span>
   </div>
 </main>
 
@@ -70,7 +70,7 @@
   }
 
   h4 {
-    @apply font-bold;
+    @apply font-bold whitespace-nowrap mr-8;
   }
 
   * {
