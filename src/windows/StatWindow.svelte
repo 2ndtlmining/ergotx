@@ -15,7 +15,7 @@
     <span class="icon">
       <IconClockRecord />
     </span>
-    <h4>Average Block times</h4>
+    <h4>Average Block Times</h4>
     <span class="value">43534</span>
   </div>
 
@@ -31,7 +31,7 @@
     <span class="icon">
       <IconReplaceFilled />
     </span>
-    <h4>Circulating supply</h4>
+    <h4>Circulating Supply</h4>
     <span class="value">43534</span>
   </div>
 
@@ -47,7 +47,7 @@
     <span class="icon">
       <IconRosetteDiscountCheckFilled />
     </span>
-    <h4>Total Transaction today</h4>
+    <h4>Total Transaction Today</h4>
     <span class="value">43534</span>
   </div>
 </main>
@@ -65,4 +65,9 @@
   h4 {
     @apply font-bold;
   }
+
+  * {
+    font-family: 'Inter';
+  }
+
 </style>
