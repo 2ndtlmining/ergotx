@@ -1,18 +1,25 @@
 <script>
-  import { IconClockRecord, IconCoinFilled, IconCopy, IconHash, IconReceiptDollar, IconReplaceFilled, IconRosetteDiscountCheckFilled } from "@tabler/icons-svelte";
+  import {
+    IconClockRecord,
+    IconCurrencyDollar,
+    IconHash,
+    IconReceiptDollar,
+    IconReplaceFilled,
+    IconRosetteDiscountCheck,
+  } from "@tabler/icons-svelte";
 </script>
 
 <main>
   <div class="stat">
-    <span class="icon">
-      <IconCoinFilled />
+    <span class="icon text-[#8efff6]">
+      <IconCurrencyDollar />
     </span>
     <h4>Price</h4>
     <span class="value">43534</span>
   </div>
 
   <div class="stat">
-    <span class="icon">
+    <span class="icon text-[#ff8066]">
       <IconClockRecord />
     </span>
     <h4>Average Block Times</h4>
@@ -20,7 +27,7 @@
   </div>
 
   <div class="stat">
-    <span class="icon">
+    <span class="icon text-[#ff6f91]">
       <IconHash />
     </span>
     <h4>Hashrate</h4>
@@ -28,7 +35,7 @@
   </div>
 
   <div class="stat">
-    <span class="icon">
+    <span class="icon text-[#eeee53]">
       <IconReplaceFilled />
     </span>
     <h4>Circulating Supply</h4>
@@ -36,7 +43,7 @@
   </div>
 
   <div class="stat">
-    <span class="icon">
+    <span class="icon text-[#35f38b]">
       <IconReceiptDollar />
     </span>
     <h4>Average Fee</h4>
@@ -44,8 +51,8 @@
   </div>
 
   <div class="stat">
-    <span class="icon">
-      <IconRosetteDiscountCheckFilled />
+    <span class="icon text-[#009efa]">
+      <IconRosetteDiscountCheck />
     </span>
     <h4>Total Transaction Today</h4>
     <span class="value">43534</span>
@@ -67,7 +74,6 @@
   }
 
   * {
-    font-family: 'Inter';
+    font-family: "Inter";
   }
-
 </style>
