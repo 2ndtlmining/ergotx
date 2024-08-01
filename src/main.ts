@@ -1,19 +1,3 @@
-if (import.meta.hot) {
-  import.meta.hot.accept();
-  import.meta.hot.on('vite:beforeUpdate', () => {
-    if (game) {
-      // destroy game
-      let baseScene = game.scene.getAt(0) as BaseScene;
-      baseScene.destroy();
-      game.destroy(false);
-    }
-
-    if (sceneDecorations) {
-      sceneDecorations.$destroy();
-    }
-  });
-}
-
 import "./styles/reset.css";
 import "./styles/global.css";
 
@@ -42,6 +26,22 @@ let canvasContainer: HTMLElement | null = null;
 let mainCanvas: HTMLCanvasElement | null = null;
 let game: Phaser.Game | null = null;
 let sceneDecorations: SceneDecorations | null = null;
+
+if (import.meta.hot) {
+  import.meta.hot.accept();
+  import.meta.hot.on('vite:beforeUpdate', () => {
+    if (game) {
+      // destroy game
+      let baseScene = game.scene.getAt(0) as BaseScene;
+      baseScene.destroy();
+      game.destroy(false);
+    }
+
+    if (sceneDecorations) {
+      sceneDecorations.$destroy();
+    }
+  });
+}
 
 whenDomReady(() => {
   if (game) {
