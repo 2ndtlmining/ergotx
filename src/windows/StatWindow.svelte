@@ -2,12 +2,12 @@
   import { writable } from "svelte/store";
 
   type Stats = {
-    price: number;
-    averageBlockTimes: number;
-    hashRate: number;
-    circulatingSupply: number;
-    averageFee: number;
-    transactionToday: number;
+    price: number | null;
+    averageBlockTime: number | null;
+    hashRate: number | null;
+    circulatingSupply: number | null;
+    averageFee: number | null;
+    transactionToday: number | null;
   };
 
   async function fetchStats(): Promise<Stats> {
@@ -17,19 +17,29 @@
     ]);
 
     return {
-      price: 0,
-      averageBlockTimes: netStats["blockSummary"]["averageMiningTime"],
-      hashRate: netInfo["hashRate"],
-      circulatingSupply: netInfo["supply"],
-      averageFee: 0,
-      transactionToday: netStats["transactionsSummary"]["total"]
+      price: null,
+      // in milli seconds
+      averageBlockTime: parseNumber(
+        netStats?.["blockSummary"]?.["averageMiningTime"]
+      ),
+      hashRate: parseNumber(netInfo?.["hashRate"]),
+      circulatingSupply: parseNumber(netInfo?.["supply"]),
+      averageFee: null,
+      transactionToday: parseNumber(
+        netStats?.["transactionsSummary"]?.["total"]
+      )
     };
   }
 
   let statsPromise = writable<Promise<Stats>>(new Promise(() => {}));
 
   export function reloadStats() {
-    statsPromise.set(fetchStats());
+    statsPromise.set(
+      fetchStats().then(stats => {
+        console.log(stats);
+        return stats;
+      })
+    );
   }
 
   reloadStats();
@@ -44,8 +54,9 @@
     IconReplaceFilled,
     IconRosetteDiscountCheck
   } from "@tabler/icons-svelte";
-  import { formatNumber } from "~/common/utils";
+  import { formatNumber, parseNumber } from "~/common/utils";
   import { getNetworkInfo, getNetworkStats } from "~/ergoapi/apiconn";
+  import { MILLISECOND_TO_MINUTE } from "~/common/constants";
 </script>
 
 {#await $statsPromise}
@@ -64,8 +75,13 @@
       <span class="icon text-[#ff8066]">
         <IconClockRecord />
       </span>
-      <h4>Average Block Times</h4>
-      <span class="value">N/A</span>
+      <h4>Average Block Time</h4>
+      <span class="value"
+        >{stats.averageBlockTime
+          ? formatNumber(stats.averageBlockTime * MILLISECOND_TO_MINUTE) +
+            " min"
+          : "N/A"}</span
+      >
     </div>
 
     <div class="stat">
@@ -73,7 +89,9 @@
         <IconHash />
       </span>
       <h4>Hashrate</h4>
-      <span class="value">N/A</span>
+      <span class="value">
+        {stats.hashRate ? formatNumber(stats.hashRate / 1e12) + " TH/s" : "N/A"}
+      </span>
     </div>
 
     <div class="stat">
@@ -81,7 +99,11 @@
         <IconReplaceFilled />
       </span>
       <h4>Circulating Supply</h4>
-      <span class="value">N/A</span>
+      <span class="value"
+        >{stats.circulatingSupply
+          ? formatNumber(stats.circulatingSupply / 1e9, { mantissa: 0 }) + " ERG"
+          : "N/A"}</span
+      >
     </div>
 
     <div class="stat">
@@ -97,7 +119,7 @@
         <IconRosetteDiscountCheck />
       </span>
       <h4>Total Transaction Today</h4>
-      <span class="value">{formatNumber(stats.transactionToday)}</span>
+      <span class="value">{formatNumber(stats.transactionToday) || "N/A"}</span>
     </div>
   </main>
 {/await}

@@ -23,11 +23,25 @@ export function autoSubscribe<
   };
 }
 
-/**
- * Formats the given number as string
- */
+export function parseNumber(str: any): number | null;
+export function parseNumber<T>(str: any, defaultValue: T): number | T;
+export function parseNumber(str: any, defaultValue: any = null) {
+  if (typeof str === 'number')
+    return str;
+
+  if (typeof str !== "string")
+    return defaultValue;
+
+  let result = parseFloat(str);
+
+  if (Number.isNaN(result)) {
+    return defaultValue;
+  }
+  return result;
+}
+
 export function formatNumber(
-  num: number,
+  num: number | null,
   opts?: {
     // Max number of decimal places (0 means output will be integer)
     // The default is 2
@@ -43,6 +57,10 @@ export function formatNumber(
     thousandSeparator?: boolean;
   }
 ): string {
+  if (num == null) {
+    return "";
+  }
+
   // Set default values
   const mantissa = opts?.mantissa ?? 2;
   const mantissaMode = opts?.mantissaMode ?? "auto";
