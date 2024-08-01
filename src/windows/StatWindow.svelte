@@ -1,20 +1,30 @@
 <script lang="ts" context="module">
   import { writable } from "svelte/store";
 
-  type Stats = {
-    price: number | null;
-    averageBlockTime: number | null;
-    hashRate: number | null;
-    circulatingSupply: number | null;
-    averageFee: number | null;
-    transactionToday: number | null;
-  };
+  function safeDivide(nom: number, denom: number) {
+    if (denom === 0) return 0;
 
-  async function fetchStats(): Promise<Stats> {
+    return nom / denom;
+  }
+
+  async function fetchStats() {
     let [netInfo, netStats] = await Promise.all([
       getNetworkInfo(),
       getNetworkStats()
     ]);
+
+    let totalFee = parseNumber(netStats?.["transactionsSummary"]?.["totalFee"]);
+
+    let transactionToday = parseNumber(
+      netStats?.["transactionsSummary"]?.["total"]
+    );
+
+    let averageFee =
+      totalFee !== null && transactionToday !== null
+        ? safeDivide(totalFee, transactionToday)
+        : null;
+
+    console.log(totalFee, transactionToday, averageFee)
 
     return {
       price: null,
@@ -23,13 +33,15 @@
         netStats?.["blockSummary"]?.["averageMiningTime"]
       ),
       hashRate: parseNumber(netInfo?.["hashRate"]),
+      // nano ERG
       circulatingSupply: parseNumber(netInfo?.["supply"]),
-      averageFee: null,
-      transactionToday: parseNumber(
-        netStats?.["transactionsSummary"]?.["total"]
-      )
+      // nano ERG
+      averageFee,
+      transactionToday
     };
   }
+
+  type Stats = Awaited<ReturnType<typeof fetchStats>>;
 
   let statsPromise = writable<Promise<Stats>>(new Promise(() => {}));
 
@@ -101,7 +113,8 @@
       <h4>Circulating Supply</h4>
       <span class="value"
         >{stats.circulatingSupply
-          ? formatNumber(stats.circulatingSupply / 1e9, { mantissa: 0 }) + " ERG"
+          ? formatNumber(stats.circulatingSupply / 1e9, { mantissa: 0 }) +
+            " ERG"
           : "N/A"}</span
       >
     </div>
@@ -111,7 +124,11 @@
         <IconReceiptDollar />
       </span>
       <h4>Average Fee</h4>
-      <span class="value">N/A</span>
+      <span class="value"
+        >{stats.averageFee
+          ? formatNumber(stats.averageFee / 1e9, { mantissa: 8 }) + " ERG"
+          : "N/A"}</span
+      >
     </div>
 
     <div class="stat">
