@@ -60,6 +60,33 @@ export class Renderer implements AcceptsCommands {
         position: new Math.Vector2(150, 150 + 200 * (index + 1))
       }))
     ]);
+
+    let scene = this.scene;
+
+    function addHouse(texture: string, left: number, top: number) {
+      // 0.5 tiles margin on either side
+      // 1 tile spacing between the two columns
+      // 1.5 tile width for each house
+
+      let tileSize = WorldManager.TileSize;
+
+      let margin = tileSize * 0.5;
+      let spacing = tileSize * 0.5;
+      let houseWidth = tileSize * 1.75;
+
+      let houseX = margin + (houseWidth + spacing) * left;
+      let houseY = tileSize * 2.5 + top * tileSize * 2.2;
+
+      let house = scene.add.image(houseX, houseY, texture).setOrigin(0, 1);
+      house.scale = houseWidth / house.width;
+    }
+
+    addHouse("house-01", 0, 0);
+    addHouse("house-02", 1, 0);
+    addHouse("house-03", 0, 1);
+    addHouse("house-04", 1, 1);
+    addHouse("house-06", 0, 2);
+    addHouse("house-05", 1, 2);
   }
 
   private initWaitingZone() {

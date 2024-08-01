@@ -22,6 +22,13 @@ export class AirportScene extends BaseScene {
   preload() {
     WorldManager.preloadTiles(this.load);
     this.load.image("plane", "/planes/plane-2.png");
+
+    this.load.image("house-01", "/houses/s1-house.png");
+    this.load.image("house-02", "/houses/s2-house.png");
+    this.load.image("house-03", "/houses/s3-house.png");
+    this.load.image("house-04", "/houses/s4-house.png");
+    this.load.image("house-05", "/houses/s5-house.png");
+    this.load.image("house-06", "/houses/s6-house.png");
   }
 
   create() {
@@ -40,7 +47,9 @@ export class AirportScene extends BaseScene {
     let updateService = new ReplayUpdateService("/replays/replay-01.json");
 
     this.appRenderer = new Renderer(this);
-    this.engine = new Engine(this.appRenderer, updateService);
+    this.engine = new Engine(this.appRenderer, updateService, false);
+
+    // updateService.start();
 
     (<any>window).r = this.appRenderer;
     (<any>window).e = this.engine;

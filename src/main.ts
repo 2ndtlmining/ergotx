@@ -1,3 +1,7 @@
+if (import.meta.hot) {
+  import.meta.hot.accept();
+}
+
 import "./styles/reset.css";
 import "./styles/global.css";
 
