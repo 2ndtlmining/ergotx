@@ -10,6 +10,9 @@ https://api.ergoplatform.com/api/v0/stats
 - transactionsSummary.total (Transactions today (well, per day))
 - transactionsSummary.totalFee (total fee from transactions today (above))
 
+https://erg-oracle-ergusd.spirepools.com/frontendData
+https://api.coingecko.com/api/v3/simple/price?ids=ergo&vs_currencies=usd
+
 remaining:
 - price
 - average fee

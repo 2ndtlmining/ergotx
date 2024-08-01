@@ -8,9 +8,10 @@
   }
 
   async function fetchStats() {
-    let [netInfo, netStats] = await Promise.all([
+    let [netInfo, netStats, oracleData] = await Promise.all([
       getNetworkInfo(),
-      getNetworkStats()
+      getNetworkStats(),
+      getOracleData()
     ]);
 
     let totalFee = parseNumber(netStats?.["transactionsSummary"]?.["totalFee"]);
@@ -24,10 +25,8 @@
         ? safeDivide(totalFee, transactionToday)
         : null;
 
-    console.log(totalFee, transactionToday, averageFee)
-
     return {
-      price: null,
+      price: parseNumber(oracleData?.["latest_price"]),
       // in milli seconds
       averageBlockTime: parseNumber(
         netStats?.["blockSummary"]?.["averageMiningTime"]
@@ -48,7 +47,7 @@
   export function reloadStats() {
     statsPromise.set(
       fetchStats().then(stats => {
-        console.log(stats);
+        // console.log(stats);
         return stats;
       })
     );
@@ -67,7 +66,11 @@
     IconRosetteDiscountCheck
   } from "@tabler/icons-svelte";
   import { formatNumber, parseNumber } from "~/common/utils";
-  import { getNetworkInfo, getNetworkStats } from "~/ergoapi/apiconn";
+  import {
+    getNetworkInfo,
+    getNetworkStats,
+    getOracleData
+  } from "~/ergoapi/apiconn";
   import { MILLISECOND_TO_MINUTE } from "~/common/constants";
 </script>
 
@@ -80,7 +83,12 @@
         <IconCurrencyDollar />
       </span>
       <h4>Price</h4>
-      <span class="value">N/A</span>
+      <span class="value"
+        >{stats.price
+          ? formatNumber(stats.price, { mantissa: 2 }) +
+            " USD"
+          : "N/A"}</span
+      >
     </div>
 
     <div class="stat">

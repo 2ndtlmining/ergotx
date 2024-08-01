@@ -74,7 +74,7 @@ export function formatNumber(
   } else {
     // "auto" mode
     const factor = Math.pow(10, mantissa);
-    formattedNumber = (Math.round(num * factor) / factor).toString();
+    formattedNumber = (Math.trunc(num * factor) / factor).toString();
   }
 
   // Add thousand separators if needed

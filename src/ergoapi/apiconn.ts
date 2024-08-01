@@ -1,12 +1,11 @@
 import ky, { type KyInstance } from "ky";
 import type { Block, Transaction } from "~/common/types";
 
+const ERGO_PLATFORM_API = "https://api.ergoplatform.com";
+
 const kyInstance = ky.extend({
-  timeout: false,
-  prefixUrl: "https://api.ergoplatform.com"
+  timeout: 120000
 });
-(<any>window).ky = ky;
-(<any>window).kyInstance = kyInstance;
 
 async function getBlocks(
   limit: number,
@@ -15,7 +14,7 @@ async function getBlocks(
   sortDirection: "asc" | "desc"
 ) {
   let result = await kyInstance
-    .get("api/v1/blocks", {
+    .get(ERGO_PLATFORM_API + "/api/v1/blocks", {
       searchParams: {
         limit,
         offset,
@@ -35,7 +34,7 @@ export async function getUnconfirmedTransactions() {
   const sortDirection = "desc";
 
   let result = await kyInstance
-    .get("transactions/unconfirmed", {
+    .get(ERGO_PLATFORM_API + "/transactions/unconfirmed", {
       searchParams: {
         limit,
         offset,
@@ -59,7 +58,7 @@ export async function getBlocksAbove(height: number) {
 
 export async function getBlockTransactions(blockId: string) {
   let result = await kyInstance
-    .get("api/v1/blocks/" + blockId, { retry: 3 })
+    .get(ERGO_PLATFORM_API + "/api/v1/blocks/" + blockId, { retry: 3 })
     .json<{ block: { blockTransactions: Transaction[] } }>();
 
   return result.block.blockTransactions;
@@ -68,13 +67,20 @@ export async function getBlockTransactions(blockId: string) {
 /* ================== */
 
 export async function getNetworkInfo() {
-  return await kyInstance
-    .get("api/v0/info")
-    .json<any>();
+  return await kyInstance.get(ERGO_PLATFORM_API + "/api/v0/info").json<any>();
 }
 
 export async function getNetworkStats() {
-  return await kyInstance
-    .get("api/v0/stats")
-    .json<any>();
+  return await kyInstance.get(ERGO_PLATFORM_API + "/api/v0/stats").json<any>();
 }
+
+export async function getOracleData() {
+  let jsonString = await kyInstance
+    .get("https://erg-oracle-ergusd.spirepools.com/frontendData")
+    .json<string>();
+
+  let result = JSON.parse(jsonString);
+  return result;
+}
+
+(<any>window).getOracleData = getOracleData;
