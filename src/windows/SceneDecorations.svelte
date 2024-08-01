@@ -32,12 +32,13 @@
 
   import FloatingWindow from "./FloatingWindow.svelte";
   import StatWindow from "./StatWindow.svelte";
+  import { autoSubscribe } from "~/common/utils";
 
   let activeWindows: WindowEntry[] = [];
 
   onMount(() => {
     activeWindows = [];
-    return windowEmitter.on("CreteWindow", entry => {
+    return autoSubscribe(windowEmitter, "CreteWindow", entry => {
       activeWindows = [...activeWindows, entry];
     });
   });

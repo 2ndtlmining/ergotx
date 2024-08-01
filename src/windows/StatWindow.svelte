@@ -44,6 +44,7 @@
     IconReplaceFilled,
     IconRosetteDiscountCheck
   } from "@tabler/icons-svelte";
+  import { formatNumber } from "~/common/utils";
   import { getNetworkInfo, getNetworkStats } from "~/ergoapi/apiconn";
 </script>
 
@@ -96,7 +97,7 @@
         <IconRosetteDiscountCheck />
       </span>
       <h4>Total Transaction Today</h4>
-      <span class="value">{stats.transactionToday}</span>
+      <span class="value">{formatNumber(stats.transactionToday)}</span>
     </div>
   </main>
 {/await}
