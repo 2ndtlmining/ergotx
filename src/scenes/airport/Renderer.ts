@@ -85,8 +85,8 @@ export class Renderer implements AcceptsCommands {
     addHouse("house-02", 1, 0);
     addHouse("house-03", 0, 1);
     addHouse("house-04", 1, 1);
-    addHouse("house-06", 0, 2);
     addHouse("house-05", 1, 2);
+    addHouse("house-06", 0, 2);
   }
 
   private initWaitingZone() {

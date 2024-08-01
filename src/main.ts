@@ -1,5 +1,17 @@
 if (import.meta.hot) {
   import.meta.hot.accept();
+  import.meta.hot.on('vite:beforeUpdate', () => {
+    if (game) {
+      // destroy game
+      let baseScene = game.scene.getAt(0) as BaseScene;
+      baseScene.destroy();
+      game.destroy(false);
+    }
+
+    if (sceneDecorations) {
+      sceneDecorations.$destroy();
+    }
+  });
 }
 
 import "./styles/reset.css";
@@ -34,11 +46,13 @@ let sceneDecorations: SceneDecorations | null = null;
 whenDomReady(() => {
   if (game) {
     // destroy game
+    console.log("game destroy");
     let baseScene = game.scene.getAt(0) as BaseScene;
-    baseScene.destroy();
+    baseScene?.destroy();
   }
 
   if (sceneDecorations) {
+    console.log("scene destroy");
     sceneDecorations.$destroy();
   }
 
