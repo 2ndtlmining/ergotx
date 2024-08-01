@@ -1,20 +1,21 @@
-import { Scene, Math, Geom } from "phaser";
+import { Scene, Geom } from "phaser";
 
 import type { Transaction } from "~/common/types";
 import type { AcceptsCommands, Command } from "~/common/Command";
 import type { Placement } from "~/common/Placement";
+import type { IVector2 } from "~/common/math";
+import { NUM_FUTURE_BLOCKS } from "~/common/constants";
 
 import { attachMotion, type Motion } from "~/movement/motion";
 import { LinearMotion } from "~/movement/LinearMotion";
-// import { HouseService, getRegisteredHouses } from "./housing";
+
+import { getAllIdentities, identityOf } from "~/identities/Identity";
+
+import { WorldManager } from "./WorldManager";
+import { createWalkPoints } from "./walks";
 
 import { Person } from "./actors/Person";
 import { Plane } from "./actors/Plane";
-import { NUM_FUTURE_BLOCKS } from "~/common/constants";
-import { WorldManager } from "./WorldManager";
-import { createWalkPoints } from "./walks";
-import { IVector2 } from "~/common/math";
-import { getAllIdentities, identityOf } from "~/identities/Identity";
 import { House } from "./actors/House";
 
 const SPACING = 16;
@@ -305,14 +306,13 @@ export class Renderer implements AcceptsCommands {
   }
 
   public reset() {
-    this.personMap.forEach(p => p.destroy());
+    this.destroy();
+
     this.personMap = new Map();
-
-    this.planes.forEach(b => b.destroy());
-
     this.blockGroups = new Map();
 
     this.initPlanes();
+    this.initHouses();
   }
 
   /* ======================================= */
@@ -329,5 +329,6 @@ export class Renderer implements AcceptsCommands {
   public destroy() {
     this.personMap.forEach(p => p.destroy());
     this.planes.forEach(b => b.destroy());
+    this.houses.forEach(h => h.destroy());
   }
 }
