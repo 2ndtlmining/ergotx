@@ -6,7 +6,7 @@ import type { Placement } from "~/common/Placement";
 
 import { attachMotion, type Motion } from "~/movement/motion";
 import { LinearMotion } from "~/movement/LinearMotion";
-import { HouseService, getRegisteredHouses } from "./housing";
+// import { HouseService, getRegisteredHouses } from "./housing";
 
 import { Person } from "./actors/Person";
 import { Plane } from "./actors/Plane";
@@ -14,7 +14,8 @@ import { NUM_FUTURE_BLOCKS } from "~/common/constants";
 import { WorldManager } from "./WorldManager";
 import { createWalkPoints } from "./walks";
 import { IVector2 } from "~/common/math";
-import { getAllIdentities } from "~/identities/Identity";
+import { getAllIdentities, identityOf } from "~/identities/Identity";
+import { House } from "./actors/House";
 
 const SPACING = 16;
 
@@ -24,8 +25,7 @@ export class Renderer implements AcceptsCommands {
   private personMap: Map<string, Person>;
   private blockGroups: Map<string, number>;
   private planes: Plane[];
-
-  private houseService: HouseService;
+  private houses: House[];
 
   // Visuals related fields
   private waitingZone: Geom.Rectangle;
@@ -50,33 +50,22 @@ export class Renderer implements AcceptsCommands {
   // =========== Initialization ===========
 
   private initHouses() {
-    // Init house service
-    this.houseService = new HouseService([
-      {
-        name: "Default House",
-        position: new Math.Vector2(150, 150)
-      },
-      ...getRegisteredHouses().map((houseData, index) => ({
-        name: houseData.name,
-        position: new Math.Vector2(150, 150 + 200 * (index + 1))
-      }))
-    ]);
+    this.houses = [];
 
     let left = 0;
     let top = 0;
 
-    const addHouse = (texture: string) => {
-      let tileSize = WorldManager.TileSize;
+    const addHouse = (textureName: string) => {
+      const tileSize = WorldManager.TileSize;
 
-      let margin = tileSize * 0.5;
-      let spacing = tileSize * 0.5;
-      let houseWidth = tileSize * 1.75;
+      const margin = tileSize * 0.5;
+      const spacing = tileSize * 0.5;
+      const houseWidth = tileSize * 1.75;
 
-      let houseX = margin + (houseWidth + spacing) * left;
-      let houseY = tileSize * 2.5 + top * tileSize * 2.2;
+      let x = margin + (houseWidth + spacing) * left;
+      let y = tileSize * 2.5 + top * tileSize * 2.2;
 
-      let house = this.scene.add.image(houseX, houseY, texture).setOrigin(0, 1);
-      house.scale = houseWidth / house.width;
+      this.houses.push(new House(this.scene, textureName, x, y, houseWidth));
 
       left++;
 
@@ -84,7 +73,7 @@ export class Renderer implements AcceptsCommands {
         left = 0;
         top++;
       }
-    }
+    };
 
     let defaultHouse = "house-01";
     let idenHouses = [
@@ -92,14 +81,14 @@ export class Renderer implements AcceptsCommands {
       "house-06",
       "house-04",
       "house-02",
-      "house-05",
+      "house-05"
     ];
 
     addHouse(defaultHouse);
 
     let index = 0;
 
-    for (const iden of getAllIdentities()) {
+    for (const _iden of getAllIdentities()) {
       addHouse(idenHouses[index]);
       index = (index + 1) % idenHouses.length;
     }
@@ -141,7 +130,7 @@ export class Renderer implements AcceptsCommands {
 
     let position: IVector2;
     if (placement === null) {
-      position = this.houseService.getTxHouse(tx).position;
+      position = this.getSpawnPosition(tx);
     } else {
       position = this.allocatePlacement(tx.id, null, placement);
     }
@@ -260,6 +249,20 @@ export class Renderer implements AcceptsCommands {
   }
 
   // =========== Common ===========
+
+  private getSpawnPosition(tx: Transaction) {
+    let indentity = identityOf(tx);
+    let index: number;
+    if (indentity === null) {
+      index = 0;
+    }
+    else {
+      // 0th is default/fallback house
+      index = indentity.index + 1;
+    }
+
+    return this.houses[index].getSpawnPosition();
+  }
 
   private allocatePlacement(
     txId: string,

@@ -51,7 +51,7 @@ export class AirportScene extends BaseScene {
     this.appRenderer = new Renderer(this);
     this.engine = new Engine(this.appRenderer, updateService, false);
 
-    // updateService.start();
+    updateService.start();
 
     (<any>window).r = this.appRenderer;
     (<any>window).e = this.engine;
