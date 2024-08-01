@@ -49,7 +49,7 @@ export class PollUpdateService extends UpdateService {
     if (this.lastConfirmedBlockHeight === -1) {
       let block = await getLatestBlock();
       this.lastConfirmedBlockHeight = block.height;
-      this.fillAndEmitBlock(block);
+      // this.fillAndEmitBlock(block);
     } else {
       let blocks = await getBlocksAbove(this.lastConfirmedBlockHeight);
 
