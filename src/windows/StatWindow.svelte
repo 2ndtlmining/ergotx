@@ -121,7 +121,7 @@
       <h4>Circulating Supply</h4>
       <span class="value"
         >{stats.circulatingSupply
-          ? formatNumber(stats.circulatingSupply / 1e9, { mantissa: 0 }) +
+          ? formatNumber(stats.circulatingSupply / 1e9, { mantissa: 2 }) +
             " ERG"
           : "N/A"}</span
       >

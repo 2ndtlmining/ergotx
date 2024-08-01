@@ -14,6 +14,7 @@ import { NUM_FUTURE_BLOCKS } from "~/common/constants";
 import { WorldManager } from "./WorldManager";
 import { createWalkPoints } from "./walks";
 import { IVector2 } from "~/common/math";
+import { getAllIdentities } from "~/identities/Identity";
 
 const SPACING = 16;
 
@@ -61,13 +62,10 @@ export class Renderer implements AcceptsCommands {
       }))
     ]);
 
-    let scene = this.scene;
+    let left = 0;
+    let top = 0;
 
-    function addHouse(texture: string, left: number, top: number) {
-      // 0.5 tiles margin on either side
-      // 1 tile spacing between the two columns
-      // 1.5 tile width for each house
-
+    const addHouse = (texture: string) => {
       let tileSize = WorldManager.TileSize;
 
       let margin = tileSize * 0.5;
@@ -77,16 +75,34 @@ export class Renderer implements AcceptsCommands {
       let houseX = margin + (houseWidth + spacing) * left;
       let houseY = tileSize * 2.5 + top * tileSize * 2.2;
 
-      let house = scene.add.image(houseX, houseY, texture).setOrigin(0, 1);
+      let house = this.scene.add.image(houseX, houseY, texture).setOrigin(0, 1);
       house.scale = houseWidth / house.width;
+
+      left++;
+
+      if (left === 2) {
+        left = 0;
+        top++;
+      }
     }
 
-    addHouse("house-01", 0, 0);
-    addHouse("house-02", 1, 0);
-    addHouse("house-03", 0, 1);
-    addHouse("house-04", 1, 1);
-    addHouse("house-05", 1, 2);
-    addHouse("house-06", 0, 2);
+    let defaultHouse = "house-01";
+    let idenHouses = [
+      "house-03",
+      "house-06",
+      "house-04",
+      "house-02",
+      "house-05",
+    ];
+
+    addHouse(defaultHouse);
+
+    let index = 0;
+
+    for (const iden of getAllIdentities()) {
+      addHouse(idenHouses[index]);
+      index = (index + 1) % idenHouses.length;
+    }
   }
 
   private initWaitingZone() {

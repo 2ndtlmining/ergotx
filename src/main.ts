@@ -29,7 +29,7 @@ let sceneDecorations: SceneDecorations | null = null;
 
 if (import.meta.hot) {
   import.meta.hot.accept();
-  import.meta.hot.on('vite:beforeUpdate', () => {
+  import.meta.hot.dispose(() => {
     if (game) {
       // destroy game
       let baseScene = game.scene.getAt(0) as BaseScene;
