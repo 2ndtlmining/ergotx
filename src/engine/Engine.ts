@@ -109,4 +109,8 @@ export class Engine {
         });
     }
   }
+
+  public destroy() {
+    this.updateService.stop();
+  }
 }

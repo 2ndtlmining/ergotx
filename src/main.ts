@@ -28,6 +28,28 @@ import SceneDecorations from "./windows/SceneDecorations.svelte";
 
 let canvasContainer: HTMLElement | null = null;
 let mainCanvas: HTMLCanvasElement | null = null;
+let game: Phaser.Game | null = null;
+let sceneDecorations: SceneDecorations | null = null;
+
+whenDomReady(() => {
+  if (game) {
+    // destroy game
+    let baseScene = game.scene.getAt(0) as BaseScene;
+    baseScene.destroy();
+  }
+
+  if (sceneDecorations) {
+    sceneDecorations.$destroy();
+  }
+
+  canvasContainer = document.getElementById("canvas_container")!;
+  mainCanvas = document.getElementById("main_canvas") as any;
+  game = createGame();
+
+  // This will append new content in `canvasContainer`. The mainCanvas
+  // will be left intact
+  sceneDecorations = new SceneDecorations({ target: canvasContainer });
+});
 
 function getScene(): Constructor<BaseScene> {
   let pathname = window.location.pathname;
@@ -42,7 +64,7 @@ function getScene(): Constructor<BaseScene> {
 }
 
 function createGame() {
-  let game = new Phaser.Game({
+  return new Phaser.Game({
     scene: getScene(),
     canvas: mainCanvas!,
     width: 920,
@@ -52,24 +74,11 @@ function createGame() {
     powerPreference: "high-performance",
     audio: { noAudio: true }
   });
-
-  if (typeof window["fps"] === "undefined")
-    Object.defineProperty(window, "fps", {
-      get: function () {
-        return game.loop.actualFps;
-      }
-    });
-
-  return game;
 }
 
-whenDomReady(() => {
-  canvasContainer = document.getElementById("canvas_container")!;
-  mainCanvas = document.getElementById("main_canvas") as any;
-
-  (<any>window).game = createGame();
-
-  // This will append new content in `canvasContainer`. The mainCanvas
-  // will be left intact
-  new SceneDecorations({ target: canvasContainer });
-});
+if (typeof window["fps"] === "undefined")
+  Object.defineProperty(window, "fps", {
+    get: function () {
+      return game?.loop.actualFps;
+    }
+  });

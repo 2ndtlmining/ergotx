@@ -11,4 +11,6 @@ export abstract class BaseScene extends Phaser.Scene {
     Time.setDeltaTime(deltaTime);
     this.sceneUpdate();
   }
+
+  public destroy() {}
 }

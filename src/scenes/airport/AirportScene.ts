@@ -9,8 +9,10 @@ import Controls from "./ui/Controls.svelte";
 import { Engine } from "~/engine/Engine";
 import { watchUpdates } from "~/ergoapi/watch-updates";
 import { watchSettings } from "./DebugSettings";
+import { VoidCallback } from "~/common/types";
 
 export class AirportScene extends BaseScene {
+  private _cancelWatch: VoidCallback;
   private appRenderer: Renderer;
   private engine: Engine;
   private uiControls: Controls;
@@ -38,7 +40,7 @@ export class AirportScene extends BaseScene {
       target: document.getElementById("controls")!,
     });
 
-    watchSettings((settings) => {
+    this._cancelWatch = watchSettings((settings) => {
       WorldManager.showGridLines(settings.showGridlines);
       WorldManager.showRegionsDebug(settings.debugRegions);
     });
@@ -62,5 +64,12 @@ export class AirportScene extends BaseScene {
     WorldManager.update();
     this.engine.update();
     this.appRenderer.update();
+  }
+
+  public destroy(): void {
+    this.uiControls.$destroy();
+    this.engine.destroy();
+    this.appRenderer.destroy();
+    this._cancelWatch?.();
   }
 }

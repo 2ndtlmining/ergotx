@@ -306,4 +306,9 @@ export class Renderer implements AcceptsCommands {
       plane.update();
     });
   }
+
+  public destroy() {
+    this.personMap.forEach(p => p.destroy());
+    this.planes.forEach(b => b.destroy());
+  }
 }
