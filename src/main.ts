@@ -86,7 +86,8 @@ function createGame() {
     backgroundColor: SCENE_BG_COLOR,
     type: Phaser.CANVAS,
     powerPreference: "high-performance",
-    audio: { noAudio: true }
+    audio: { noAudio: true },
+    banner: false
   });
 }
 
