@@ -28,6 +28,14 @@ export class Renderer implements AcceptsCommands {
   private planes: Plane[];
   private houses: House[];
 
+  // Stats at the top
+
+  /** Number of transactions in the mempool */
+  private mempoolSize: number;
+
+  /** Timestamp at which the last block was found */
+  private lastBlockTime: number;
+
   // Visuals related fields
   private waitingZone: Geom.Rectangle;
   private runwayLineX: number;
@@ -121,6 +129,21 @@ export class Renderer implements AcceptsCommands {
 
       this.planes.push(plane);
     }
+  }
+
+  // =========== Methods ===========
+
+  public setMempoolSize(size: number) {
+    if (this.mempoolSize === size)
+      return;
+
+    this.mempoolSize = size;
+    console.log("mempoolSize size updated: " + size);
+  }
+
+  public setNewBlockTIme() {
+    this.lastBlockTime = new Date().getTime();
+    console.log("Block found: " + this.lastBlockTime);
   }
 
   // =========== Commands ===========
@@ -256,8 +279,7 @@ export class Renderer implements AcceptsCommands {
     let index: number;
     if (indentity === null) {
       index = 0;
-    }
-    else {
+    } else {
       // 0th is default/fallback house
       index = indentity.index + 1;
     }

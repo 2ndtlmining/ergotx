@@ -53,13 +53,13 @@ export class AirportScene extends BaseScene {
 
     // TODO: cancel these on destroy
     this.engine.on("mempool_updated", assembly => {
-      // let mempoolSize = assembly.transactions.length;
-      // console.log("mempoolSize size updated: " + mempoolSize);
+      let mempoolSize = assembly.transactions.length;
+      this.appRenderer.setMempoolSize(mempoolSize);
     });
 
     // TODO: cancel these on destroy
     this.engine.on("block_found", () => {
-      // console.log("Block found");
+      this.appRenderer.setNewBlockTIme();
     });
 
     updateService.start();
