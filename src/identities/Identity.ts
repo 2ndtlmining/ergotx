@@ -21,8 +21,8 @@ export function identityOf(tx: Transaction): Readonly<Identity> | null {
   return registeredIdentities.find(iden => iden.addresses.has(tx.id)) ?? null;
 }
 
-export function getAllIdentities(): ReadonlyArray<Identity> {
-  return registeredIdentities;
+export function getAllIdentities(): Array<Readonly<Identity>> {
+  return [...registeredIdentities];
 }
 
 export function getIdentityAt(index: number): Readonly<Identity> {
