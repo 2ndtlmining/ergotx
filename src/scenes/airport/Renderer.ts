@@ -18,6 +18,7 @@ import { Person } from "./actors/Person";
 import { Plane } from "./actors/Plane";
 import { House } from "./actors/House";
 import { StatsDisplay } from "./actors/StatsDisplay";
+import { formatNumber } from "~/common/utils";
 
 const SPACING = 16;
 
@@ -372,7 +373,16 @@ export class Renderer implements AcceptsCommands {
 
     // set last block time
     {
-      // ...
+      let now = new Date().getTime();
+      let lastBlockTime = this.lastBlockTime;
+
+      let formatted =
+        lastBlockTime === -1
+          ? "N/A"
+          : formatNumber((now - lastBlockTime) / 1000, { mantissa: 0 }) +
+            " seconds ago";
+
+      this.statsDisplay.blockTimeText.setText("Last Block Time: " + formatted);
     }
   }
 
