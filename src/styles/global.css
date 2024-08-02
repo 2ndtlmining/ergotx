@@ -19,6 +19,8 @@ body {
   min-height: 100vh;
   max-height: 100vh;
   overflow: hidden;
+
+  font-family: 'Inter';
 }
 
 @layer utilities {

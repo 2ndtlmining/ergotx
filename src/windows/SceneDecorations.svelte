@@ -33,6 +33,7 @@
   import FloatingWindow from "./FloatingWindow.svelte";
   import StatWindow from "./StatWindow.svelte";
   import { autoSubscribe } from "~/common/utils";
+  import { IconChartAreaLineFilled } from "@tabler/icons-svelte";
 
   let activeWindows: WindowEntry[] = [];
 
@@ -69,9 +70,10 @@
 <button
   class={clsx(
     "absolute left-2 bottom-2",
-    "px-8 py-2 rounded",
+    "px-5 py-2 rounded-md",
     "bg-[#5C398F] hover:bg-[#392359] active:bg-[#462b6e]",
-    "text-white font-medium text-lg tc"
+    "text-white font-medium text-lg tc",
+    "flex items-center gap-x-2"
   )}
   on:click={() => {
     if (activeWindows.find(win => win.details.type === "stats"))
@@ -86,5 +88,6 @@
     });
   }}
 >
+  <IconChartAreaLineFilled />
   Stats
 </button>
