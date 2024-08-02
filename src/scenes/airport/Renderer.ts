@@ -17,6 +17,7 @@ import { createWalkPoints } from "./walks";
 import { Person } from "./actors/Person";
 import { Plane } from "./actors/Plane";
 import { House } from "./actors/House";
+import { StatsDisplay } from "./actors/StatsDisplay";
 
 const SPACING = 16;
 
@@ -29,6 +30,7 @@ export class Renderer implements AcceptsCommands {
   private houses: House[];
 
   // Stats at the top
+  private statsDisplay: StatsDisplay;
 
   /** Number of transactions in the mempool */
   private mempoolSize: number;
@@ -51,12 +53,26 @@ export class Renderer implements AcceptsCommands {
     this.personMap = new Map();
     this.blockGroups = new Map();
 
+    this.initStats();
     this.initHouses();
     this.initWaitingZone();
     this.initPlanes();
   }
 
   // =========== Initialization ===========
+
+  private initStats() {
+    this.statsDisplay = new StatsDisplay(
+      this.scene,
+      WorldManager.TileSize * 2,
+      WorldManager.TileSize * 0.25,
+      WorldManager.TileSize * 7,
+      WorldManager.TileSize
+    );
+
+    this.lastBlockTime = -1; // -1 shows there is no last block yet.
+    this.setMempoolSize(0);
+  }
 
   private initHouses() {
     this.houses = [];
@@ -72,7 +88,7 @@ export class Renderer implements AcceptsCommands {
       const houseWidth = tileSize * 1.75;
 
       let x = margin + (houseWidth + spacing) * left;
-      let y = tileSize * 2.5 + top * tileSize * 2.2;
+      let y = tileSize * 3.5 + top * tileSize * 2.2;
 
       this.houses.push(new House(this.scene, textureName, x, y, houseWidth));
 
@@ -135,15 +151,21 @@ export class Renderer implements AcceptsCommands {
 
   public setMempoolSize(size: number) {
     if (this.mempoolSize === size)
+      //
       return;
 
     this.mempoolSize = size;
-    console.log("mempoolSize size updated: " + size);
+
+    // console.log("Mempool size updated: " + size);
+
+    this.statsDisplay.mempoolSizeText.setText(
+      "Pending Transactions: " + this.mempoolSize
+    );
   }
 
-  public setNewBlockTIme() {
+  public setNewBlockTime() {
     this.lastBlockTime = new Date().getTime();
-    console.log("Block found: " + this.lastBlockTime);
+    // console.log("Block found: " + this.lastBlockTime);
   }
 
   // =========== Commands ===========
@@ -333,6 +355,7 @@ export class Renderer implements AcceptsCommands {
     this.personMap = new Map();
     this.blockGroups = new Map();
 
+    this.initStats();
     this.initPlanes();
     this.initHouses();
   }
@@ -346,11 +369,17 @@ export class Renderer implements AcceptsCommands {
     this.planes.forEach(plane => {
       plane.update();
     });
+
+    // set last block time
+    {
+      // ...
+    }
   }
 
   public destroy() {
     this.personMap.forEach(p => p.destroy());
     this.planes.forEach(b => b.destroy());
     this.houses.forEach(h => h.destroy());
+    this.statsDisplay.destroy();
   }
 }

@@ -59,7 +59,7 @@ export class AirportScene extends BaseScene {
 
     // TODO: cancel these on destroy
     this.engine.on("block_found", () => {
-      this.appRenderer.setNewBlockTIme();
+      this.appRenderer.setNewBlockTime();
     });
 
     updateService.start();
