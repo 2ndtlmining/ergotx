@@ -4,30 +4,25 @@ import { IVector2 } from "~/common/math";
 import { Actor } from "./Actor";
 import { Transform } from "~/common/component-types";
 import { watchSettings } from "../DebugSettings";
-import { VoidCallback } from "~/common/types";
+import { SubscriptionSink } from "~/common/SubscriptionSink";
 
 export class Plane extends Actor implements SupportsMotion {
   private container: GameObjects.Container;
-  // private sprite: GameObjects.Image;
 
   private planeDebug: GameObjects.Rectangle;
   private regionDebug: GameObjects.Rectangle;
 
   private width: number;
   private height: number;
-
-  private motionController: MotionController;
-
-  // ====================
-
   private walkInRegion: Geom.Rectangle;
 
-  // ====================
-
-  private _debugCancel: VoidCallback;
+  private motionController: MotionController;
+  private subSink: SubscriptionSink;
 
   constructor(scene: Scene, width: number) {
     super(scene);
+
+    this.subSink = new SubscriptionSink();
 
     {
       let sprite = this.scene.add.image(0, 0, "plane");
@@ -88,10 +83,12 @@ export class Plane extends Actor implements SupportsMotion {
       this.container.add(this.planeDebug);
       this.container.add(this.regionDebug);
 
-      this._debugCancel = watchSettings(settings => {
-        this.planeDebug.setVisible(settings.debugBlockActors);
-        this.regionDebug.setVisible(settings.debugBlockActors);
-      });
+      this.subSink.manual(
+        watchSettings(settings => {
+          this.planeDebug.setVisible(settings.debugBlockActors);
+          this.regionDebug.setVisible(settings.debugBlockActors);
+        })
+      );
     }
 
     this.motionController = new MotionController(this.container);
@@ -120,11 +117,11 @@ export class Plane extends Actor implements SupportsMotion {
   }
 
   public destroy() {
+    this.subSink.unsubscribeAll();
     this.motionController.destroy();
     this.container.destroy();
     this.planeDebug.destroy();
     this.regionDebug.destroy();
-    this._debugCancel();
   }
 
   public getTransform(): Transform {

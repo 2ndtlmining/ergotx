@@ -115,7 +115,7 @@ export class Engine extends EventEmitter<EngineEvents> {
             at: targetAssembly.placementMap.get(tx.id)
           }));
 
-          // We assume that this call to executeCommands will
+          // We assume that this call to `executeCommands()` will
           // never throw
           this.cmdExecutor.executeCommands(commands).then(() => {
             this.currentAssembly = targetAssembly;

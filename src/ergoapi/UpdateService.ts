@@ -20,6 +20,7 @@ export abstract class UpdateService {
   constructor() {
     this.updateEmiiter = new EventEmitter();
 
+    // TODO: unsubscribe when no longer needed
     this.updateEmiiter.on("update", update => {
       this.queue.push(update);
     });

@@ -4,6 +4,7 @@ import type { Transaction } from "~/common/types";
 import type { AcceptsCommands, Command } from "~/common/Command";
 import type { Placement } from "~/common/Placement";
 import type { IVector2 } from "~/common/math";
+import { formatNumber } from "~/common/utils";
 import { NUM_FUTURE_BLOCKS } from "~/common/constants";
 
 import { attachMotion, type Motion } from "~/movement/motion";
@@ -18,7 +19,6 @@ import { Person } from "./actors/Person";
 import { Plane } from "./actors/Plane";
 import { House } from "./actors/House";
 import { StatsDisplay } from "./actors/StatsDisplay";
-import { formatNumber } from "~/common/utils";
 
 const SPACING = 16;
 
@@ -56,8 +56,8 @@ export class Renderer implements AcceptsCommands {
 
     this.initStats();
     this.initHouses();
-    this.initWaitingZone();
     this.initPlanes();
+    this.initWaitingZone();
   }
 
   // =========== Initialization ===========
@@ -298,14 +298,11 @@ export class Renderer implements AcceptsCommands {
   // =========== Common ===========
 
   private getSpawnPosition(tx: Transaction) {
-    let indentity = identityOf(tx);
-    let index: number;
-    if (indentity === null) {
-      index = 0;
-    } else {
-      // 0th is default/fallback house
-      index = indentity.index + 1;
-    }
+    let identity = identityOf(tx);
+
+    // 0th is default/fallback house, the remanining map to
+    // to registered identities
+    let index = identity === null ? 0 : identity.index + 1;
 
     return this.houses[index].getSpawnPosition();
   }
@@ -388,8 +385,8 @@ export class Renderer implements AcceptsCommands {
 
   public destroy() {
     this.personMap.forEach(p => p.destroy());
-    this.planes.forEach(b => b.destroy());
-    this.houses.forEach(h => h.destroy());
     this.statsDisplay.destroy();
+    this.houses.forEach(h => h.destroy());
+    this.planes.forEach(b => b.destroy());
   }
 }
