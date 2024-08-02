@@ -38,5 +38,7 @@ export class StatsDisplay {
 
   public destroy() {
     this.rect.destroy();
+    this.blockTimeText.destroy();
+    this.mempoolSizeText.destroy();
   }
 }
