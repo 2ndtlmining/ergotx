@@ -37,10 +37,10 @@ export class AirportScene extends BaseScene {
     WorldManager.init(this);
 
     this.uiControls = new Controls({
-      target: document.getElementById("controls")!,
+      target: document.getElementById("controls")!
     });
 
-    this._cancelWatch = watchSettings((settings) => {
+    this._cancelWatch = watchSettings(settings => {
       WorldManager.showGridLines(settings.showGridlines);
       WorldManager.showRegionsDebug(settings.debugRegions);
     });
@@ -50,6 +50,17 @@ export class AirportScene extends BaseScene {
 
     this.appRenderer = new Renderer(this);
     this.engine = new Engine(this.appRenderer, updateService, false);
+
+    // TODO: cancel these on destroy
+    this.engine.on("mempool_updated", assembly => {
+      // let mempoolSize = assembly.transactions.length;
+      // console.log("mempoolSize size updated: " + mempoolSize);
+    });
+
+    // TODO: cancel these on destroy
+    this.engine.on("block_found", () => {
+      // console.log("Block found");
+    });
 
     updateService.start();
 

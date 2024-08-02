@@ -16,6 +16,12 @@ export type Command =
   | { type: "kill"; tx: Transaction }
   | { type: "step_forward" };
 
+// export type Event =
+//   // Fired when a new block is found
+//   | { type: "block_found" }
+//   // Fired when the size of mempool changes
+//   | { type: "mempool_updated"; mempoolSize: number };
+
 export interface AcceptsCommands {
   executeCommands(commands: Command[]): Promise<unknown>;
   reset(): void;
