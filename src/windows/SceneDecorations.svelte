@@ -28,12 +28,15 @@
 
 <script lang="ts">
   import { onMount } from "svelte";
+
   import clsx from "clsx";
+  import { IconChartAreaLineFilled } from "@tabler/icons-svelte";
+
+  import { SubscriptionSink } from "~/common/SubscriptionSink";
 
   import FloatingWindow from "./FloatingWindow.svelte";
   import StatWindow from "./StatWindow.svelte";
-  import { IconChartAreaLineFilled } from "@tabler/icons-svelte";
-  import { SubscriptionSink } from "~/common/SubscriptionSink";
+  import TransactionWindow from "./TransactionWindow.svelte";
 
   let activeWindows: WindowEntry[] = [];
 
@@ -60,7 +63,7 @@
     {#if winEntry.details.type === "stats"}
       <StatWindow />
     {:else if winEntry.details.type === "tx"}
-      Transaction info
+       <TransactionWindow txId={winEntry.details.txId} />
     {:else if winEntry.details.type === "block"}
       Block info
     {/if}

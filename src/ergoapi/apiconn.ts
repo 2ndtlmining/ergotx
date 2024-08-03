@@ -47,6 +47,18 @@ export async function getUnconfirmedTransactions() {
   return result.items;
 }
 
+export function getUnconfirmedTransaction(txId: string) {
+  return kyInstance
+    .get(ERGO_PLATFORM_API + "/transactions/unconfirmed/" + txId)
+    .json<Transaction>();
+}
+
+export function getConfirmedTransaction(txId: string) {
+  return kyInstance
+    .get(ERGO_PLATFORM_API + "/transactions/" + txId)
+    .json<Transaction>();
+}
+
 export async function getLatestBlock() {
   let results = await getBlocks(1, 0, "height", "desc");
   return results[0];
