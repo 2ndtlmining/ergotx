@@ -12,11 +12,9 @@ export function delay(ms: number): Promise<void> {
 export function parseNumber(str: any): number | null;
 export function parseNumber<T>(str: any, defaultValue: T): number | T;
 export function parseNumber(str: any, defaultValue: any = null) {
-  if (typeof str === 'number')
-    return str;
+  if (typeof str === "number") return str;
 
-  if (typeof str !== "string")
-    return defaultValue;
+  if (typeof str !== "string") return defaultValue;
 
   let result = parseFloat(str);
 
@@ -59,8 +57,20 @@ export function formatNumber(
     formattedNumber = num.toFixed(mantissa);
   } else {
     // "auto" mode
+    // const factor = Math.pow(10, mantissa);
+    // formattedNumber = (Math.trunc(num * factor) / factor).toString();
+
+    // Truncate the number to the specified number of decimal places
     const factor = Math.pow(10, mantissa);
-    formattedNumber = (Math.trunc(num * factor) / factor).toString();
+    let truncatedNumber = Math.trunc(num * factor) / factor;
+
+    // Convert to string with fixed number of decimal places
+    formattedNumber = truncatedNumber.toFixed(mantissa);
+
+    // Remove trailing zeros
+    if (mantissa > 0) {
+      formattedNumber = formattedNumber.replace(/\.?0+$/, "");
+    }
   }
 
   // Add thousand separators if needed
@@ -90,4 +100,3 @@ export function txTotalCoins(tx: Transaction): number {
 export function txTotalFee(tx: Transaction): number {
   return tx.ioSummary?.totalFee ?? 0;
 }
-
