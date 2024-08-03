@@ -8,7 +8,7 @@ export class SubscriptionSink {
     this.handlers = [];
   }
 
-  public event<
+  public static oneshot<
     EventTypes extends EventEmitter.ValidEventTypes,
     T extends EventEmitter.EventNames<EventTypes>
   >(
@@ -17,13 +17,24 @@ export class SubscriptionSink {
     fn: EventEmitter.EventListener<EventTypes, T>
   ) {
     emitter.on(event, fn);
-    this.handlers.push(() => {
+    return () => {
       emitter.off(event, fn);
-    });
+    };
   }
 
   public manual(unsubscribe: VoidCallback) {
     this.handlers.push(unsubscribe);
+  }
+
+  public event<
+    EventTypes extends EventEmitter.ValidEventTypes,
+    T extends EventEmitter.EventNames<EventTypes>
+  >(
+    emitter: EventEmitter<EventTypes, any>,
+    event: T,
+    fn: EventEmitter.EventListener<EventTypes, T>
+  ) {
+    this.handlers.push(SubscriptionSink.oneshot(emitter, event, fn));
   }
 
   public unsubscribeAll() {

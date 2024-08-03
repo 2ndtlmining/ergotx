@@ -32,14 +32,14 @@
 
   import FloatingWindow from "./FloatingWindow.svelte";
   import StatWindow from "./StatWindow.svelte";
-  import { autoSubscribe } from "~/common/utils";
   import { IconChartAreaLineFilled } from "@tabler/icons-svelte";
+  import { SubscriptionSink } from "~/common/SubscriptionSink";
 
   let activeWindows: WindowEntry[] = [];
 
   onMount(() => {
     activeWindows = [];
-    return autoSubscribe(windowEmitter, "CreteWindow", entry => {
+    return SubscriptionSink.oneshot(windowEmitter, "CreteWindow", entry => {
       activeWindows = [...activeWindows, entry];
     });
   });

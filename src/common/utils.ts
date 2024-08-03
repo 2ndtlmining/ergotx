@@ -9,20 +9,6 @@ export function delay(ms: number): Promise<void> {
   });
 }
 
-export function autoSubscribe<
-  EventTypes extends EventEmitter.ValidEventTypes,
-  T extends EventEmitter.EventNames<EventTypes>
->(
-  emitter: EventEmitter<EventTypes, any>,
-  event: T,
-  fn: EventEmitter.EventListener<EventTypes, T>
-) {
-  emitter.on(event, fn);
-  return () => {
-    emitter.off(event, fn);
-  };
-}
-
 export function parseNumber(str: any): number | null;
 export function parseNumber<T>(str: any, defaultValue: T): number | T;
 export function parseNumber(str: any, defaultValue: any = null) {
