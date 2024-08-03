@@ -1,6 +1,7 @@
 import { Scene, Geom } from "phaser";
 
-import type { Transaction } from "~/common/types";
+import EventEmitter from "eventemitter3";
+import type { Transaction, VoidCallback } from "~/common/types";
 import type { AcceptsCommands, Command } from "~/common/Command";
 import type { Placement } from "~/common/Placement";
 import type { IVector2 } from "~/common/math";
@@ -22,7 +23,11 @@ import { StatsDisplay } from "./actors/StatsDisplay";
 
 const SPACING = 16;
 
-export class Renderer implements AcceptsCommands {
+type RendererEvents = {
+  'person_clicked': VoidCallback<Transaction>
+}
+
+export class Renderer extends EventEmitter<RendererEvents> implements AcceptsCommands {
   private scene: Scene;
 
   private personMap: Map<string, Person>;
@@ -46,6 +51,7 @@ export class Renderer implements AcceptsCommands {
   private runwayTop: number;
 
   constructor(scene: Scene) {
+    super();
     this.scene = scene;
     this.init();
   }

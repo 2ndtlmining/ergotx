@@ -1,13 +1,15 @@
-import { GameObjects, Scene } from "phaser";
+import { GameObjects, Scene, Events, Input } from "phaser";
 
 import { Transaction } from "~/common/types";
 import { PERSON_COLOR, PERSON_RADIUS } from "~/common/theme";
 import { IVector2 } from "~/common/math";
+import { Transform } from "~/common/component-types";
 
 import { MotionController, SupportsMotion } from "~/movement/motion";
 
+import { createWindow } from '~/windows/SceneDecorations.svelte';
+
 import { Actor } from "./Actor";
-import { Transform } from "~/common/component-types";
 
 export class Person extends Actor implements SupportsMotion {
   public readonly tx: Transaction;
@@ -25,6 +27,19 @@ export class Person extends Actor implements SupportsMotion {
       PERSON_RADIUS,
       PERSON_COLOR
     );
+
+    this.gameObject.setInteractive();
+
+    this.gameObject.on(Input.Events.POINTER_UP, () => {
+      // FIXME: too tight coupling + what should be the initial size and
+      // position ?
+      createWindow({
+        details: { type: 'tx', txId: tx.id },
+        title: 'Transaction Info',
+        initialPosition: { x: 130, y: 130 },
+        initialSize: { width: 450, height: 450 }
+      });
+    });
 
     this.gameObject.depth = 2;
 

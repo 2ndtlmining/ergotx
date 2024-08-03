@@ -5,6 +5,7 @@ import { Motion } from "./motion";
 import { Time } from "~/common/Time";
 
 const SPEED = 0.5;
+// const SPEED = 3;
 const MAX_DELTA_DIST = 2;
 
 export class LinearMotion extends Motion {
