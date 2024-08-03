@@ -53,10 +53,20 @@ export function getUnconfirmedTransaction(txId: string) {
     .json<Transaction>();
 }
 
-export function getConfirmedTransaction(txId: string) {
-  return kyInstance
+export async function getConfirmedTransaction(txId: string) {
+  let confirmed = await kyInstance
     .get(ERGO_PLATFORM_API + "/transactions/" + txId)
-    .json<Transaction>();
+    .json<any>();
+
+  let tx: Transaction = {
+    id: confirmed['summary']['id'],
+    inputs: confirmed['inputs'],
+    outputs: confirmed['outputs'],
+    size: confirmed['summary']['size'],
+    ioSummary: confirmed['ioSummary']
+  };
+
+  return tx;
 }
 
 export async function getLatestBlock() {
