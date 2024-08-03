@@ -39,7 +39,7 @@ export class SubscriptionSink {
 
   public unsubscribeAll() {
     while (this.handlers.length) {
-      this.handlers.shift()!();
+      this.handlers.pop()!();
     }
   }
 }
