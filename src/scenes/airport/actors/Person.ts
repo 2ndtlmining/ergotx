@@ -28,7 +28,7 @@ export class Person extends Actor implements SupportsMotion {
       PERSON_COLOR
     );
 
-    this.gameObject.setInteractive();
+    this.gameObject.setInteractive({ cursor: "pointer"  });
 
     this.gameObject.on(Input.Events.POINTER_UP, () => {
       // FIXME: too tight coupling + what should be the initial size and

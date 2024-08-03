@@ -165,7 +165,7 @@
     )}
   >
     <div class="flex-1 overflow-hidden">
-      <h3 class="font-medium text-lg">
+      <h3 class="font-medium text-lg whitespace-nowrap">
         {entry.title}
       </h3>
     </div>
