@@ -38,12 +38,13 @@ export class CampScene extends BaseScene {
     
     this.load.image("hanger", "/army-assets/hanger.png");
     this.load.image("grill", "/army-assets/grill.png");
+    
+    this.load.image("house-1", "/army-assets/house-1.png");
   }
 
   create() {
     GridManager.init(this);
     WorldCamera.init(this);
-    GridManager.showGridLines(true);
 
     const fillCell = (
       tileX: number,
@@ -136,17 +137,37 @@ export class CampScene extends BaseScene {
       );
     }
     
+    
+    // grill
     {
       fixWidth(
         3.5,
         this.add
           .image(0, 0, "grill")
           .setOrigin(0, 1)
-          .setPosition(pixels(5.25), GridManager.CanvasWidth)
+          .setPosition(pixels(5.25), GridManager.CanvasHeight + pixels(2))
+      );
+    }
+    
+    // houses
+    {
+      fixWidth(
+        1.625,
+        this.add.image(0, 0, "house-1")
+          .setOrigin(0, 1)
+          .setPosition(pixels(0.25), pixels(9))
+      );
+      
+      fixWidth(
+        1.625,
+        this.add.image(0, 0, "house-1")
+          .setOrigin(0, 1)
+          .setPosition(pixels(2.125), pixels(9))
       );
     }
 
     GridManager.bringGridToTop(this);
+    GridManager.showGridLines(true);
   }
 
   public sceneUpdate(): void {

@@ -60,6 +60,9 @@ importers:
       '@types/file-saver':
         specifier: ^2.0.7
         version: 2.0.7
+      '@types/when-dom-ready':
+        specifier: ^1.2.2
+        version: 1.2.2
       autoprefixer:
         specifier: ^10.4.19
         version: 10.4.19(postcss@8.4.39)
@@ -409,6 +412,9 @@ packages:
 
   '@types/pug@2.0.10':
     resolution: {integrity: sha512-Sk/uYFOBAB7mb74XcpizmH0KOR2Pv3D2Hmrh1Dmy5BmK3MpdSa5kqZcg6EKBdklU0bFXX9gCfzvpnyUehrPIuA==}
+
+  '@types/when-dom-ready@1.2.2':
+    resolution: {integrity: sha512-9dxZKwe4Fzj6v6/RE5NJJilgwIMgvRySV4yxBMf6GniK47TjQIBKWAOTSSfOwOU5nSDYZA+KKocYsTsZ31XyUg==}
 
   acorn@8.12.1:
     resolution: {integrity: sha512-tcpGyI9zbizT9JbV6oYE477V6mTlXvvi0T0G3SNIYE2apm/G5huBa1+K89VGeovbg+jycCrfhl3ADxErOuO6Jg==}
@@ -1370,6 +1376,8 @@ snapshots:
       postcss: 8.4.39
 
   '@types/pug@2.0.10': {}
+
+  '@types/when-dom-ready@1.2.2': {}
 
   acorn@8.12.1: {}
 
