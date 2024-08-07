@@ -86,9 +86,17 @@ export class GridManager {
 
       this.gridlines.add(line);
     }
+    
+  }
+  
+  // Very temp
+  public static bringGridToTop(scene: Phaser.Scene) {
+    this.gridlines.getChildren().forEach(child => {
+      scene.children.bringToTop(child);
+    })
   }
 
-  static init(scene: Phaser.Scene) {
+  public static init(scene: Phaser.Scene) {
     this.canvasWidth = +scene.game.config.width;
     this.canvasHeight = +scene.game.config.height;
 

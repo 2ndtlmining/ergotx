@@ -6,6 +6,19 @@ function pixels(tiles: number) {
   return GridManager.TileSize * tiles;
 }
 
+function fixWidth(tiles: number, image: Phaser.GameObjects.Image) {
+  let imageWidth = image.width;
+  let imageHeight = image.height;
+  
+  let aspectRatio = imageHeight / imageWidth;
+  let newWidth = pixels(tiles);
+  let newHeight = aspectRatio * newWidth;
+  
+  image.setScale(newWidth / imageWidth, newHeight / imageHeight);
+  
+  return image;
+}
+
 export class CampScene extends BaseScene {
   getTitle(): string {
     return "Camp";
@@ -57,6 +70,24 @@ export class CampScene extends BaseScene {
     fillLineV(10, 0, 2, "road-wide");
     
     // ======
+    
+    {
+      fixWidth(2, this.add
+        .image(0, 0, "tower1")
+        .setOrigin(0, 1)
+        .setPosition(pixels(5.25), pixels(2.5))
+      )
+    }
+    
+    {
+      fixWidth(2, this.add
+        .image(0, 0, "tower2")
+        .setOrigin(0, 1)
+        .setPosition(pixels(7.75), pixels(2.5))
+      )
+    }
+    
+    GridManager.bringGridToTop(this);
   }
 
   public sceneUpdate(): void {
