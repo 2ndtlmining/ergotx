@@ -59,11 +59,11 @@ export async function getConfirmedTransaction(txId: string) {
     .json<any>();
 
   let tx: Transaction = {
-    id: confirmed['summary']['id'],
-    inputs: confirmed['inputs'],
-    outputs: confirmed['outputs'],
-    size: confirmed['summary']['size'],
-    ioSummary: confirmed['ioSummary']
+    id: confirmed["summary"]["id"],
+    inputs: confirmed["inputs"],
+    outputs: confirmed["outputs"],
+    size: confirmed["summary"]["size"],
+    ioSummary: confirmed["ioSummary"]
   };
 
   return tx;

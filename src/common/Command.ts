@@ -16,7 +16,6 @@ export type Command =
   | { type: "kill"; tx: Transaction }
   | { type: "step_forward" };
 
-
 export interface AcceptsCommands {
   executeCommands(commands: Command[]): Promise<unknown>;
   reset(): void;

@@ -4,7 +4,7 @@ import { VoidCallback } from "~/common/types";
 export const debugSettings = {
   showGridlines: false,
   debugBlockActors: false,
-  debugRegions: false,
+  debugRegions: false
 };
 
 export type DebugSettings = typeof debugSettings;

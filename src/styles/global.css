@@ -20,7 +20,7 @@ body {
   max-height: 100vh;
   overflow: hidden;
 
-  font-family: 'Inter';
+  font-family: "Inter";
 }
 
 @layer utilities {

@@ -7,7 +7,7 @@ import { Transform } from "~/common/component-types";
 
 import { MotionController, SupportsMotion } from "~/movement/motion";
 
-import { createWindow } from '~/windows/SceneDecorations.svelte';
+import { createWindow } from "~/windows/SceneDecorations.svelte";
 
 import { Actor } from "./Actor";
 
@@ -28,14 +28,14 @@ export class Person extends Actor implements SupportsMotion {
       PERSON_COLOR
     );
 
-    this.gameObject.setInteractive({ cursor: "pointer"  });
+    this.gameObject.setInteractive({ cursor: "pointer" });
 
     this.gameObject.on(Input.Events.POINTER_UP, () => {
       // FIXME: too tight coupling + what should be the initial size and
       // position ?
       createWindow({
-        details: { type: 'tx', txId: tx.id },
-        title: 'Transaction Info',
+        details: { type: "tx", txId: tx.id },
+        title: "Transaction Info",
         initialPosition: { x: 130, y: 130 },
         initialSize: { width: 450, height: 450 }
       });

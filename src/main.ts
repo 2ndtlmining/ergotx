@@ -72,7 +72,7 @@ function getScene(): Constructor<BaseScene> {
     case "/p":
     case "/playground":
       return PlaygroundScene;
-    
+
     case "/c":
       return CampScene;
 

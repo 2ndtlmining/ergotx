@@ -24,10 +24,13 @@ import { StatsDisplay } from "./actors/StatsDisplay";
 const SPACING = 16;
 
 type RendererEvents = {
-  'person_clicked': VoidCallback<Transaction>
-}
+  person_clicked: VoidCallback<Transaction>;
+};
 
-export class Renderer extends EventEmitter<RendererEvents> implements AcceptsCommands {
+export class Renderer
+  extends EventEmitter<RendererEvents>
+  implements AcceptsCommands
+{
   private scene: Scene;
 
   private personMap: Map<string, Person>;

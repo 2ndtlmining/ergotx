@@ -2,9 +2,8 @@ import { Time } from "~/common/Time";
 import { GridManager } from "./GridManager";
 
 export class WorldCamera {
-  
   public static controls: Phaser.Cameras.Controls.FixedKeyControl;
-  
+
   public static init(scene: Phaser.Scene) {
     const cursors = scene.input.keyboard!.createCursorKeys();
     let camera = scene.cameras.main;

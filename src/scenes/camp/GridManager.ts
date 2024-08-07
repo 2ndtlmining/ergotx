@@ -26,11 +26,11 @@ export class GridManager {
   private static numTilesY = 24;
 
   private static tileSize = 0;
-  
+
   public static get NumTilesX() {
     return this.numTilesX;
   }
-  
+
   public static get NumTilesY() {
     return this.numTilesY;
   }
@@ -86,14 +86,13 @@ export class GridManager {
 
       this.gridlines.add(line);
     }
-    
   }
-  
+
   // Very temp
   public static bringGridToTop(scene: Phaser.Scene) {
     this.gridlines.getChildren().forEach(child => {
       scene.children.bringToTop(child);
-    })
+    });
   }
 
   public static init(scene: Phaser.Scene) {
@@ -114,19 +113,14 @@ export class GridManager {
     startTileX: number,
     startTileY: number,
     numTilesX: number,
-    numTilesY: number,
+    numTilesY: number
   ) {
     let { x, y } = this.tileToWorld(startTileX, startTileY);
 
-    let width =
-      numTilesX > 0
-        ? this.TileSize * numTilesX
-        : this.WorldMaxWidth;
+    let width = numTilesX > 0 ? this.TileSize * numTilesX : this.WorldMaxWidth;
 
     let height =
-      numTilesY > 0
-        ? this.TileSize * numTilesY
-        : this.WorldMaxHeight;
+      numTilesY > 0 ? this.TileSize * numTilesY : this.WorldMaxHeight;
 
     return new Geom.Rectangle(x, y, width, height);
   }

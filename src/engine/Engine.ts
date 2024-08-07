@@ -13,9 +13,9 @@ import EventEmitter from "eventemitter3";
 import type { DeepReadonly, VoidCallback } from "~/common/types";
 
 type EngineEvents = {
-  'mempool_updated': VoidCallback<DeepReadonly<Assembly>>
-  'block_found': VoidCallback<DeepReadonly<Assembly>>
-}
+  mempool_updated: VoidCallback<DeepReadonly<Assembly>>;
+  block_found: VoidCallback<DeepReadonly<Assembly>>;
+};
 
 export class Engine extends EventEmitter<EngineEvents> {
   private currentAssembly: Assembly;
@@ -93,10 +93,9 @@ export class Engine extends EventEmitter<EngineEvents> {
       let targetAssembly = tick.getNextAssembly();
 
       if (tick instanceof TransactionsTick) {
-        this.emit('mempool_updated', targetAssembly);
-      }
-      else if (tick instanceof BlockTick) {
-        this.emit('block_found', targetAssembly);
+        this.emit("mempool_updated", targetAssembly);
+      } else if (tick instanceof BlockTick) {
+        this.emit("block_found", targetAssembly);
       }
 
       tick
