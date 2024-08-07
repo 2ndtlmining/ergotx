@@ -46,6 +46,8 @@ export class CampScene extends BaseScene {
     // plane
     // this.load.image("plane", "/planes/plane-2.png");
     this.load.image("plane", "/army-assets/jet 1.png");
+    
+    this.load.image("person", "/army-assets/asker.png");
   }
 
   create() {

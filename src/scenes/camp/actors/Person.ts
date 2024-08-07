@@ -14,23 +14,28 @@ import { Actor } from "./Actor";
 export class Person extends Actor implements SupportsMotion {
   public readonly tx: Transaction;
 
-  private gameObject: GameObjects.Arc;
+  private gameObject: GameObjects.Image;
   private motionController: MotionController;
 
   constructor(scene: Scene, tx: Transaction) {
     super(scene);
     this.tx = tx;
 
-    this.gameObject = this.scene.add.circle(
-      -1000,
-      -1000,
-      PERSON_RADIUS,
-      PERSON_COLOR
-    );
+    // this.gameObject = this.scene.add.circle(
+    //   -1000,
+    //   -1000,
+    //   PERSON_RADIUS,
+    //   PERSON_COLOR
+    // );
+    
+    let image = this.scene.add.image(-1000, -1000, "person");
+    this.gameObject = image;
+    
+    image.setScale(2*PERSON_RADIUS / image.width);
+    
+    image.setInteractive({ cursor: "pointer" });
 
-    this.gameObject.setInteractive({ cursor: "pointer" });
-
-    this.gameObject.on(Input.Events.POINTER_UP, () => {
+    image.on(Input.Events.POINTER_UP, () => {
       // FIXME: too tight coupling + what should be the initial size and
       // position ?
       createWindow({
@@ -41,7 +46,7 @@ export class Person extends Actor implements SupportsMotion {
       });
     });
 
-    this.gameObject.depth = 2;
+    image.depth = 2;
 
     this.motionController = new MotionController(this.gameObject);
   }
