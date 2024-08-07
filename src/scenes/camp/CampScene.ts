@@ -26,10 +26,15 @@ export class CampScene extends BaseScene {
 
   preload() {
     this.load.image("floor", "/army-assets/floor.png");
+    
     this.load.image("road-single", "/army-assets/road-single.png");
     this.load.image("road-wide", "/army-assets/road-wide.png");
+    
     this.load.image("tower1", "/army-assets/tower1.png");
     this.load.image("tower2", "/army-assets/tower2.png");
+    
+    this.load.image("car-horizontal", "/army-assets/car-horizontal.png");
+    this.load.image("car-vertical", "/army-assets/car-vertical.png");
   }
 
   create() {
@@ -71,6 +76,7 @@ export class CampScene extends BaseScene {
 
     // ======
 
+    // towers
     {
       fixWidth(
         2,
@@ -79,9 +85,7 @@ export class CampScene extends BaseScene {
           .setOrigin(0, 1)
           .setPosition(pixels(5.25), pixels(2.5))
       );
-    }
-
-    {
+    
       fixWidth(
         2,
         this.add
@@ -90,6 +94,38 @@ export class CampScene extends BaseScene {
           .setPosition(pixels(7.75), pixels(2.5))
       );
     }
+    
+    // cars
+    {
+      fixWidth(
+        1.75,
+        this.add
+          .image(0, 0, "car-horizontal")
+          .setOrigin(0, 1)
+          .setPosition(pixels(5.35), pixels(3.85))
+      );
+      
+      fixWidth(
+        1.75,
+        this.add
+          .image(0, 0, "car-horizontal")
+          .setOrigin(0, 1)
+          .setPosition(pixels(5.35), pixels(4.95))
+      );
+      
+      fixWidth(
+        1,
+        this.add
+          .image(0, 0, "car-vertical")
+          .setOrigin(0, 1)
+          .setPosition(pixels(7.75), pixels(5))
+      );
+    }
+    
+    
+    
+    
+    
 
     GridManager.bringGridToTop(this);
   }
