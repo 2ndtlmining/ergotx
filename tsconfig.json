@@ -23,7 +23,14 @@
     "baseUrl": "src",
     "paths": {
       "~/*": ["./*"]
-    }
+    },
+    "plugins": [
+      {
+        "name": "typescript-svelte-plugin",
+        "enabled": true,
+        "assumeIsSvelteProject": false
+      }
+    ]
   },
   "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte"]
 }
