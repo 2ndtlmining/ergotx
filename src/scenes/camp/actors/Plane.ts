@@ -5,6 +5,7 @@ import { Actor } from "./Actor";
 import { Transform } from "~/common/component-types";
 import { watchSettings } from "../DebugSettings";
 import { SubscriptionSink } from "~/common/SubscriptionSink";
+import { pixels } from "../sizing";
 
 export class Plane extends Actor implements SupportsMotion {
   private container: GameObjects.Container;
@@ -23,6 +24,8 @@ export class Plane extends Actor implements SupportsMotion {
     super(scene);
 
     this.subSink = new SubscriptionSink();
+    
+    width -= pixels(0.5);
 
     {
       let sprite = this.scene.add.image(0, 0, "plane");
