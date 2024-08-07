@@ -21,6 +21,7 @@ import { AirportScene } from "./scenes/airport/AirportScene";
 import { PlaygroundScene } from "./scenes/PlaygroundScene";
 import { Constructor } from "./common/types";
 import SceneDecorations from "./windows/SceneDecorations.svelte";
+import { CampScene } from "./scenes/camp/CampScene";
 
 let canvasContainer: HTMLElement | null = null;
 let mainCanvas: HTMLCanvasElement | null = null;
@@ -71,6 +72,9 @@ function getScene(): Constructor<BaseScene> {
     case "/p":
     case "/playground":
       return PlaygroundScene;
+    
+    case "/c":
+      return CampScene;
 
     default:
       return AirportScene;
