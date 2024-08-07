@@ -37,6 +37,7 @@ export class CampScene extends BaseScene {
     this.load.image("car-vertical", "/army-assets/car-vertical.png");
     
     this.load.image("hanger", "/army-assets/hanger.png");
+    this.load.image("grill", "/army-assets/grill.png");
   }
 
   create() {
@@ -132,6 +133,16 @@ export class CampScene extends BaseScene {
           .image(0, 0, "hanger")
           .setOrigin(0, 0)
           .setPosition(pixels(0.5), pixels(0.25))
+      );
+    }
+    
+    {
+      fixWidth(
+        3.5,
+        this.add
+          .image(0, 0, "grill")
+          .setOrigin(0, 1)
+          .setPosition(pixels(5.25), GridManager.CanvasWidth)
       );
     }
 
