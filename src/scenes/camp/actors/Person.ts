@@ -16,25 +16,17 @@ export class Person extends Actor implements SupportsMotion {
 
   private gameObject: GameObjects.Image;
   private motionController: MotionController;
-  // private lastPosition: IVector2;
 
   constructor(scene: Scene, tx: Transaction) {
     super(scene);
     this.tx = tx;
     
-    // this.lastPosition = { x: 0, y: 0 };
-
     let image = this.scene.add.image(-1000, -1000, "person");
     this.gameObject = image;
     
     image.setScale(2*PERSON_RADIUS / image.width);
     image.angle = 180;
 
-    // -90 => right
-    // +90 => left
-    // 0 => down
-    // 180 => up
-    
     image.setInteractive({ cursor: "pointer" });
 
     image.on(Input.Events.POINTER_UP, () => {
@@ -54,8 +46,6 @@ export class Person extends Actor implements SupportsMotion {
   }
 
   public place(position: IVector2) {
-    // this.lastPosition.x = position.x;
-    // this.lastPosition.y = position.y;
     this.gameObject.copyPosition(position);
   }
 
@@ -64,14 +54,29 @@ export class Person extends Actor implements SupportsMotion {
     this.motionController.update();
     let afterPos: IVector2 = { x: this.getX(), y: this.getY() };
     
-  
-    let radians = new Math.Vector2(
+    // 270 => right (0)
+    // 180 => up (270)
+    // 90 => left (180)
+    // 0 => down (90)
+    
+    let displacement = new Math.Vector2(
       afterPos.x - beforePos.x,
       afterPos.y - beforePos.y
-    ).angle();
+    );
     
-    this.gameObject.setRotation(radians);
-    this.gameObject.angle -= 90;
+    let distance = displacement.lengthSq();
+
+    let angle = 180; // up
+    
+    if (distance !== 0) {
+      angle = Math.Angle.WrapDegrees(Math.RadToDeg(displacement.angle()));
+      if (angle < 0) {
+        angle = 360 - angle;
+      }
+      angle -= 90;
+    }
+    
+    this.gameObject.setAngle(angle);
   }
 
   public destroy() {
