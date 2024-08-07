@@ -1,23 +1,7 @@
 import { BaseScene } from "../BaseScene";
 import { GridManager } from "./GridManager";
 import { WorldCamera } from "./WorldCamera";
-
-function pixels(tiles: number) {
-  return GridManager.TileSize * tiles;
-}
-
-function fixWidth(tiles: number, image: Phaser.GameObjects.Image) {
-  let imageWidth = image.width;
-  let imageHeight = image.height;
-
-  let aspectRatio = imageHeight / imageWidth;
-  let newWidth = pixels(tiles);
-  let newHeight = aspectRatio * newWidth;
-
-  image.setScale(newWidth / imageWidth, newHeight / imageHeight);
-
-  return image;
-}
+import { fixWidth, pixels } from "./sizing";
 
 export class CampScene extends BaseScene {
   getTitle(): string {
@@ -167,7 +151,7 @@ export class CampScene extends BaseScene {
     }
 
     GridManager.bringGridToTop(this);
-    GridManager.showGridLines(true);
+    // GridManager.showGridLines(true);
   }
 
   public sceneUpdate(): void {
