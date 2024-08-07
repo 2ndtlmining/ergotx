@@ -13,15 +13,7 @@ import { PollUpdateService } from "~/ergoapi/PollUpdateService";
 import { ReplayUpdateService } from "~/ergoapi/ReplayUpdateService";
 
 import { watchSettings } from "./DebugSettings";
-import { AcceptsCommands } from "~/common/Command";
 import { Renderer } from "./Renderer";
-
-class NullCommandAcceptor implements AcceptsCommands {
-  async executeCommands(commands: any[]): Promise<void> {
-    
-  }
-  reset(): void {}
-}
 
 export class CampScene extends BaseScene {
   private uiControls: Controls;
@@ -218,47 +210,6 @@ export class CampScene extends BaseScene {
           .setPosition(pixels(5.25), GridManager.CanvasHeight + pixels(2))
       );
     }
-    
-    // {
-    //   fixWidth(
-    //     1.625,
-    //     this.add.image(0, 0, "house-1")
-    //     .setOrigin(0, 1)
-    //     .setPosition(pixels(0.25), pixels(8))
-    //   );
-    //
-    //   fixWidth(
-    //     1.625,
-    //     this.add.image(0, 0, "house-1")
-    //     .setOrigin(0, 1)
-    //     .setPosition(pixels(2.125), pixels(8))
-    //   );
-    //   
-    //   fixWidth(
-    //     1.625,
-    //     this.add.image(0, 0, "house-1")
-    //     .setOrigin(0, 1)
-    //     .setPosition(pixels(2.125), pixels(9.5))
-    //   );
-    // }
   }
 }
 
- 
-/*
-{
-  fixWidth(
-    1.625,
-    this.add.image(0, 0, "house-1")
-      .setOrigin(0, 1)
-      .setPosition(pixels(0.25), pixels(9))
-  );
-  
-  fixWidth(
-    1.625,
-    this.add.image(0, 0, "house-1")
-      .setOrigin(0, 1)
-      .setPosition(pixels(2.125), pixels(9))
-  );
-}
- */

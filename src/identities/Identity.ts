@@ -34,4 +34,4 @@ export function getIdentityAt(index: number): Readonly<Identity> {
 register("Spectrum FI", []);
 register("Rosen Bridge", []);
 register("Duckpools", []);
-register("Sigma FI", []);
+// register("Sigma FI", []);

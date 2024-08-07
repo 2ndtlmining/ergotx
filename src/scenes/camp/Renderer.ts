@@ -20,7 +20,7 @@ import { Plane } from "./actors/Plane";
 import { House } from "./actors/House";
 import { StatsDisplay } from "./actors/StatsDisplay";
 
-import { pixels, tilesize } from "./sizing";
+import { pixels } from "./sizing";
 import { waitingZone, lineUpRoad } from './regions';
 
 const SPACING = 16;
@@ -76,10 +76,10 @@ export class Renderer
   private initStats() {
     this.statsDisplay = new StatsDisplay(
       this.scene,
-      tilesize() * 2,
-      tilesize() * 0.25,
-      tilesize() * 7,
-      tilesize()
+      pixels(2),
+      pixels(0.25),
+      pixels(7),
+      pixels(1)
     );
 
     this.lastBlockTime = -1; // -1 shows there is no last block yet.
@@ -118,23 +118,12 @@ export class Renderer
       }
     };
 
-    /* let defaultHouse = "house-01";
-    let idenHouses = [
-      "house-03",
-      "house-06",
-      "house-04",
-      "house-02",
-      "house-05"
-    ]; */
     let houseTexture = "house-1";
 
     addHouse(houseTexture);
 
-    // let index = 0;
-
     for (const _iden of getAllIdentities()) {
       addHouse(houseTexture);
-      // index = (index + 1) % idenHouses.length;
     }
   }
 
