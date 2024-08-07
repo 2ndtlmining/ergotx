@@ -1,5 +1,7 @@
 import { GridManager } from "./GridManager";
 
+export const tilesize = () => GridManager.TileSize;
+
 export function pixels(tiles: number) {
   return GridManager.TileSize * tiles;
 }

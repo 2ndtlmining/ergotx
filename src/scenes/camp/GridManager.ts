@@ -117,10 +117,10 @@ export class GridManager {
   ) {
     let { x, y } = this.tileToWorld(startTileX, startTileY);
 
-    let width = numTilesX > 0 ? this.TileSize * numTilesX : this.WorldMaxWidth;
+    let width = numTilesX > 0 ? this.TileSize * numTilesX : this.WorldMaxWidth - x;
 
     let height =
-      numTilesY > 0 ? this.TileSize * numTilesY : this.WorldMaxHeight;
+      numTilesY > 0 ? this.TileSize * numTilesY : this.WorldMaxHeight - y;
 
     return new Geom.Rectangle(x, y, width, height);
   }

@@ -1,6 +1,7 @@
 import { BaseScene } from "../BaseScene";
 import { GridManager } from "./GridManager";
 import { WorldCamera } from "./WorldCamera";
+import { Region, RegionsDebug } from "./regions";
 import { fixWidth, pixels } from "./sizing";
 
 export class CampScene extends BaseScene {
@@ -61,6 +62,12 @@ export class CampScene extends BaseScene {
     fillLineV(4, 0, 1, "road-single");
     fillLineV(5, 0, 5, "floor", 0.2);
     fillLineV(10, 0, 2, "road-wide");
+    
+    GridManager.bringGridToTop(this);
+    RegionsDebug.init(this);
+    
+    GridManager.showGridLines(false);
+    RegionsDebug.showRegionsDebug(false);
 
     // ======
 
@@ -125,7 +132,7 @@ export class CampScene extends BaseScene {
     // grill
     {
       fixWidth(
-        3.5,
+        3,
         this.add
           .image(0, 0, "grill")
           .setOrigin(0, 1)
@@ -150,8 +157,7 @@ export class CampScene extends BaseScene {
       );
     }
 
-    GridManager.bringGridToTop(this);
-    // GridManager.showGridLines(true);
+
   }
 
   public sceneUpdate(): void {
