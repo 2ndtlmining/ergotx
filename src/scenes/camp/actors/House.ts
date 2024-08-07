@@ -16,7 +16,7 @@ export class House {
     let image = (this.image = scene.add
       .image(x, y, textureName)
       .setOrigin(0, 1));
-
+    
     image.scale = width / image.width;
     image.depth = 1;
 

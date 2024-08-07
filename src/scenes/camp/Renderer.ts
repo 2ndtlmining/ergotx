@@ -20,7 +20,7 @@ import { Plane } from "./actors/Plane";
 import { House } from "./actors/House";
 import { StatsDisplay } from "./actors/StatsDisplay";
 
-import { tilesize } from "./sizing";
+import { pixels, tilesize } from "./sizing";
 import { waitingZone, lineUpRoad } from './regions';
 
 const SPACING = 16;
@@ -93,16 +93,22 @@ export class Renderer
     let top = 0;
 
     const addHouse = (textureName: string) => {
-      const tileSize = tilesize();
+      let spacingX = 0.25;
+      let spacingY = 1.5;
+      let houseWidth = 1.625;
+      
+      let startX = 0.25;
+      let startY = 8;
+      
+      let tileX = startX + (houseWidth + spacingX) * left;
+      let tileY = startY + spacingY * top;
 
-      const margin = tileSize * 0.5;
-      const spacing = tileSize * 0.5;
-      const houseWidth = tileSize * 1.75;
-
-      let x = margin + (houseWidth + spacing) * left;
-      let y = tileSize * 3.5 + top * tileSize * 2.2;
-
-      this.houses.push(new House(this.scene, textureName, x, y, houseWidth));
+      this.houses.push(new House(
+        this.scene,
+        textureName, 
+        pixels(tileX), pixels(tileY),
+        pixels(houseWidth)
+      ));
 
       left++;
 
@@ -112,22 +118,23 @@ export class Renderer
       }
     };
 
-    let defaultHouse = "house-01";
+    /* let defaultHouse = "house-01";
     let idenHouses = [
       "house-03",
       "house-06",
       "house-04",
       "house-02",
       "house-05"
-    ];
+    ]; */
+    let houseTexture = "house-1";
 
-    addHouse(defaultHouse);
+    addHouse(houseTexture);
 
-    let index = 0;
+    // let index = 0;
 
     for (const _iden of getAllIdentities()) {
-      addHouse(idenHouses[index]);
-      index = (index + 1) % idenHouses.length;
+      addHouse(houseTexture);
+      // index = (index + 1) % idenHouses.length;
     }
   }
 
