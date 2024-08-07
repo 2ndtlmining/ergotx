@@ -17,7 +17,7 @@ import whenDomReady from "when-dom-ready";
 import { SCENE_BG_COLOR } from "~/common/theme";
 
 import type { BaseScene } from "./scenes/BaseScene";
-import { AirportScene } from "./scenes/airport/AirportScene";
+// import { AirportScene } from "./scenes/airport/AirportScene";
 import { PlaygroundScene } from "./scenes/PlaygroundScene";
 import { Constructor } from "./common/types";
 import SceneDecorations from "./windows/SceneDecorations.svelte";
@@ -73,11 +73,12 @@ function getScene(): Constructor<BaseScene> {
     case "/playground":
       return PlaygroundScene;
 
-    case "/c":
+    // case "/c":
+    default:
       return CampScene;
 
-    default:
-      return AirportScene;
+    // default:
+      // return AirportScene;
   }
 }
 

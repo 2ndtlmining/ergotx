@@ -1,10 +1,17 @@
+import { SubscriptionSink } from "~/common/SubscriptionSink";
 import { BaseScene } from "../BaseScene";
 import { GridManager } from "./GridManager";
 import { WorldCamera } from "./WorldCamera";
-import { Region, RegionsDebug } from "./regions";
+import { RegionsDebug } from "./regions";
 import { fixWidth, pixels } from "./sizing";
 
+import Controls from './ui/Controls.svelte';
+import { watchSettings } from "./DebugSettings";
+
 export class CampScene extends BaseScene {
+  private uiControls: Controls;
+  private subSink: SubscriptionSink;
+  
   getTitle(): string {
     return "Camp";
   }
@@ -25,9 +32,34 @@ export class CampScene extends BaseScene {
     this.load.image("grill", "/army-assets/grill.png");
     
     this.load.image("house-1", "/army-assets/house-1.png");
+    
+    // plane
+    this.load.image("plane", "/planes/plane-2.png");
   }
 
   create() {
+    this.subSink = new SubscriptionSink();
+    this.initVisuals();
+    this.uiControls = new Controls({
+      target: document.getElementById("controls")!
+    });
+    
+    this.subSink.manual(watchSettings((settings) => {
+      GridManager.showGridLines(settings.showGridlines);
+      RegionsDebug.showRegionsDebug(settings.debugRegions);
+    }));
+  } 
+  
+  public sceneUpdate(): void {
+    WorldCamera.update();
+  }
+  
+  public destroy(): void {
+    this.subSink.unsubscribeAll();
+    this.uiControls.$destroy();
+  }
+  
+  private initVisuals() {
     GridManager.init(this);
     WorldCamera.init(this);
 
@@ -45,7 +77,7 @@ export class CampScene extends BaseScene {
       image.scaleX = rect.width / image.width;
       image.scaleY = rect.height / image.height + stretch;
     };
-
+    
     const fillLineV = (
       tileX: number,
       tileY: number,
@@ -68,9 +100,11 @@ export class CampScene extends BaseScene {
     
     GridManager.showGridLines(false);
     RegionsDebug.showRegionsDebug(false);
+    
+    this.addDecorations();
+  }
 
-    // ======
-
+  private addDecorations() {
     // towers
     {
       fixWidth(
@@ -139,28 +173,24 @@ export class CampScene extends BaseScene {
           .setPosition(pixels(5.25), GridManager.CanvasHeight + pixels(2))
       );
     }
-    
-    // houses
-    {
-      fixWidth(
-        1.625,
-        this.add.image(0, 0, "house-1")
-          .setOrigin(0, 1)
-          .setPosition(pixels(0.25), pixels(9))
-      );
-      
-      fixWidth(
-        1.625,
-        this.add.image(0, 0, "house-1")
-          .setOrigin(0, 1)
-          .setPosition(pixels(2.125), pixels(9))
-      );
-    }
-
-
-  }
-
-  public sceneUpdate(): void {
-    WorldCamera.update();
   }
 }
+
+ 
+/*
+{
+  fixWidth(
+    1.625,
+    this.add.image(0, 0, "house-1")
+      .setOrigin(0, 1)
+      .setPosition(pixels(0.25), pixels(9))
+  );
+  
+  fixWidth(
+    1.625,
+    this.add.image(0, 0, "house-1")
+      .setOrigin(0, 1)
+      .setPosition(pixels(2.125), pixels(9))
+  );
+}
+ */
