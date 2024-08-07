@@ -1,6 +1,7 @@
 import { IVector2 } from "~/common/math";
+
 import { Placement } from "~/common/Placement";
-import { WorldManager } from "./WorldManager";
+import { walkLane, waitingZone } from "./regions";
 
 function edgePathX(source: IVector2, dest: IVector2): IVector2[] {
   return [
@@ -37,7 +38,7 @@ export function createWalkPoints(source: WalkHead, dest: WalkHead): IVector2[] {
     // L path from source to walk lane
     points.push(
       ...edgePathX(wa, {
-        x: WorldManager.WalkLane.rect.centerX,
+        x: walkLane.rect.centerX,
         y: wb.y
       })
     );
@@ -50,7 +51,7 @@ export function createWalkPoints(source: WalkHead, dest: WalkHead): IVector2[] {
     points.push(...edgePathX(wa, wb));
   } else if (pa === "block" && pb === "block") {
     // First move out to waiting at dest Y
-    let waitingX = WorldManager.WaitingZone.rect.right - 50;
+    let waitingX = waitingZone.rect.right - 50;
     points.push(...edgePathX(wa, { x: waitingX, y: wb.y }));
 
     // Then move to dest

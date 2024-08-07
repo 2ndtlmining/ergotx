@@ -6,11 +6,29 @@ import { RegionsDebug } from "./regions";
 import { fixWidth, pixels } from "./sizing";
 
 import Controls from './ui/Controls.svelte';
+import { Engine } from "~/engine/Engine";
+
+import { watchUpdates } from "~/ergoapi/watch-updates";
+import { PollUpdateService } from "~/ergoapi/PollUpdateService";
+import { ReplayUpdateService } from "~/ergoapi/ReplayUpdateService";
+
 import { watchSettings } from "./DebugSettings";
+import { AcceptsCommands } from "~/common/Command";
+import { Renderer } from "./Renderer";
+
+class NullCommandAcceptor implements AcceptsCommands {
+  async executeCommands(commands: any[]): Promise<void> {
+    
+  }
+  reset(): void {}
+}
 
 export class CampScene extends BaseScene {
   private uiControls: Controls;
   private subSink: SubscriptionSink;
+  
+  private engine: Engine;
+  private appRenderer: Renderer;
   
   getTitle(): string {
     return "Camp";
@@ -48,15 +66,42 @@ export class CampScene extends BaseScene {
       GridManager.showGridLines(settings.showGridlines);
       RegionsDebug.showRegionsDebug(settings.debugRegions);
     }));
+    
+    // let updateService = new PollUpdateService();
+    let updateService = new ReplayUpdateService("/replays/replay-01.json");
+    
+    this.appRenderer = new Renderer(this);
+    this.engine = new Engine(this.appRenderer, updateService, false);
+    //
+    this.subSink.event(this.engine, "mempool_updated", assembly => {
+      let mempoolSize = assembly.transactions.length;
+      this.appRenderer.setMempoolSize(mempoolSize);
+    });
+
+    this.subSink.event(this.engine, "block_found", () => {
+      this.appRenderer.setNewBlockTime();
+    });
+
+    updateService.start();
+
+    (<any>window).r = this.appRenderer;
+    (<any>window).e = this.engine;
+    (<any>window).w = watchUpdates(updateService);
   } 
   
   public sceneUpdate(): void {
+    this.uiControls.setFps(this.game.loop.actualFps);
+    
     WorldCamera.update();
+    this.engine.update();
+    this.appRenderer.update();
   }
   
   public destroy(): void {
     this.subSink.unsubscribeAll();
     this.uiControls.$destroy();
+    this.engine.destroy();
+    this.appRenderer.destroy();
   }
   
   private initVisuals() {

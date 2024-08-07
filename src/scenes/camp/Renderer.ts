@@ -13,13 +13,15 @@ import { LinearMotion } from "~/movement/LinearMotion";
 
 import { getAllIdentities, identityOf } from "~/identities/Identity";
 
-import { WorldManager } from "./WorldManager";
 import { createWalkPoints } from "./walks";
 
 import { Person } from "./actors/Person";
 import { Plane } from "./actors/Plane";
 import { House } from "./actors/House";
 import { StatsDisplay } from "./actors/StatsDisplay";
+
+import { tilesize } from "./sizing";
+import { waitingZone, lineUpRoad } from './regions';
 
 const SPACING = 16;
 
@@ -74,10 +76,10 @@ export class Renderer
   private initStats() {
     this.statsDisplay = new StatsDisplay(
       this.scene,
-      WorldManager.TileSize * 2,
-      WorldManager.TileSize * 0.25,
-      WorldManager.TileSize * 7,
-      WorldManager.TileSize
+      tilesize() * 2,
+      tilesize() * 0.25,
+      tilesize() * 7,
+      tilesize()
     );
 
     this.lastBlockTime = -1; // -1 shows there is no last block yet.
@@ -91,7 +93,7 @@ export class Renderer
     let top = 0;
 
     const addHouse = (textureName: string) => {
-      const tileSize = WorldManager.TileSize;
+      const tileSize = tilesize();
 
       const margin = tileSize * 0.5;
       const spacing = tileSize * 0.5;
@@ -131,7 +133,7 @@ export class Renderer
 
   private initWaitingZone() {
     this.waitingZone = Geom.Rectangle.Inflate(
-      Geom.Rectangle.Clone(WorldManager.WaitingZone.rect),
+      Geom.Rectangle.Clone(waitingZone.rect),
       -16,
       -16
     );
@@ -140,7 +142,7 @@ export class Renderer
   private initPlanes() {
     this.planes = [];
 
-    let runway = WorldManager.LineUpRoad.rect;
+    let runway = lineUpRoad.rect;
 
     this.runwayLineX = runway.centerX;
     this.runwayWidth = runway.width;
