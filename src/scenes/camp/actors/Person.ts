@@ -1,4 +1,4 @@
-import { GameObjects, Scene, Events, Input } from "phaser";
+import { GameObjects, Scene, Events, Input, Math } from "phaser";
 
 import { Transaction } from "~/common/types";
 import { PERSON_COLOR, PERSON_RADIUS } from "~/common/theme";
@@ -16,22 +16,24 @@ export class Person extends Actor implements SupportsMotion {
 
   private gameObject: GameObjects.Image;
   private motionController: MotionController;
+  // private lastPosition: IVector2;
 
   constructor(scene: Scene, tx: Transaction) {
     super(scene);
     this.tx = tx;
-
-    // this.gameObject = this.scene.add.circle(
-    //   -1000,
-    //   -1000,
-    //   PERSON_RADIUS,
-    //   PERSON_COLOR
-    // );
     
+    // this.lastPosition = { x: 0, y: 0 };
+
     let image = this.scene.add.image(-1000, -1000, "person");
     this.gameObject = image;
     
     image.setScale(2*PERSON_RADIUS / image.width);
+    image.angle = 180;
+
+    // -90 => right
+    // +90 => left
+    // 0 => down
+    // 180 => up
     
     image.setInteractive({ cursor: "pointer" });
 
@@ -52,11 +54,24 @@ export class Person extends Actor implements SupportsMotion {
   }
 
   public place(position: IVector2) {
+    // this.lastPosition.x = position.x;
+    // this.lastPosition.y = position.y;
     this.gameObject.copyPosition(position);
   }
 
   public update() {
+    let beforePos: IVector2 = { x: this.getX(), y: this.getY() };
     this.motionController.update();
+    let afterPos: IVector2 = { x: this.getX(), y: this.getY() };
+    
+  
+    let radians = new Math.Vector2(
+      afterPos.x - beforePos.x,
+      afterPos.y - beforePos.y
+    ).angle();
+    
+    this.gameObject.setRotation(radians);
+    this.gameObject.angle -= 90;
   }
 
   public destroy() {
