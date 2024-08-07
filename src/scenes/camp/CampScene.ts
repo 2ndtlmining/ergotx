@@ -35,6 +35,8 @@ export class CampScene extends BaseScene {
     
     this.load.image("car-horizontal", "/army-assets/car-horizontal.png");
     this.load.image("car-vertical", "/army-assets/car-vertical.png");
+    
+    this.load.image("hanger", "/army-assets/hanger.png");
   }
 
   create() {
@@ -122,10 +124,16 @@ export class CampScene extends BaseScene {
       );
     }
     
-    
-    
-    
-    
+    // hanger
+    {
+      fixWidth(
+        3,
+        this.add
+          .image(0, 0, "hanger")
+          .setOrigin(0, 0)
+          .setPosition(pixels(0.5), pixels(0.25))
+      );
+    }
 
     GridManager.bringGridToTop(this);
   }
