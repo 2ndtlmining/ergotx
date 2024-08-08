@@ -54,26 +54,25 @@ export class Person extends Actor implements SupportsMotion {
     this.motionController.update();
     let afterPos: IVector2 = { x: this.getX(), y: this.getY() };
     
-    // 270 => right (0)
-    // 180 => up (270)
-    // 90 => left (180)
-    // 0 => down (90)
+    let rightAngle = -90; // angle at which the person is facing to right
     
+    // The vector in the Cartesian coordinate system in the direction of
+    // person's movement:
     let displacement = new Math.Vector2(
       afterPos.x - beforePos.x,
-      afterPos.y - beforePos.y
-    );
+      -(afterPos.y - beforePos.y) // flip sign as y goes downwards in canvas
+    ).normalize();
     
-    let distance = displacement.lengthSq();
-
-    let angle = 180; // up
+    let angle: number;
     
-    if (distance !== 0) {
-      angle = Math.Angle.WrapDegrees(Math.RadToDeg(displacement.angle()));
-      if (angle < 0) {
-        angle = 360 - angle;
-      }
-      angle -= 90;
+    if (displacement.lengthSq() !== 0) {
+      // Phaser uses a clockwise angle system instead of anti clockwise so
+      // we subtract the displacement's angle to go counter-clockwise
+      angle = rightAngle - Math.RadToDeg(displacement.angle());
+    }
+    else {
+      // Face upwards by default if no movement occured
+      angle = rightAngle - 90;
     }
     
     this.gameObject.setAngle(angle);

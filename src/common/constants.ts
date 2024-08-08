@@ -1,4 +1,4 @@
-export const NUM_FUTURE_BLOCKS = 8;
+export const NUM_FUTURE_BLOCKS = 7;
 
 export const TX_MAX_AGE = 4;
 
