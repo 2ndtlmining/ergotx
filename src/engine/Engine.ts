@@ -9,7 +9,6 @@ import type { Tick } from "./Tick";
 import { Assembly } from "./Assembly";
 import { TransactionsTick } from "./TransactionsTick";
 import { BlockTick } from "./BlockTick";
-// import EventEmitter from "eventemitter3";
 import type { DeepReadonly } from "~/common/types";
 import { AppEmitter } from "~/common/events";
 

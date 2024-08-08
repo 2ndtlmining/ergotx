@@ -9,7 +9,7 @@ export const debugSettings = {
 
 export type DebugSettings = typeof debugSettings;
 
-const emitter = new AppEmitter<{"settings": void | undefined}>();
+const emitter = new AppEmitter<{ "settings": void }>();
 
 export function watchSettings(callback: VoidCallback<Readonly<DebugSettings>>) {
   let handler = () => callback(debugSettings);

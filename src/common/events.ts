@@ -8,6 +8,14 @@ export type EventListener<T, E extends EventNames<T>> = VoidCallback<
   EventPayload<T, E>
 >;
 
+type PickVoid<T> = {
+  [K in keyof T as T[K] extends void ? K : never]: T[K];
+}
+
+type VoidEventNames<T> = keyof PickVoid<T>;
+
+// type dawdwa = keyof PickVoid<{a: number, b: void}>;
+
 type NativeEventsType<T> = {
   [E in EventNames<T>]: EventListener<T, E>
 }
@@ -37,7 +45,11 @@ export class AppEmitter<T extends AllowedEvents = AllowedEvents> extends EventEm
   }
 
   // @ts-ignore
-  public emit<E extends EventNames<T>>(event: E, payload: T[E]): boolean {
+  public emit<E extends VoidEventNames<T>>(event: E): boolean;
+  // @ts-ignore
+  public emit<E extends EventNames<T>>(event: E, payload: T[E]): boolean;
+  // @ts-ignore
+  public emit<E extends EventNames<T>>(event: E, payload?: T[E]): boolean {
     return (super.emit as any)(event, payload);
   }
 }
