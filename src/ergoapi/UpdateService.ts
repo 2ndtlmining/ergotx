@@ -1,12 +1,12 @@
-import { TransactedBlock, Transaction, VoidCallback } from "~/common/types";
-import { EventEmitter } from "eventemitter3";
+import { TransactedBlock, Transaction } from "~/common/types";
+import { AppEmitter } from "~/common/events";
 import { Update } from "./Update";
 
 interface UpdateEvents {
-  update: VoidCallback<Update>;
+  update: Update;
 }
 
-type UpdateEventEmitter = EventEmitter<UpdateEvents>;
+type UpdateEventEmitter = AppEmitter<UpdateEvents>;
 
 export type PublicUpdateEventEmitter = Pick<
   UpdateEventEmitter,
@@ -18,7 +18,7 @@ export abstract class UpdateService {
   private updateEmiiter: UpdateEventEmitter;
 
   constructor() {
-    this.updateEmiiter = new EventEmitter();
+    this.updateEmiiter = new AppEmitter();
 
     // TODO: unsubscribe when no longer needed
     this.updateEmiiter.on("update", update => {

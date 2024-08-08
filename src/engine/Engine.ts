@@ -9,15 +9,16 @@ import type { Tick } from "./Tick";
 import { Assembly } from "./Assembly";
 import { TransactionsTick } from "./TransactionsTick";
 import { BlockTick } from "./BlockTick";
-import EventEmitter from "eventemitter3";
-import type { DeepReadonly, VoidCallback } from "~/common/types";
+// import EventEmitter from "eventemitter3";
+import type { DeepReadonly } from "~/common/types";
+import { AppEmitter } from "~/common/events";
 
 type EngineEvents = {
-  mempool_updated: VoidCallback<DeepReadonly<Assembly>>;
-  block_found: VoidCallback<DeepReadonly<Assembly>>;
+  mempool_updated: DeepReadonly<Assembly>;
+  block_found: DeepReadonly<Assembly>;
 };
 
-export class Engine extends EventEmitter<EngineEvents> {
+export class Engine extends AppEmitter<EngineEvents> {
   private currentAssembly: Assembly;
   private assembleStrategy: AssembleStrategy;
 

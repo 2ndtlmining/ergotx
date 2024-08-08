@@ -1,5 +1,5 @@
-import EventEmitter from "eventemitter3";
 import { VoidCallback } from "~/common/types";
+import { AppEmitter } from "~/common/events";
 
 export const debugSettings = {
   showGridlines: false,
@@ -9,7 +9,7 @@ export const debugSettings = {
 
 export type DebugSettings = typeof debugSettings;
 
-const emitter = new EventEmitter<"settings">();
+const emitter = new AppEmitter<{"settings": void | undefined}>();
 
 export function watchSettings(callback: VoidCallback<Readonly<DebugSettings>>) {
   let handler = () => callback(debugSettings);

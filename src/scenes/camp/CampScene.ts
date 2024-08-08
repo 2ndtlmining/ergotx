@@ -15,7 +15,6 @@ import { ReplayUpdateService } from "~/ergoapi/ReplayUpdateService";
 
 import { watchSettings } from "./DebugSettings";
 import { Renderer } from "./Renderer";
-import { Update } from "vite/types/hmrPayload.js";
 import { isProduction } from "~/common/utils";
 
 export class CampScene extends BaseScene {

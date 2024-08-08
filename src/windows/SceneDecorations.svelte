@@ -1,14 +1,12 @@
 <script lang="ts" context="module">
-  import type { VoidCallback } from "~/common/types";
   import type { WindowEntry } from "./win-types";
-
-  import EventEmitter from "eventemitter3";
+  import { AppEmitter } from "~/common/events";
 
   interface WindowEvents {
-    CreteWindow: VoidCallback<WindowEntry>;
+    CreteWindow: WindowEntry;
   }
 
-  const windowEmitter = new EventEmitter<WindowEvents>();
+  const windowEmitter = new AppEmitter<WindowEvents>();
 
   let nextWindowId = 1;
 
