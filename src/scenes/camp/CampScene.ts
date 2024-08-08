@@ -9,11 +9,14 @@ import Controls from './ui/Controls.svelte';
 import { Engine } from "~/engine/Engine";
 
 import { watchUpdates } from "~/ergoapi/watch-updates";
+import type { UpdateService } from "~/ergoapi/UpdateService";
 import { PollUpdateService } from "~/ergoapi/PollUpdateService";
 import { ReplayUpdateService } from "~/ergoapi/ReplayUpdateService";
 
 import { watchSettings } from "./DebugSettings";
 import { Renderer } from "./Renderer";
+import { Update } from "vite/types/hmrPayload.js";
+import { isProduction } from "~/common/utils";
 
 export class CampScene extends BaseScene {
   private uiControls: Controls;
@@ -62,9 +65,16 @@ export class CampScene extends BaseScene {
       RegionsDebug.showRegionsDebug(settings.debugRegions);
     }));
     
-    // let updateService = new PollUpdateService();
-    let updateService = new ReplayUpdateService("/replays/replay-01.json");
-    
+    let updateService: UpdateService;
+
+    if (isProduction()) {
+      updateService = new PollUpdateService();
+    }
+    else {
+      // updateService = new PollUpdateService();
+      updateService = new ReplayUpdateService("/replays/replay-01.json");
+    }
+
     this.appRenderer = new Renderer(this);
     this.engine = new Engine(this.appRenderer, updateService, false);
     //

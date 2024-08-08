@@ -1,5 +1,9 @@
 import { Transaction } from "./types";
 
+export const isProduction = () => import.meta.env.PROD;
+
+/* ================================== */
+
 export function delay(ms: number): Promise<void> {
   if (ms === 0) return Promise.resolve();
   return new Promise(resolve => {
@@ -55,11 +59,7 @@ export function formatNumber(
   // Format the number based on the options
   if (mantissaMode === "always") {
     formattedNumber = num.toFixed(mantissa);
-  } else {
-    // "auto" mode
-    // const factor = Math.pow(10, mantissa);
-    // formattedNumber = (Math.trunc(num * factor) / factor).toString();
-
+  } else { // "auto" mode
     // Truncate the number to the specified number of decimal places
     const factor = Math.pow(10, mantissa);
     let truncatedNumber = Math.trunc(num * factor) / factor;
