@@ -17,6 +17,13 @@ remaining:
 - price
 - average fee
 
+
+the miner (output) box is the one with "ergoTree" value equal to:
+
+100204a00b08cd02eeec374f4e660e117fccbfec79e6fe5cdf44ac508fa228bfc654d2973f9bdc9aea02d192a39a8cc7a70173007301
+
+This is the (encoded) `ErgoScriptPredef.feeProposition` smart contract
+
 --------------------------------------------------------------------------------
 
 block update:

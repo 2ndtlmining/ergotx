@@ -6,11 +6,11 @@ export interface Identity {
   addresses: Set<string>;
 }
 
-const registeredIdentities: Identity[] = [];
+const registeredTxIdentities: Identity[] = [];
 
 function register(name: string, addresses: string[]) {
-  let index = registeredIdentities.length;
-  registeredIdentities.push({
+  let index = registeredTxIdentities.length;
+  registeredTxIdentities.push({
     name,
     index,
     addresses: new Set(addresses)
@@ -18,15 +18,15 @@ function register(name: string, addresses: string[]) {
 }
 
 export function identityOf(tx: Transaction): Readonly<Identity> | null {
-  return registeredIdentities.find(iden => iden.addresses.has(tx.id)) ?? null;
+  return registeredTxIdentities.find(iden => iden.addresses.has(tx.id)) ?? null;
 }
 
 export function getAllIdentities(): Array<Readonly<Identity>> {
-  return [...registeredIdentities];
+  return [...registeredTxIdentities];
 }
 
 export function getIdentityAt(index: number): Readonly<Identity> {
-  return registeredIdentities[index];
+  return registeredTxIdentities[index];
 }
 
 /* =================== */
