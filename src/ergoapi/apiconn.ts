@@ -7,7 +7,7 @@ const kyInstance = ky.extend({
   timeout: 120000
 });
 
-async function getBlocks(
+export async function getBlocks(
   limit: number,
   offset: number,
   sortBy: "size" | "height",
@@ -75,7 +75,7 @@ export async function getLatestBlock() {
 }
 
 export async function getBlocksAbove(height: number) {
-  return await getBlocks(100, height, "height", "asc");
+  return await getBlocks(400, height, "height", "asc");
 }
 
 export async function getBlockTransactions(blockId: string) {
