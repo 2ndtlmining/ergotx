@@ -4,6 +4,7 @@
   import { getBlocks, getBlocksAbove } from '~/ergoapi/apiconn'; 
   import type { Block } from '~/types/ergo';
   import { calculateScores, type Score } from './scores';
+  import { formatErg, formatNumber } from '~/utils/number';
   
   // latest block at the end
   let blocks: Block[] = [];
@@ -43,13 +44,13 @@
   onMount(() => {
     updateBlocks();
     
-    /* let taskId = setIntervalAsync(async () => {
+    let taskId = setIntervalAsync(async () => {
       updateBlocks();
     }, 2 * 60 * 1000); // every 2 minutes
     
     return () => {
       clearIntervalAsync(taskId);
-    } */
+    }
   });
   
   // =====================
@@ -60,7 +61,7 @@
   
 </script>
 
-<div class="p-4">
+<div class="p-4 overflow-auto w-full">
   <div class="flex w-full overflow-x-auto">
     <table class="table-compact table-zebra table max-w-4xl">
       <thead>
@@ -73,13 +74,15 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th>{scores.length}</th>
-          <td>DxPool</td>
-          <td>120</td>
-          <td>16%</td>
-          <td>$20</td>
-        </tr>
+        {#each scores as score, index}
+          <tr>
+            <th>{index + 1}</th>
+            <td>{score.miner.name}</td>
+            <td>{score.numBlocks}</td>
+            <td>{formatNumber(100 * score.numBlocks / blocks.length, { mantissa: 2 })}%</td>
+            <td>{formatErg(score.totalFee)}</td>
+          </tr>
+        {/each}
       </tbody>
     </table>
   </div>

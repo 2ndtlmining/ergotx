@@ -1,11 +1,3 @@
-<script lang="ts" context="module">
-  import { formatNumber } from "~/utils/number";
-
-  function formatErg(nanoerg: number) {
-    return formatNumber(nanoerg / 1e9, { mantissa: 8 }) + " ERG";
-  }
-</script>
-
 <script lang="ts">
   import type { Transaction } from "~/types/ergo";
   import { txTotalCoins, txTotalFee } from "~/utils/transaction";
@@ -13,6 +5,7 @@
     getConfirmedTransaction,
     getUnconfirmedTransaction
   } from "~/ergoapi/apiconn";
+  import { formatErg } from "~/utils/number";
 
   export let txId: string;
 

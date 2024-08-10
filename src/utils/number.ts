@@ -69,3 +69,10 @@ export function formatNumber(
 }
 
 (<any>window).formatNumber = formatNumber;
+
+/**
+* Formats the amount (given in nano ERGs) into ERG string representation
+*/
+export function formatErg(nanoerg: number) {
+  return formatNumber(nanoerg / 1e9, { mantissa: 8 }) + " ERG";
+}
