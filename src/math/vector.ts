@@ -6,16 +6,22 @@ export interface IVector2 {
 /**
  * A type representing a vector-like object with `x` and `y` properties.
  */
-export type VectorLike = {
+export interface ThinVector {
+  /**
+   * The x-coordinate of the vector.
+   */
   x: number;
+
+  /**
+   * The y-coordinate of the vector.
+   */
   y: number;
 }
 
 /**
  * Class representing a 2D vector with `x` and `y` components.
  */
-export class Vector {
-  
+export class Vector implements ThinVector {
   /**
    * The x-coordinate of the vector.
    */
@@ -76,10 +82,10 @@ export class Vector {
   
   /**
    * Creates a new Vector from a given VectorLike object.
-   * @param {VectorLike} v - The object containing `x` and `y` properties.
+   * @param {ThinVector} v - The object containing `x` and `y` properties.
    * @returns {Vector} A new vector with the same `x` and `y` values as the provided object.
    */
-  public static fromObject(v: VectorLike): Vector {
+  public static fromObject(v: ThinVector): Vector {
     return new Vector(v.x, v.y);
   }
 
@@ -252,10 +258,10 @@ export class Vector {
 
   /**
    * Sets the `x` and `y` components of this vector from another vector-like object.
-   * @param {VectorLike} vector - The vector-like object with `x` and `y` properties.
+   * @param {ThinVector} vector - The vector-like object with `x` and `y` properties.
    * @returns {this} The current vector with updated components.
    */
-  public setFromObject(vector: VectorLike): this {
+  public setFromObject(vector: ThinVector): this {
     this.x = vector.x;
     this.y = vector.y;
     return this;
