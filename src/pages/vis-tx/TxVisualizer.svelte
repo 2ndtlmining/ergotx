@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { SCENE_BG_COLOR } from "~/constants/colors";
-  import type { BaseScene } from "~/scene/BaseScene";
   import { CampScene } from "./TxVisualizerScene";
   import Decorations from "./Decorations.svelte";
   import Controls from "./Controls.svelte";
@@ -9,8 +8,10 @@
   let canvas: HTMLCanvasElement | null = null;
 
   onMount(() => {
+    let scene = new CampScene();
+
     let game = new Phaser.Game({
-      scene: CampScene,
+      scene: scene,
       canvas: canvas!,
       width: 920,
       height: window.innerHeight,
@@ -29,9 +30,12 @@
         }
       });
 
+    // scene.events.on(Phaser.Scenes.Events.PRE_UPDATE, () => {
+    //   console.log("Dwdadwa");
+    // });
+
     return () => {
-      let baseScene = game.scene.getAt(0) as BaseScene;
-      baseScene.destroy();
+      scene.destroy();
       game.destroy(false);
     };
   });
