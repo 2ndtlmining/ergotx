@@ -14,11 +14,13 @@ export class Region {
     public readonly numTilesY: number,
     public readonly debugName: string | undefined = "Region"
   ) {}
-  
+
   public get rect() {
     if (!this._rect) {
       if (!GridManager.IsInitialized) {
-        throw new Error("Region.rect accessed before GridManager had initialized");
+        throw new Error(
+          "Region.rect accessed before GridManager had initialized"
+        );
       }
       this._rect = GridManager.getRegionRect(
         this.startTileX,
@@ -27,7 +29,7 @@ export class Region {
         this.numTilesY
       );
     }
-    
+
     return this._rect!;
   }
 }
@@ -37,19 +39,14 @@ export const waitingZone = new Region(8, 5.5, 2, 0, "Waiting Zone");
 export const lineUpRoad = new Region(10, 5.5, 2, 0, "Line Up Road");
 
 export class RegionsDebug {
-  
   private static regionDebugDisplay: GameObjects.Group;
-  
+
   public static init(scene: Phaser.Scene) {
-    const allRegions = [
-      walkLane,
-      waitingZone,
-      lineUpRoad
-    ];
-    
+    const allRegions = [walkLane, waitingZone, lineUpRoad];
+
     (<any>window).rd = this;
     (<any>window).allRegions = allRegions;
-    
+
     this.regionDebugDisplay = scene.add.group();
 
     for (const region of allRegions) {
@@ -77,9 +74,8 @@ export class RegionsDebug {
       this.regionDebugDisplay.add(rect);
     }
   }
-  
+
   public static showRegionsDebug(show: boolean) {
     this.regionDebugDisplay.setVisible(show);
   }
-
 }

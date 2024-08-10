@@ -44,7 +44,8 @@ export function formatNumber(
   // Format the number based on the options
   if (mantissaMode === "always") {
     formattedNumber = num.toFixed(mantissa);
-  } else { // "auto" mode
+  } else {
+    // "auto" mode
     // Truncate the number to the specified number of decimal places
     const factor = Math.pow(10, mantissa);
     let truncatedNumber = Math.trunc(num * factor) / factor;
@@ -71,8 +72,8 @@ export function formatNumber(
 (<any>window).formatNumber = formatNumber;
 
 /**
-* Formats the amount (given in nano ERGs) into ERG string representation
-*/
+ * Formats the amount (given in nano ERGs) into ERG string representation
+ */
 export function formatErg(nanoerg: number) {
   return formatNumber(nanoerg / 1e9, { mantissa: 8 }) + " ERG";
 }

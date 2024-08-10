@@ -20,7 +20,7 @@ import { House } from "./actors/House";
 import { StatsDisplay } from "./actors/StatsDisplay";
 
 import { pixels } from "./sizing";
-import { waitingZone, lineUpRoad } from './regions';
+import { waitingZone, lineUpRoad } from "./regions";
 
 const SPACING = 16;
 
@@ -99,12 +99,15 @@ export class Renderer implements AcceptsCommands {
       let tileX = startX + (houseWidth + spacingX) * left;
       let tileY = startY + spacingY * top;
 
-      this.houses.push(new House(
-        this.scene,
-        textureName,
-        pixels(tileX), pixels(tileY),
-        pixels(houseWidth)
-      ));
+      this.houses.push(
+        new House(
+          this.scene,
+          textureName,
+          pixels(tileX),
+          pixels(tileY),
+          pixels(houseWidth)
+        )
+      );
 
       left++;
 

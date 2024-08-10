@@ -1,5 +1,5 @@
 import { VoidCallback } from "~/types/utility";
-import { EventEmitter } from 'eventemitter3';
+import { EventEmitter } from "eventemitter3";
 
 export type AllowedEvents = Record<string, any>;
 export type EventNames<T> = keyof T;
@@ -10,21 +10,23 @@ export type EventListener<T, E extends EventNames<T>> = VoidCallback<
 
 type PickVoid<T> = {
   [K in keyof T as T[K] extends void ? K : never]: T[K];
-}
+};
 
 type VoidEventNames<T> = keyof PickVoid<T>;
 
 // type dawdwa = keyof PickVoid<{a: number, b: void}>;
 
 type NativeEventsType<T> = {
-  [E in EventNames<T>]: EventListener<T, E>
-}
+  [E in EventNames<T>]: EventListener<T, E>;
+};
 
 // The built-in typings for EventEmitter are horribly broken. Here we implement
 // a fresh and simple set of typings for it according to our needs.
 // ...
 // @ts-ignore
-export class AppEmitter<T extends AllowedEvents = AllowedEvents> extends EventEmitter<NativeEventsType<T>> {
+export class AppEmitter<
+  T extends AllowedEvents = AllowedEvents
+> extends EventEmitter<NativeEventsType<T>> {
   // @ts-ignore
   public on<E extends EventNames<T>>(
     event: E,
@@ -63,10 +65,7 @@ export class SubscriptionSink {
     this.handlers = [];
   }
 
-  public static oneshot<
-    T extends AllowedEvents,
-    E extends EventNames<T>
-  >(
+  public static oneshot<T extends AllowedEvents, E extends EventNames<T>>(
     emitter: AppEmitter<T>,
     event: E,
     fn: EventListener<T, E>
@@ -81,10 +80,7 @@ export class SubscriptionSink {
     this.handlers.push(unsubscribe);
   }
 
-  public event<
-    T extends AllowedEvents,
-    E extends EventNames<T>
-  >(
+  public event<T extends AllowedEvents, E extends EventNames<T>>(
     emitter: AppEmitter<T>,
     event: E,
     fn: EventListener<T, E>
@@ -96,5 +92,5 @@ export class SubscriptionSink {
     while (this.handlers.length) {
       this.handlers.pop()!();
     }
-  }
+  };
 }

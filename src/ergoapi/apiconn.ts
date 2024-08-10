@@ -1,5 +1,5 @@
 import ky from "ky";
-import type { Block, Transaction } from '~/types/ergo';
+import type { Block, Transaction } from "~/types/ergo";
 
 const ERGO_PLATFORM_API = "https://api.ergoplatform.com";
 

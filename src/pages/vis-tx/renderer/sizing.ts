@@ -6,7 +6,10 @@ export function pixels(tiles: number) {
   return GridManager.TileSize * tiles;
 }
 
-export function fixWidth(tiles: number, image: Phaser.GameObjects.Components.Size) {
+export function fixWidth(
+  tiles: number,
+  image: Phaser.GameObjects.Components.Size
+) {
   let imageWidth = image.width;
   let imageHeight = image.height;
 

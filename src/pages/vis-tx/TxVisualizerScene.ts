@@ -51,17 +51,18 @@ export class CampScene extends BaseScene {
     this.subSink = new SubscriptionSink();
     this.initVisuals();
 
-    this.subSink.manual(watchSettings((settings) => {
-      GridManager.showGridLines(settings.showGridlines);
-      RegionsDebug.showRegionsDebug(settings.debugRegions);
-    }));
+    this.subSink.manual(
+      watchSettings(settings => {
+        GridManager.showGridLines(settings.showGridlines);
+        RegionsDebug.showRegionsDebug(settings.debugRegions);
+      })
+    );
 
     let updateService: UpdateService;
 
     if (isProduction()) {
       updateService = new PollUpdateService();
-    }
-    else {
+    } else {
       // updateService = new PollUpdateService();
       updateService = new ReplayUpdateService("/replays/replay-01.json");
     }
@@ -203,7 +204,6 @@ export class CampScene extends BaseScene {
       );
     }
 
-
     // grill
     {
       fixWidth(
@@ -216,4 +216,3 @@ export class CampScene extends BaseScene {
     }
   }
 }
-

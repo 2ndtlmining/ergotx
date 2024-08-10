@@ -24,7 +24,7 @@ export class Person extends Actor implements SupportsMotion {
     let image = this.scene.add.image(-1000, -1000, "person");
     this.gameObject = image;
 
-    image.setScale(2*PERSON_RADIUS / image.width);
+    image.setScale((2 * PERSON_RADIUS) / image.width);
     image.angle = 180;
 
     image.setInteractive({ cursor: "pointer" });
@@ -69,8 +69,7 @@ export class Person extends Actor implements SupportsMotion {
       // Phaser uses a clockwise angle system instead of anti clockwise so
       // we subtract the displacement's angle to go counter-clockwise
       angle = rightAngle - Math.RadToDeg(displacement.angle());
-    }
-    else {
+    } else {
       // Face upwards by default if no movement occured
       angle = rightAngle - 90;
     }

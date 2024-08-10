@@ -50,7 +50,10 @@ export class LinearMotion extends Motion {
         return;
       }
     } else {
-      let displacement = direction.clone().normalize().scale(displacementLength);
+      let displacement = direction
+        .clone()
+        .normalize()
+        .scale(displacementLength);
 
       let nextPoint = new Math.Vector2()
         .setFromObject(source)
