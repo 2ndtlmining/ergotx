@@ -1,4 +1,4 @@
-import ky, { type KyInstance } from "ky";
+import ky from "ky";
 import type { Block, Transaction } from "~/common/types";
 
 const ERGO_PLATFORM_API = "https://api.ergoplatform.com";
@@ -104,5 +104,3 @@ export async function getOracleData() {
   let result = JSON.parse(jsonString);
   return result;
 }
-
-(<any>window).getOracleData = getOracleData;

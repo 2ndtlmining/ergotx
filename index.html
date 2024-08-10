@@ -3,22 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ergo Tx</title>
+    <title></title>
   </head>
 
   <body>
-    <div id="root">
-      <div id="canvas_container">
-        <canvas id="main_canvas"></canvas>
-      </div>
-      <div id="controls" class="flex-1"></div>
-    </div>
-
-    <script type="module">
-      if (import.meta.env.DEV) {
-        document.title = "[DEV] " + document.title;
-      }
-    </script>
-    <script type="module" src="/src/main.ts"></script>
+    <div id="root"></div>
   </body>
+  
+  <script type="module" src="/src/main.ts"></script>
 </html>

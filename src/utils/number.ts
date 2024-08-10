@@ -1,18 +1,3 @@
-import { Transaction } from "./types";
-
-export const isProduction = () => import.meta.env.PROD;
-
-/* ================================== */
-
-export function delay(ms: number): Promise<void> {
-  if (ms === 0) return Promise.resolve();
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve();
-    }, ms);
-  });
-}
-
 export function parseNumber(str: any): number | null;
 export function parseNumber<T>(str: any, defaultValue: T): number | T;
 export function parseNumber(str: any, defaultValue: any = null) {
@@ -84,19 +69,3 @@ export function formatNumber(
 }
 
 (<any>window).formatNumber = formatNumber;
-
-/* ================================== */
-
-/** Returns the total value/coins of a transaction in nanoERGs */
-export function txTotalCoins(tx: Transaction): number {
-  if (tx.ioSummary) {
-    return tx.ioSummary.totalCoinsTransferred;
-  }
-
-  return tx.inputs.reduce((acc, input) => acc + input.value, 0);
-}
-
-/** Returns the total fee of a transaction in nanoERGs */
-export function txTotalFee(tx: Transaction): number {
-  return tx.ioSummary?.totalFee ?? 0;
-}
