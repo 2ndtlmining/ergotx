@@ -2,13 +2,13 @@ import 'styles/reset.css';
 import 'styles/load-fonts';
 import 'styles/global.css';
 
+import whenDomReady from 'when-dom-ready';
+
 import Application from "./Application.svelte";
 
-const root = document.getElementById("root")!;
-
-let app = new Application({
-  target: root
+whenDomReady(() => {
+  const root = document.getElementById("root")!;
+  let _app = new Application({
+    target: root
+  });
 });
-
-export default app;
-
