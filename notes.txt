@@ -24,6 +24,11 @@ the miner (output) box is the one with "ergoTree" value equal to:
 
 This is the (encoded) `ErgoScriptPredef.feeProposition` smart contract
 
+----
+
+This also returns miner info
+https://api.ergoplatform.com/blocks?limit=60&offset=0&sortBy=height&sortDirection=desc
+
 --------------------------------------------------------------------------------
 
 block update:

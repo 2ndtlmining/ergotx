@@ -10,6 +10,7 @@ export interface TransactionOutput {
   value: number;
   index: number;
   address: string;
+  ergoTree: string;
 }
 
 export interface Transaction {
@@ -32,6 +33,7 @@ export interface Block {
     name: string;
   };
   size: number;
+  minerReward: number;
 }
 
 export interface TransactedBlock extends Block {

@@ -1,9 +1,9 @@
 <script lang="ts">
   import { clearIntervalAsync, setIntervalAsync } from 'set-interval-async';
   import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
   import { getBlocks, getBlocksAbove } from '~/ergoapi/apiconn'; 
   import type { Block } from '~/types/ergo';
+  import { calculateScores, type Score } from './scores';
   
   // latest block at the end
   let blocks: Block[] = [];
@@ -39,7 +39,7 @@
       // console.log(blocks);
     });
   }
-    
+  
   onMount(() => {
     updateBlocks();
     
@@ -51,6 +51,12 @@
       clearIntervalAsync(taskId);
     } */
   });
+  
+  // =====================
+
+  let scores: Score[] = [];
+
+  $: scores = calculateScores(blocks);
   
 </script>
 
@@ -68,7 +74,7 @@
       </thead>
       <tbody>
         <tr>
-          <th>1</th>
+          <th>{scores.length}</th>
           <td>DxPool</td>
           <td>120</td>
           <td>16%</td>
