@@ -94,7 +94,7 @@ export class Vector implements ThinVector {
    * @param {Vector} other - The vector to add.
    * @returns {Vector} A new vector that is the sum of this vector and the other vector.
    */
-  public add(other: Vector): Vector {
+  public add(other: ThinVector): Vector {
     return new Vector(this.x + other.x, this.y + other.y);
   }
   
@@ -103,7 +103,7 @@ export class Vector implements ThinVector {
    * @param {Vector} other - The vector to add.
    * @returns {this} The current vector, modified by the addition.
    */
-  public addIp(other: Vector): this {
+  public addIp(other: ThinVector): this {
     this.x += other.x;
     this.y += other.y;
     return this;
@@ -114,7 +114,7 @@ export class Vector implements ThinVector {
    * @param {Vector} other - The vector to subtract.
    * @returns {Vector} A new vector that is the difference of this vector and the other vector.
    */
-  public sub(other: Vector): Vector {
+  public sub(other: ThinVector): Vector {
     return new Vector(this.x - other.x, this.y - other.y);
   }
   
@@ -123,7 +123,7 @@ export class Vector implements ThinVector {
    * @param {Vector} other - The vector to subtract.
    * @returns {this} The current vector, modified by the subtraction.
    */
-  public subIp(other: Vector): this {
+  public subIp(other: ThinVector): this {
     this.x -= other.x;
     this.y -= other.y;
     return this;
@@ -212,7 +212,7 @@ export class Vector implements ThinVector {
    * @param {Vector} other - The other vector to calculate the dot product with.
    * @returns {number} The dot product of this vector and the other vector.
    */
-  public dot(other: Vector): number {
+  public dot(other: ThinVector): number {
     return this.x * other.x + this.y * other.y;
   }
   
