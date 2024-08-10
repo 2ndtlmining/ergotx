@@ -1,5 +1,5 @@
-import { TransactedBlock, Transaction } from "~/common/types";
-import { AppEmitter } from "~/common/events";
+import { TransactedBlock, Transaction } from "~/types/ergo";
+import { AppEmitter } from "~/utils/events";
 import { Update } from "./Update";
 
 interface UpdateEvents {

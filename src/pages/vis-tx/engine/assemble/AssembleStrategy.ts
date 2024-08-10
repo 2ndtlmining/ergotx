@@ -1,5 +1,5 @@
-import type { Transaction } from "~/common/types";
-import { PlacementMap } from "~/common/Placement";
+import type { Transaction } from "~/types/ergo";
+import { PlacementMap } from "./Placement";
 
 export interface AssembleStrategy {
   assembleTransactions(transactions: Transaction[]): PlacementMap;

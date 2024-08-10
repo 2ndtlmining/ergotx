@@ -1,13 +1,13 @@
 import { GameObjects, Scene, Events, Input, Math } from "phaser";
 
-import { Transaction } from "~/common/types";
-import { PERSON_COLOR, PERSON_RADIUS } from "~/common/theme";
-import { IVector2 } from "~/common/math";
-import { Transform } from "~/common/component-types";
+import { Transaction } from "~/types/ergo";
+import { PERSON_RADIUS } from "~/constants/colors";
+import { IVector2 } from "~/math/vector";
+import { Transform } from "~/scene/component-types";
 
 import { MotionController, SupportsMotion } from "~/movement/motion";
 
-import { createWindow } from "~/windows/SceneDecorations.svelte";
+import { createWindow } from "../../SceneDecorations.svelte";
 
 import { Actor } from "./Actor";
 
@@ -20,10 +20,10 @@ export class Person extends Actor implements SupportsMotion {
   constructor(scene: Scene, tx: Transaction) {
     super(scene);
     this.tx = tx;
-    
+
     let image = this.scene.add.image(-1000, -1000, "person");
     this.gameObject = image;
-    
+
     image.setScale(2*PERSON_RADIUS / image.width);
     image.angle = 180;
 
@@ -53,18 +53,18 @@ export class Person extends Actor implements SupportsMotion {
     let beforePos: IVector2 = { x: this.getX(), y: this.getY() };
     this.motionController.update();
     let afterPos: IVector2 = { x: this.getX(), y: this.getY() };
-    
+
     let rightAngle = -90; // angle at which the person is facing to right
-    
+
     // The vector in the Cartesian coordinate system in the direction of
     // person's movement:
     let displacement = new Math.Vector2(
       afterPos.x - beforePos.x,
       -(afterPos.y - beforePos.y) // flip sign as y goes downwards in canvas
     ).normalize();
-    
+
     let angle: number;
-    
+
     if (displacement.lengthSq() !== 0) {
       // Phaser uses a clockwise angle system instead of anti clockwise so
       // we subtract the displacement's angle to go counter-clockwise
@@ -74,7 +74,7 @@ export class Person extends Actor implements SupportsMotion {
       // Face upwards by default if no movement occured
       angle = rightAngle - 90;
     }
-    
+
     this.gameObject.setAngle(angle);
   }
 

@@ -1,5 +1,5 @@
-import type { UpdateService } from "~/ergoapi/UpdateService";
-import type { Update } from "~/ergoapi/Update";
+import type { UpdateService } from "./UpdateService";
+import type { Update } from "./Update";
 
 import FileSaver from "file-saver";
 

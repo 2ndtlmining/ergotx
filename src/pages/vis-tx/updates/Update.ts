@@ -1,4 +1,4 @@
-import { TransactedBlock, Transaction } from "~/common/types";
+import { TransactedBlock, Transaction } from "~/types/ergo";
 
 export type Update =
   | { type: "txs"; transactions: Transaction[] }

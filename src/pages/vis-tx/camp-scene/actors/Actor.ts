@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { Transform } from "~/common/component-types";
+import { Transform } from "~/scene/component-types";
 
 export abstract class Actor {
   protected scene: Phaser.Scene;

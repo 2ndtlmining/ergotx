@@ -1,10 +1,11 @@
 import { Geom, Scene, GameObjects } from "phaser";
 import { MotionController, SupportsMotion } from "~/movement/motion";
-import { IVector2 } from "~/common/math";
+import { IVector2 } from "~/math/vector";
+import { Transform } from "~/scene/component-types";
+import { SubscriptionSink } from "~/utils/events";
+
+import { watchSettings } from "../../DebugSettings";
 import { Actor } from "./Actor";
-import { Transform } from "~/common/component-types";
-import { watchSettings } from "../DebugSettings";
-import { SubscriptionSink } from "~/common/SubscriptionSink";
 import { pixels } from "../sizing";
 
 export class Plane extends Actor implements SupportsMotion {
@@ -24,7 +25,7 @@ export class Plane extends Actor implements SupportsMotion {
     super(scene);
 
     this.subSink = new SubscriptionSink();
-    
+
     width -= pixels(0.5);
 
     {

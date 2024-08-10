@@ -1,5 +1,5 @@
-import type { Transaction } from "~/common/types";
-import type { Placement } from "~/common/Placement";
+import type { Transaction } from "~/types/ergo";
+import type { Placement } from "./assemble/Placement";
 
 export type Command =
   | {

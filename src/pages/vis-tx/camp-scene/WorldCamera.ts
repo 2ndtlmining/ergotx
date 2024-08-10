@@ -1,4 +1,4 @@
-import { Time } from "~/common/Time";
+import { Time } from "~/scene/Time";
 import { GridManager } from "./GridManager";
 
 export class WorldCamera {

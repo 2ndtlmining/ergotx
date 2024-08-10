@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
-  import type { WindowEntry } from "./win-types";
-  import { AppEmitter } from "~/common/events";
+  import type { WindowEntry } from "./windows/win-types";
+  import { AppEmitter } from "~/utils/events";
 
   interface WindowEvents {
     CreteWindow: WindowEntry;
@@ -30,11 +30,11 @@
   import clsx from "clsx";
   import { IconChartAreaLineFilled } from "@tabler/icons-svelte";
 
-  import { SubscriptionSink } from "~/common/SubscriptionSink";
+  import { SubscriptionSink } from "~/utils/events";
 
-  import FloatingWindow from "./FloatingWindow.svelte";
-  import StatWindow from "./StatWindow.svelte";
-  import TransactionWindow from "./TransactionWindow.svelte";
+  import FloatingWindow from "./windows/FloatingWindow.svelte";
+  import StatWindow from "./windows/StatWindow.svelte";
+  import TransactionWindow from "./windows/TransactionWindow.svelte";
 
   let activeWindows: WindowEntry[] = [];
 

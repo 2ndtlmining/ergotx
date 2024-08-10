@@ -1,4 +1,5 @@
-import type { IRect, IVector2 } from "~/common/math";
+import type { IVector2 } from "~/math/vector";
+import type { IRect } from "~/math/rect";
 
 export type StatsWindowDetails = { type: "stats" };
 export type TxWindowDetails = { type: "tx"; txId: string };

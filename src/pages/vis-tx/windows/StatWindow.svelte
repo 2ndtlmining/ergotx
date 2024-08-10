@@ -65,13 +65,13 @@
     IconReplaceFilled,
     IconRosetteDiscountCheck
   } from "@tabler/icons-svelte";
-  import { formatNumber, parseNumber } from "~/common/utils";
+  import { formatNumber, parseNumber } from "~/utils/number";
   import {
     getNetworkInfo,
     getNetworkStats,
     getOracleData
   } from "~/ergoapi/apiconn";
-  import { MILLISECOND_TO_MINUTE } from "~/common/constants";
+  import { MILLISECOND_TO_MINUTE } from "~/constants/general";
 </script>
 
 {#await $statsPromise}

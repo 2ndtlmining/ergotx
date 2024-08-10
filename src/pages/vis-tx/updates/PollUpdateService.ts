@@ -4,14 +4,14 @@ import {
   type SetIntervalAsyncTimer
 } from "set-interval-async";
 
-import type { Block } from "~/common/types";
+import type { Block } from "~/types/ergo";
 
 import {
   getUnconfirmedTransactions,
   getBlockTransactions,
   getBlocksAbove,
   getLatestBlock
-} from "./apiconn";
+} from "~/ergoapi/apiconn";
 
 import { UpdateService } from "./UpdateService";
 

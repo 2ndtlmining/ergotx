@@ -1,5 +1,5 @@
 import { GameObjects, Scene } from "phaser";
-import { IVector2 } from "~/common/math";
+import { IVector2 } from "~/math/vector";
 
 // TODO: store the actual identity in this House class
 export class House {
@@ -16,7 +16,7 @@ export class House {
     let image = (this.image = scene.add
       .image(x, y, textureName)
       .setOrigin(0, 1));
-    
+
     image.scale = width / image.width;
     image.depth = 1;
 

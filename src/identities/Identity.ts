@@ -1,4 +1,4 @@
-import { Transaction } from "~/common/types";
+import { Transaction } from "~/types/ergo";
 
 export interface Identity {
   name: string;

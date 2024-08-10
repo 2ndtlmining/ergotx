@@ -1,7 +1,7 @@
 import Phaser, { Geom } from "phaser";
 
-import { TILE_GRIDLINES_COLOR } from "~/common/theme";
-import type { IVector2 } from "~/common/math";
+import { TILE_GRIDLINES_COLOR } from "~/constants/colors";
+import type { IVector2 } from "~/math/vector";
 
 export class GridManager {
   private static isInitialized = false;

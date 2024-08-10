@@ -1,6 +1,6 @@
-import { Command } from "~/common/Command";
-import { arePlacementsEqual, Placement } from "~/common/Placement";
-import { Transaction } from "~/common/types";
+import { Command } from "./Command";
+import { arePlacementsEqual, Placement } from "./assemble/Placement";
+import { Transaction } from "~/types/ergo";
 
 export function walkIfNeeded(
   cmds: Command[],

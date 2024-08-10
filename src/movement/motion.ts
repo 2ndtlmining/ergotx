@@ -1,5 +1,5 @@
-import { Transform } from "~/common/component-types";
-import type { VoidCallback } from "~/common/types";
+import { Transform } from "~/scene/component-types";
+import type { VoidCallback } from "~/types/utility";
 
 export abstract class Motion {
   private _controller: MotionController | null;

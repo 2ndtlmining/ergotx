@@ -1,5 +1,5 @@
-import type { AcceptsCommands } from "~/common/Command";
-import type { Assembly } from "./Assembly";
+import type { AcceptsCommands } from "./Command";
+import type { Assembly } from "./assemble/Assembly";
 import { Tick } from "./Tick";
 
 export class SkipTick extends Tick {

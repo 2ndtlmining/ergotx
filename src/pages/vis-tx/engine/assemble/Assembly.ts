@@ -1,5 +1,5 @@
-import { Transaction } from "~/common/types";
-import { PlacementMap } from "~/common/Placement";
+import { Transaction } from "~/types/ergo";
+import { PlacementMap } from "./Placement";
 import { AgeMap } from "./AgeMap";
 
 export class Assembly {

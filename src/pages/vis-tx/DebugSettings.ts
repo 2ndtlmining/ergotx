@@ -1,5 +1,5 @@
-import { VoidCallback } from "~/common/types";
-import { AppEmitter } from "~/common/events";
+import { VoidCallback } from "~/types/utility";
+import { AppEmitter } from "~/utils/events";
 
 export const debugSettings = {
   showGridlines: false,

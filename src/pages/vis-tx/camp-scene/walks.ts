@@ -1,6 +1,6 @@
-import { IVector2 } from "~/common/math";
+import { IVector2 } from "~/math/vector";
 
-import { Placement } from "~/common/Placement";
+import { Placement } from "../engine/assemble/Placement";
 import { walkLane, waitingZone } from "./regions";
 
 function edgePathX(source: IVector2, dest: IVector2): IVector2[] {

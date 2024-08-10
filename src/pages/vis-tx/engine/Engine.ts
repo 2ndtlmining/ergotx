@@ -1,16 +1,15 @@
-import { delay } from "~/common/utils";
-import type { AcceptsCommands, Command } from "~/common/Command";
-import type { UpdateService } from "~/ergoapi/UpdateService";
+import type { AcceptsCommands, Command } from "./Command";
+import type { UpdateService } from "../updates/UpdateService";
 
 import type { AssembleStrategy } from "./assemble/AssembleStrategy";
 import { DefaultAssembleStrategy } from "./assemble/DefaultAssembleStrategy";
 
 import type { Tick } from "./Tick";
-import { Assembly } from "./Assembly";
+import { Assembly } from "./assemble/Assembly";
 import { TransactionsTick } from "./TransactionsTick";
 import { BlockTick } from "./BlockTick";
-import type { DeepReadonly } from "~/common/types";
-import { AppEmitter } from "~/common/events";
+import type { DeepReadonly } from "~/types/utility";
+import { AppEmitter } from "~/utils/events";
 
 type EngineEvents = {
   mempool_updated: DeepReadonly<Assembly>;

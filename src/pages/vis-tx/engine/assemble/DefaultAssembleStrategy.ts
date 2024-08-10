@@ -1,6 +1,6 @@
-import { NUM_FUTURE_BLOCKS } from "~/common/constants";
-import { PlacementMap } from "~/common/Placement";
-import type { Transaction } from "~/common/types";
+import { NUM_FUTURE_BLOCKS } from "~/constants/general";
+import { PlacementMap } from "./Placement";
+import type { Transaction } from "~/types/ergo";
 
 import type { AssembleStrategy } from "./AssembleStrategy";
 

@@ -1,12 +1,14 @@
 <script lang="ts" context="module">
+  import { formatNumber } from "~/utils/number";
+
   function formatErg(nanoerg: number) {
     return formatNumber(nanoerg / 1e9, { mantissa: 8 }) + " ERG";
   }
 </script>
 
 <script lang="ts">
-  import type { Transaction } from "~/common/types";
-  import { formatNumber, txTotalCoins, txTotalFee } from "~/common/utils";
+  import type { Transaction } from "~/types/ergo";
+  import { txTotalCoins, txTotalFee } from "~/utils/transaction";
   import {
     getConfirmedTransaction,
     getUnconfirmedTransaction

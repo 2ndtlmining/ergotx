@@ -1,10 +1,11 @@
-import { AssembleStrategy } from "./assemble/AssembleStrategy";
-import { AcceptsCommands, Command } from "~/common/Command";
-import { Assembly } from "./Assembly";
+import type { TransactedBlock, Transaction } from "~/types/ergo";
+import { NUM_FUTURE_BLOCKS } from "~/constants/general";
+
+import type { AssembleStrategy } from "./assemble/AssembleStrategy";
+import { Assembly } from "./assemble/Assembly";
+
+import type { AcceptsCommands, Command } from "./Command";
 import { Tick } from "./Tick";
-import { TransactedBlock, Transaction } from "~/common/types";
-import { Placement } from "~/common/Placement";
-import { NUM_FUTURE_BLOCKS } from "~/common/constants";
 import { walkIfNeeded } from "./utils";
 
 export class BlockTick extends Tick {

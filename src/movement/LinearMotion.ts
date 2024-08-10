@@ -1,8 +1,8 @@
 import { Math } from "phaser";
-import { IVector2 } from "~/common/math";
+import { IVector2 } from "~/math/vector";
+import { Time } from "~/scene/Time";
 
 import { Motion } from "./motion";
-import { Time } from "~/common/Time";
 
 const SPEED = 0.45;
 const MAX_DELTA_DIST = 2;
@@ -51,11 +51,11 @@ export class LinearMotion extends Motion {
       }
     } else {
       let displacement = direction.clone().normalize().scale(displacementLength);
-      
+
       let nextPoint = new Math.Vector2()
         .setFromObject(source)
         .add(displacement);
-        
+
       this.controller.gameObject.setX(nextPoint.x);
       this.controller.gameObject.setY(nextPoint.y);
     }

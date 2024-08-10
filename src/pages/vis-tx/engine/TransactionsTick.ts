@@ -1,11 +1,11 @@
-import { Transaction } from "~/common/types";
-import { PropSet } from "~/common/PropSet";
-import { AcceptsCommands, Command } from "~/common/Command";
+import type { Transaction } from "~/types/ergo";
+import { PropSet } from "~/utils/PropSet";
 
 import type { AssembleStrategy } from "./assemble/AssembleStrategy";
+import { Assembly } from "./assemble/Assembly";
 
+import type { AcceptsCommands, Command } from "./Command";
 import { Tick } from "./Tick";
-import { Assembly } from "./Assembly";
 import { walkIfNeeded } from "./utils";
 
 export class TransactionsTick extends Tick {
@@ -14,7 +14,7 @@ export class TransactionsTick extends Tick {
   constructor(
     assembly: Assembly,
     assembleStrategy: AssembleStrategy,
-    protected readonly incomingTxs: Transaction[]
+    incomingTxs: Transaction[]
   ) {
     super(assembly, assembleStrategy);
 

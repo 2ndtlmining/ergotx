@@ -1,11 +1,11 @@
 import { Scene, Geom } from "phaser";
 
-import type { Transaction } from "~/common/types";
-import type { AcceptsCommands, Command } from "~/common/Command";
-import type { Placement } from "~/common/Placement";
-import type { IVector2 } from "~/common/math";
-import { formatNumber } from "~/common/utils";
-import { NUM_FUTURE_BLOCKS } from "~/common/constants";
+import type { Transaction } from "~/types/ergo";
+import type { AcceptsCommands, Command } from "../engine/Command";
+import type { Placement } from "../engine/assemble/Placement";
+import type { IVector2 } from "~/math/vector";
+import { formatNumber } from "~/utils/number";
+import { NUM_FUTURE_BLOCKS } from "~/constants/general";
 
 import { attachMotion, type Motion } from "~/movement/motion";
 import { LinearMotion } from "~/movement/LinearMotion";
@@ -87,16 +87,16 @@ export class Renderer implements AcceptsCommands {
       let spacingX = 0.25;
       let spacingY = 1.5;
       let houseWidth = 1.625;
-      
+
       let startX = 0.25;
       let startY = 8;
-      
+
       let tileX = startX + (houseWidth + spacingX) * left;
       let tileY = startY + spacingY * top;
 
       this.houses.push(new House(
         this.scene,
-        textureName, 
+        textureName,
         pixels(tileX), pixels(tileY),
         pixels(houseWidth)
       ));

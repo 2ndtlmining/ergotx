@@ -1,4 +1,4 @@
-import { VoidCallback } from "./types";
+import { VoidCallback } from "~/types/utility";
 import { EventEmitter } from 'eventemitter3';
 
 export type AllowedEvents = Record<string, any>;

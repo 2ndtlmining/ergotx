@@ -1,5 +1,5 @@
-import { TX_MAX_AGE } from "~/common/constants";
-import { Transaction } from "~/common/types";
+import { TX_MAX_AGE } from "~/constants/general";
+import { Transaction } from "~/types/ergo";
 
 export class AgeMap {
   private map: Map<string, number>;
