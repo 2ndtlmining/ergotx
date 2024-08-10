@@ -7,7 +7,7 @@ import { Transform } from "~/scene/component-types";
 
 import { MotionController, SupportsMotion } from "~/movement/motion";
 
-import { createWindow } from "../../SceneDecorations.svelte";
+import { createWindow } from "../../Decorations.svelte";
 
 import { Actor } from "./Actor";
 

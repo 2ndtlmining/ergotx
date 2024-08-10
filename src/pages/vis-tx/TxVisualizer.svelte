@@ -2,15 +2,16 @@
   import { onMount } from "svelte";
   import { SCENE_BG_COLOR } from "~/constants/colors";
   import type { BaseScene } from "~/scene/BaseScene";
-  import { CampScene } from "./camp-scene/CampScene";
-  import SceneDecorations from "./SceneDecorations.svelte";
+  import { CampScene } from "./TxVisualizerScene";
+  import Decorations from "./Decorations.svelte";
+  import Controls from "./Controls.svelte";
 
   let canvas: HTMLCanvasElement | null = null;
 
-  function createGame(canvas: HTMLCanvasElement) {
-    return new Phaser.Game({
+  onMount(() => {
+    let game = new Phaser.Game({
       scene: CampScene,
-      canvas: canvas,
+      canvas: canvas!,
       width: 920,
       height: window.innerHeight,
       backgroundColor: SCENE_BG_COLOR,
@@ -19,10 +20,6 @@
       audio: { noAudio: true },
       banner: false
     });
-  }
-
-  onMount(() => {
-    let game = createGame(canvas!);
 
     if (typeof window["fps"] === "undefined")
       Object.defineProperty(window, "fps", {
@@ -42,10 +39,13 @@
 
 <div id="canvas_container">
   <canvas bind:this={canvas} id="main_canvas"></canvas>
-  <SceneDecorations />
+  <Decorations />
 </div>
+
 <!-- Controls -->
-<div class="flex-1">Hello</div>
+<div class="flex-1">
+  <Controls />
+</div>
 
 <style>
   :global(#root) {

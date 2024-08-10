@@ -1,4 +1,4 @@
-import { Scene, Geom } from "phaser";
+import { Scene, Geom, Loader } from "phaser";
 
 import type { Transaction } from "~/types/ergo";
 import type { AcceptsCommands, Command } from "../engine/Command";
@@ -60,6 +60,11 @@ export class Renderer implements AcceptsCommands {
     this.initHouses();
     this.initPlanes();
     this.initWaitingZone();
+  }
+
+  public static preload(load: Loader.LoaderPlugin) {
+    load.image("plane", "/army-assets/jet 1.png");
+    load.image("person", "/army-assets/asker.png");
   }
 
   // =========== Initialization ===========

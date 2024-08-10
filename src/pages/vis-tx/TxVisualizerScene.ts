@@ -1,24 +1,23 @@
 import { BaseScene } from "~/scene/BaseScene";
 import { SubscriptionSink } from "~/utils/events";
-
 import { isProduction } from "~/utils/index";
-import { watchSettings } from "../DebugSettings";
 
-import { watchUpdates } from "../updates/watch-updates";
-import type { UpdateService } from "../updates/UpdateService";
-import { PollUpdateService } from "../updates/PollUpdateService";
-import { ReplayUpdateService } from "../updates/ReplayUpdateService";
+import { watchUpdates } from "./updates/watch-updates";
+import type { UpdateService } from "./updates/UpdateService";
+import { PollUpdateService } from "./updates/PollUpdateService";
+import { ReplayUpdateService } from "./updates/ReplayUpdateService";
 
-import { Engine } from "../engine/Engine";
+import { Engine } from "./engine/Engine";
 
-import { Renderer } from "./Renderer";
-import { GridManager } from "./GridManager";
-import { WorldCamera } from "./WorldCamera";
-import { RegionsDebug } from "./regions";
-import { fixWidth, pixels } from "./sizing";
+import { Renderer } from "./renderer/Renderer";
+import { GridManager } from "./renderer/GridManager";
+import { WorldCamera } from "./renderer/WorldCamera";
+import { RegionsDebug } from "./renderer/regions";
+import { fixWidth, pixels } from "./renderer/sizing";
+
+import { watchSettings } from "./DebugSettings";
 
 export class CampScene extends BaseScene {
-  // private uiControls: Controls;
   private subSink: SubscriptionSink;
 
   private engine: Engine;
@@ -45,19 +44,12 @@ export class CampScene extends BaseScene {
 
     this.load.image("house-1", "/army-assets/house-1.png");
 
-    // plane
-    // this.load.image("plane", "/planes/plane-2.png");
-    this.load.image("plane", "/army-assets/jet 1.png");
-
-    this.load.image("person", "/army-assets/asker.png");
+    Renderer.preload(this.load);
   }
 
   create() {
     this.subSink = new SubscriptionSink();
     this.initVisuals();
-    // this.uiControls = new Controls({
-    //   target: document.getElementById("controls")!
-    // });
 
     this.subSink.manual(watchSettings((settings) => {
       GridManager.showGridLines(settings.showGridlines);
