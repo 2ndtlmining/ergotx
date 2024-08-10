@@ -41,6 +41,9 @@ importers:
       set-interval-async:
         specifier: ^3.0.3
         version: 3.0.3
+      svelte-routing:
+        specifier: ^2.13.0
+        version: 2.13.0
       uniqolor:
         specifier: ^1.1.1
         version: 1.1.1
@@ -1048,6 +1051,9 @@ packages:
       typescript:
         optional: true
 
+  svelte-routing@2.13.0:
+    resolution: {integrity: sha512-/NTxqTwLc7Dq306hARJrH2HLXOBtKd7hu8nxgoFDlK0AC4SOKnzisiX/9m8Uksei1QAWtlAEdF91YphNM8iDMg==}
+
   svelte2tsx@0.7.15:
     resolution: {integrity: sha512-91RbLJI448FR1UEZqXSS3ucVMERuWo8ACOhxfkBPK1CL2ocGMOC5bwc8tzFvb/Ji8NqZ7wmSGfvRebcUsiauKA==}
     peerDependencies:
@@ -2014,6 +2020,8 @@ snapshots:
       postcss: 8.4.39
       postcss-load-config: 4.0.2(postcss@8.4.39)
       typescript: 5.4.5
+
+  svelte-routing@2.13.0: {}
 
   svelte2tsx@0.7.15(svelte@4.2.18)(typescript@5.4.5):
     dependencies:

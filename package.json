@@ -22,6 +22,7 @@
     "phaser": "^3.80.1",
     "rippleui": "^1.12.1",
     "set-interval-async": "^3.0.3",
+    "svelte-routing": "^2.13.0",
     "uniqolor": "^1.1.1",
     "when-dom-ready": "^1.2.12"
   },
