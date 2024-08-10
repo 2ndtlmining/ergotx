@@ -1,4 +1,4 @@
-import { GameObjects, Scene, Events, Input, Math } from "phaser";
+import { GameObjects, Scene, Input, Math } from "phaser";
 
 import { Transaction } from "~/types/ergo";
 import { PERSON_RADIUS } from "~/constants/colors";
@@ -10,6 +10,7 @@ import { MotionController, SupportsMotion } from "~/movement/motion";
 import { createWindow } from "../../Decorations.svelte";
 
 import { Actor } from "./Actor";
+import { Vector } from "~/math/vector";
 
 export class Person extends Actor implements SupportsMotion {
   public readonly tx: Transaction;
@@ -50,19 +51,17 @@ export class Person extends Actor implements SupportsMotion {
   }
 
   public update() {
-    let beforePos: IVector2 = { x: this.getX(), y: this.getY() };
+    let beforePos = Vector.fromObject(this.getTransform());
     this.motionController.update();
-    let afterPos: IVector2 = { x: this.getX(), y: this.getY() };
+    let afterPos = Vector.fromObject(this.getTransform());
 
     let rightAngle = -90; // angle at which the person is facing to right
 
     // The vector in the Cartesian coordinate system in the direction of
     // person's movement:
-    let displacement = new Math.Vector2(
-      afterPos.x - beforePos.x,
-      -(afterPos.y - beforePos.y) // flip sign as y goes downwards in canvas
-    ).normalize();
-
+    let displacement = afterPos.sub(beforePos);
+    displacement.y *= -1; // flip sign as y goes downwards in canvas
+    
     let angle: number;
 
     if (displacement.lengthSq() !== 0) {
