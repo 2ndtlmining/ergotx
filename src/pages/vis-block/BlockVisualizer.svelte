@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { clearIntervalAsync, setIntervalAsync } from 'set-interval-async';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { getBlocks, getBlocksAbove } from '~/ergoapi/apiconn'; 
@@ -35,15 +36,20 @@
       let extra = Math.max(0, totalBlocks - 720);
       
       blocks = [...blocks, ...newBlocks].slice(extra);
-      console.log(blocks);
+      // console.log(blocks);
     });
   }
     
   onMount(() => {
-    /* updateBlocks();
-    setTimeout(() => {
+    updateBlocks();
+    
+    /* let taskId = setIntervalAsync(async () => {
       updateBlocks();
-    }, 4000); */
+    }, 2 * 60 * 1000); // every 2 minutes
+    
+    return () => {
+      clearIntervalAsync(taskId);
+    } */
   });
   
 </script>
