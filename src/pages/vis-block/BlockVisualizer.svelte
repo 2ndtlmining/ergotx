@@ -9,6 +9,8 @@
   
   // latest block at the end
   let blocks: Block[] = [];
+  let lastBlockSeenTime = -1;
+  let timeSinceLastBlock: string = "N/A";
   
   async function fetchLastDayBlocks() {
     let chunk1Promise = getBlocks(500, 0, "height", "desc");    
@@ -34,6 +36,11 @@
   
   function updateBlocks() {
     fetchNewBlocks().then((newBlocks) => {
+      
+      if (newBlocks.length > 0) {
+        lastBlockSeenTime = new Date().getTime();
+      }
+      
       let totalBlocks = blocks.length + newBlocks.length;
       let extra = Math.max(0, totalBlocks - 720);
       
@@ -42,15 +49,30 @@
     });
   }
   
+  function updateTimeSinceLastBlock() {
+    let now = new Date().getTime();
+
+    let formatted =
+      lastBlockSeenTime === -1
+      ? "N/A"
+      : formatNumber((now - lastBlockSeenTime) / 1000, { mantissa: 0 }) +
+      " seconds ago";
+      
+    timeSinceLastBlock = formatted;
+  }
+  
   onMount(() => {
+    // Block fetcher
     updateBlocks();
+    let blockFetcherId = setIntervalAsync(updateBlocks, 2 * 60 * 1000); // every 2 minutes
     
-    let taskId = setIntervalAsync(async () => {
-      updateBlocks();
-    }, 2 * 60 * 1000); // every 2 minutes
+    // Block timer
+    updateTimeSinceLastBlock();
+    let blockTimerId = setInterval(updateTimeSinceLastBlock, 1000) // every second;
     
     return () => {
-      clearIntervalAsync(taskId);
+      clearIntervalAsync(blockFetcherId);
+      clearInterval(blockTimerId);
     }
   });
   
