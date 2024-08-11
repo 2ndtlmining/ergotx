@@ -3,8 +3,9 @@
   import { onMount } from 'svelte';
   import { getBlocks, getBlocksAbove } from '~/ergoapi/apiconn'; 
   import type { Block } from '~/types/ergo';
-  import { calculateScores, type Score } from './scores';
   import { formatErg, formatNumber } from '~/utils/number';
+  
+  import { calculateScores, type Score } from './scores';
   
   // latest block at the end
   let blocks: Block[] = [];
@@ -63,7 +64,7 @@
 
 <div class="p-4 overflow-auto w-full">
   <div class="flex w-full overflow-x-auto">
-    <table class="table-compact table-zebra table max-w-4xl">
+    <table class="table-compact table-zebra table max-w-2xl">
       <thead>
         <tr>
           <th>Spot</th>
@@ -74,6 +75,17 @@
         </tr>
       </thead>
       <tbody>
+        {#if blocks.length == 0}
+          <tr>
+            <td colspan={5}>
+              <div class="flex justify-center">
+              <svg class="spinner-ring" viewBox="25 25 50 50" stroke-width="5">
+                <circle cx="50" cy="50" r="20" />
+              </svg>
+              </div>
+            </td>
+          </tr>
+        {/if}
         {#each scores as score, index}
           <tr>
             <th>{index + 1}</th>
