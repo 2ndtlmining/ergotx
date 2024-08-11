@@ -1,9 +1,9 @@
 <script lang="ts">
   import { clearIntervalAsync, setIntervalAsync } from 'set-interval-async';
   import { onMount } from 'svelte';
-  import { getBlocks, getBlocksAbove } from '~/ergoapi/apiconn'; 
+  import { getBlocks, getBlocksAbove, getNetworkStats } from '~/ergoapi/apiconn'; 
   import type { Block } from '~/types/ergo';
-  import { formatErg, formatNumber } from '~/utils/number';
+  import { formatErg, formatNumber, parseNumber } from '~/utils/number';
   
   import { calculateScores, type Score } from './scores';
   
@@ -11,6 +11,10 @@
   let blocks: Block[] = [];
   let lastBlockSeenTime = -1;
   let timeSinceLastBlock: string = "N/A";
+  let stats = {
+    difficulty: 0,
+    hashRate: 0,
+  }
   
   async function fetchLastDayBlocks() {
     let chunk1Promise = getBlocks(500, 0, "height", "desc");    
@@ -62,6 +66,11 @@
   }
   
   onMount(() => {
+    getNetworkStats().then(netStats => {
+      stats.hashRate = parseNumber(netStats?.['miningCost']?.['hashRate'], 0);
+      stats.difficulty = parseNumber(netStats?.['miningCost']?.['difficulty'], 0);
+    });
+    
     // Block fetcher
     updateBlocks();
     let blockFetcherId = setIntervalAsync(updateBlocks, 2 * 60 * 1000); // every 2 minutes
