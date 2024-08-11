@@ -1,16 +1,16 @@
-import { IVector2 } from "~/math/vector";
+import { ThinVector } from "~/math/vector";
 
 import { Placement } from "../engine/assemble/Placement";
 import { walkLane, waitingZone } from "./regions";
 
-function edgePathX(source: IVector2, dest: IVector2): IVector2[] {
+function edgePathX(source: ThinVector, dest: ThinVector): ThinVector[] {
   return [
     { x: dest.x, y: source.y },
     { x: dest.x, y: dest.y }
   ];
 }
 
-function edgePathY(source: IVector2, dest: IVector2): IVector2[] {
+function edgePathY(source: ThinVector, dest: ThinVector): ThinVector[] {
   return [
     { x: source.x, y: dest.y },
     { x: dest.x, y: dest.y }
@@ -19,17 +19,17 @@ function edgePathY(source: IVector2, dest: IVector2): IVector2[] {
 
 type WalkHead = {
   placement: Placement | null;
-  position: IVector2;
+  position: ThinVector;
 };
 
-export function createWalkPoints(source: WalkHead, dest: WalkHead): IVector2[] {
+export function createWalkPoints(source: WalkHead, dest: WalkHead): ThinVector[] {
   let pa = source.placement?.type ?? null;
   let pb = dest.placement!.type;
 
   let wa = source.position;
   let wb = dest.position;
 
-  let points: IVector2[] = [];
+  let points: ThinVector[] = [];
 
   if (pa === null) {
     // dest could be either waiting zone or a plane

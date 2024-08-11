@@ -1,7 +1,7 @@
 import Phaser, { Geom } from "phaser";
 
 import { TILE_GRIDLINES_COLOR } from "~/constants/colors";
-import type { IVector2 } from "~/math/vector";
+import type { ThinVector } from "~/math/vector";
 
 export class GridManager {
   private static isInitialized = false;
@@ -50,7 +50,7 @@ export class GridManager {
   /* ========== Gridlines ========== */
   private static gridlines: Phaser.GameObjects.Group;
 
-  public static tileToWorld(tileX: number, tileY: number): IVector2 {
+  public static tileToWorld(tileX: number, tileY: number): ThinVector {
     let x = this.tileSize * tileX;
     let y = this.tileSize * tileY;
     return { x, y };

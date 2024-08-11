@@ -1,6 +1,6 @@
 import { Geom, Scene, GameObjects } from "phaser";
 import { MotionController, SupportsMotion } from "~/movement/motion";
-import { IVector2 } from "~/math/vector";
+import { ThinVector } from "~/math/vector";
 import { Transform } from "~/scene/component-types";
 import { SubscriptionSink } from "~/utils/events";
 
@@ -102,7 +102,7 @@ export class Plane extends Actor implements SupportsMotion {
     return this.height;
   }
 
-  public place(position: IVector2) {
+  public place(position: ThinVector) {
     this.container.copyPosition(position);
   }
 

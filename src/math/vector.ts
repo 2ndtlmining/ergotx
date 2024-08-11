@@ -1,8 +1,3 @@
-export interface IVector2 {
-  x: number;
-  y: number;
-}
-
 /**
  * A type representing a vector-like object with `x` and `y` properties.
  */

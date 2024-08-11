@@ -3,7 +3,7 @@ import { Scene, Geom, Loader } from "phaser";
 import type { Transaction } from "~/types/ergo";
 import type { AcceptsCommands, Command } from "../engine/Command";
 import type { Placement } from "../engine/assemble/Placement";
-import type { IVector2 } from "~/math/vector";
+import type { ThinVector } from "~/math/vector";
 import { formatNumber } from "~/utils/number";
 import { NUM_FUTURE_BLOCKS } from "~/constants/general";
 
@@ -181,7 +181,7 @@ export class Renderer implements AcceptsCommands {
     let person = new Person(this.scene, tx);
     this.personMap.set(tx.id, person);
 
-    let position: IVector2;
+    let position: ThinVector;
     if (placement === null) {
       position = this.getSpawnPosition(tx);
     } else {
@@ -317,7 +317,7 @@ export class Renderer implements AcceptsCommands {
     txId: string,
     source: Placement | null,
     dest: Placement
-  ): IVector2 {
+  ): ThinVector {
     let targetPosition: Geom.Point;
 
     switch (dest.type) {

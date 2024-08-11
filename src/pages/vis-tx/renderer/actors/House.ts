@@ -1,10 +1,10 @@
 import { GameObjects, Scene } from "phaser";
-import { IVector2 } from "~/math/vector";
+import { ThinVector } from "~/math/vector";
 
 // TODO: store the actual identity in this House class
 export class House {
   private image: GameObjects.Image;
-  private spawnPosition: IVector2;
+  private spawnPosition: ThinVector;
 
   constructor(
     scene: Scene,

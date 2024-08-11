@@ -1,4 +1,4 @@
-import type { IVector2 } from "~/math/vector";
+import type { ThinVector } from "~/math/vector";
 import type { IRect } from "~/math/rect";
 
 export type StatsWindowDetails = { type: "stats" };
@@ -15,6 +15,6 @@ export interface WindowEntry {
   id: number;
   title: string;
   details: WindowDetails;
-  initialPosition?: IVector2 | undefined | null;
+  initialPosition?: ThinVector | undefined | null;
   initialSize?: IRect | undefined | null;
 }

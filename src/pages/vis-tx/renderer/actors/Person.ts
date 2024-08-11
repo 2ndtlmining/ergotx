@@ -2,7 +2,7 @@ import { GameObjects, Scene, Input, Math } from "phaser";
 
 import { Transaction } from "~/types/ergo";
 import { PERSON_RADIUS } from "~/constants/colors";
-import { IVector2 } from "~/math/vector";
+import { ThinVector } from "~/math/vector";
 import { Transform } from "~/scene/component-types";
 
 import { MotionController, SupportsMotion } from "~/movement/motion";
@@ -46,7 +46,7 @@ export class Person extends Actor implements SupportsMotion {
     this.motionController = new MotionController(this.gameObject);
   }
 
-  public place(position: IVector2) {
+  public place(position: ThinVector) {
     this.gameObject.copyPosition(position);
   }
 
