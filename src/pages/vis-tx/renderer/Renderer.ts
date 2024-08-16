@@ -63,9 +63,8 @@ export class Renderer implements AcceptsCommands {
   }
 
   public static preload(load: Loader.LoaderPlugin) {
-    // load.image("plane", "/army-assets/jet 1.png");
     load.image("plane", "/sv-assets/Jet/Jet-01.png");
-    load.image("person", "/army-assets/asker.png");
+    load.image("person", "/sv-assets/PersonA/PersonA_Side-01.png");
   }
 
   // =========== Initialization ===========

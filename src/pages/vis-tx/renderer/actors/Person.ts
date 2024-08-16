@@ -26,7 +26,6 @@ export class Person extends Actor implements SupportsMotion {
     this.gameObject = image;
 
     image.setScale((2 * PERSON_RADIUS) / image.width);
-    image.angle = 180;
 
     image.setInteractive({ cursor: "pointer" });
 
@@ -51,29 +50,29 @@ export class Person extends Actor implements SupportsMotion {
   }
 
   public update() {
-    let beforePos = Vector.fromObject(this.getTransform());
+    // let beforePos = Vector.fromObject(this.getTransform());
     this.motionController.update();
-    let afterPos = Vector.fromObject(this.getTransform());
+    // let afterPos = Vector.fromObject(this.getTransform());
 
-    let rightAngle = -90; // angle at which the person is facing to right
+    // let rightAngle = -90; // angle at which the person is facing to right
 
-    // The vector in the Cartesian coordinate system in the direction of
-    // person's movement:
-    let displacement = afterPos.sub(beforePos);
-    displacement.y *= -1; // flip sign as y goes downwards in canvas
+    // // The vector in the Cartesian coordinate system in the direction of
+    // // person's movement:
+    // let displacement = afterPos.sub(beforePos);
+    // displacement.y *= -1; // flip sign as y goes downwards in canvas
 
-    let angle: number;
+    // let angle: number;
 
-    if (displacement.lengthSq() !== 0) {
-      // Phaser uses a clockwise angle system instead of anti clockwise so
-      // we subtract the displacement's angle to go counter-clockwise
-      angle = rightAngle - Math.RadToDeg(displacement.angle());
-    } else {
-      // Face upwards by default if no movement occured
-      angle = rightAngle - 90;
-    }
+    // if (displacement.lengthSq() !== 0) {
+    //   // Phaser uses a clockwise angle system instead of anti clockwise so
+    //   // we subtract the displacement's angle to go counter-clockwise
+    //   angle = rightAngle - Math.RadToDeg(displacement.angle());
+    // } else {
+    //   // Face upwards by default if no movement occured
+    //   angle = rightAngle - 90;
+    // }
 
-    this.gameObject.setAngle(angle);
+    // this.gameObject.setAngle(angle);
   }
 
   public destroy() {
