@@ -4,8 +4,8 @@ import { Time } from "~/scene/Time";
 import { Motion } from "./motion";
 
 const MAX_DELTA_DIST = 2;
-// const SPEED = 0.45;
-const SPEED = 0.35;
+const SPEED = 0.45;
+// const SPEED = 0.35;
 
 export class LinearMotion extends Motion {
   private nextPointIndex: number;
