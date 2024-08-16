@@ -10,8 +10,14 @@
   import { formatErg, formatNumber, parseNumber } from "~/utils/number";
 
   import { calculateScores, type Score } from "./scores";
-  import { IconCube, IconHash, IconHourglassLow, IconWeight } from "@tabler/icons-svelte";
+  import {
+    IconCube,
+    IconHash,
+    IconHourglassLow,
+    IconWeight
+  } from "@tabler/icons-svelte";
   import clsx from "clsx";
+  import TopStat from "./TopStat.svelte";
 
   // latest block at the end
   let blocks: Block[] = [];
@@ -21,6 +27,7 @@
     difficulty: 889324518244352,
     hashRate: 8161565738708
   };
+  let statLoading = false;
 
   async function fetchLastDayBlocks() {
     let chunk1Promise = getBlocks(500, 0, "height", "desc");
@@ -70,7 +77,7 @@
   }
 
   onMount(() => {
-    return;
+    statLoading = true;
 
     getNetworkStats().then(netStats => {
       stats.hashRate = parseNumber(netStats?.["miningCost"]?.["hashRate"], 0);
@@ -78,6 +85,7 @@
         netStats?.["miningCost"]?.["difficulty"],
         0
       );
+      statLoading = false;
     });
 
     // Block fetcher
@@ -103,40 +111,23 @@
 
 <div class="p-4 overflow-auto w-full">
   <div class="flex gap-x-8 max-w-3xl">
-    <div
-      class={clsx(
-        "flex flex-col justify-start items-center gap-y-2",
-        "bg-[#1f1f1f] shadow-lg shadow-[#1c1b1b] rounded-lg",
-        "px-10 py-6 flex-1",
-        // "skeleton h-44"
-      )}
-    >
+    <TopStat loading={blocks.length == 0}>
       <IconHourglassLow class="text-[#0AD3FF]" size={64} />
       <p class="text-center text-sm">Time Since Last Block</p>
       <p class="mt-auto font-bold text-xl">{timeSinceLastBlock} s</p>
-    </div>
-    <div
-      class={clsx(
-        "flex flex-col justify-start items-center gap-y-2",
-        "bg-[#1f1f1f] shadow-lg shadow-[#1c1b1b] rounded-lg",
-        "px-10 py-6 flex-1"
-      )}
-    >
+    </TopStat>
+    <TopStat loading={statLoading}>
       <IconHash class="text-[#8ACB88]" size={64} />
       <p class="text-sm">Hash Rate</p>
-      <p class="mt-auto font-bold text-xl">{formatNumber(stats.hashRate / 1e12)} TH/s</p>
-    </div>
-    <div
-      class={clsx(
-        "flex flex-col justify-start items-center gap-y-2",
-        "bg-[#1f1f1f] shadow-lg shadow-[#1c1b1b] rounded-lg",
-        "px-10 py-6 flex-1"
-      )}
-    >
+      <p class="mt-auto font-bold text-xl">
+        {formatNumber(stats.hashRate / 1e12)} TH/s
+      </p>
+    </TopStat>
+    <TopStat loading={statLoading}>
       <IconWeight class="text-[#FFBF46]" size={64} />
       <p class="text-sm">Difficulty</p>
       <p class="mt-auto font-bold text-sm">{stats.difficulty}</p>
-    </div>
+    </TopStat>
   </div>
 
   <div class="flex w-full overflow-x-auto mt-10">
