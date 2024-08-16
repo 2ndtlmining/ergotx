@@ -18,6 +18,8 @@
   } from "@tabler/icons-svelte";
   import clsx from "clsx";
   import TopStat from "./TopStat.svelte";
+  import { expoInOut } from "svelte/easing";
+  import { flip } from "svelte/animate";
 
   // latest block at the end
   let blocks: Block[] = [];
@@ -157,8 +159,8 @@
             </td>
           </tr>
         {/if}
-        {#each scores as score, index}
-          <tr>
+        {#each scores as score, index (score.minerId)}
+          <tr animate:flip={{ duration: 450, easing: expoInOut }}>
             <th>{index + 1}</th>
             <td>{score.miner.name}</td>
             <td>{score.numBlocks}</td>

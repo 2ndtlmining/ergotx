@@ -3,6 +3,7 @@ import { Block } from "~/types/ergo";
 type Miner = Block["miner"];
 
 export type Score = {
+  minerId: string;
   miner: Miner;
   numBlocks: number;
   totalFee: number;
@@ -15,6 +16,7 @@ export function calculateScores(blocks: Block[]) {
     let miner = block.miner;
     let id = miner.address + "/" + miner.name;
     let score = map.get(id) ?? {
+      minerId: id,
       miner,
       numBlocks: 0,
       totalFee: 0
