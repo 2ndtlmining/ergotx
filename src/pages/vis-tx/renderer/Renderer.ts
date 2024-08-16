@@ -84,12 +84,12 @@ export class Renderer implements AcceptsCommands {
     load.image("plane", "/sv-assets/Jet/Jet-01.png");
 
     let person = "PersonA";
-    let dirs = ["Front", "Side", "Back"];
+    let faces = ["Front", "Side", "Back"];
     let frames = ["01", "02", "03", "04"];
 
-    for (const dir of dirs) {
+    for (const face of faces) {
       for (const frame of frames) {
-        let tex = `${person}_${dir}-${frame}`;
+        let tex = `${person}_${face}-${frame}`;
         load.image(tex, `/sv-assets/${person}/${tex}.png`);
       }
     }

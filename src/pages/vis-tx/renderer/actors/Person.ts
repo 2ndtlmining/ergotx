@@ -12,10 +12,18 @@ import { createWindow } from "../../Decorations.svelte";
 import { Actor } from "./Actor";
 import { Vector } from "~/math/vector";
 
+type Face = "Front" | "Side" | "Back";
+
 export class Person extends Actor implements SupportsMotion {
   public readonly tx: Transaction;
 
-  private gameObject: GameObjects.Image;
+  private personName = "PersonA";
+  private personFrame = "01";
+
+  private currentFace: Face = "Side";
+  private isMirrored = false;
+
+  private image: GameObjects.Image;
   private motionController: MotionController;
 
   constructor(scene: Scene, tx: Transaction) {
@@ -26,9 +34,9 @@ export class Person extends Actor implements SupportsMotion {
       //
       -1000,
       -1000,
-      "PersonA_Front-01"
+      `${this.personName}_Front-${this.personFrame}`
     );
-    this.gameObject = image;
+    this.image = image;
 
     image.setScale((2 * PERSON_RADIUS) / image.width);
 
@@ -47,47 +55,71 @@ export class Person extends Actor implements SupportsMotion {
 
     image.depth = 2;
 
-    this.motionController = new MotionController(this.gameObject);
+    this.motionController = new MotionController(this.image);
   }
 
   public place(position: ThinVector) {
-    this.gameObject.copyPosition(position);
+    this.image.copyPosition(position);
   }
 
   public update() {
-    // let beforePos = Vector.fromObject(this.getTransform());
+    if (this.motionController.IsPaused) {
+      return;
+    }
+
+    let beforePos = Vector.fromObject(this.getTransform());
     this.motionController.update();
-    // let afterPos = Vector.fromObject(this.getTransform());
+    let afterPos = Vector.fromObject(this.getTransform());
 
-    // let rightAngle = -90; // angle at which the person is facing to right
+    // The vector in the standard Cartesian coordinate system, facing
+    // the direction of person's movement:
+    let displacement = afterPos.sub(beforePos);
+    displacement.y *= -1; // flip sign as y goes downwards in canvas
 
-    // // The vector in the Cartesian coordinate system in the direction of
-    // // person's movement:
-    // let displacement = afterPos.sub(beforePos);
-    // displacement.y *= -1; // flip sign as y goes downwards in canvas
+    let face: "Front" | "Side" | "Back" = "Side";
+    let mirror = false;
 
-    // let angle: number;
+    if (displacement.lengthSq() > 0) {
+      let angle = window.Math.round(Math.RadToDeg(displacement.angle()));
+      angle = ((angle % 360) + 360) % 360; // Get in the range [0, 360)
+      angle = window.Math.round(angle / 90) * 90; // Round to a multiple of 90deg
 
-    // if (displacement.lengthSq() !== 0) {
-    //   // Phaser uses a clockwise angle system instead of anti clockwise so
-    //   // we subtract the displacement's angle to go counter-clockwise
-    //   angle = rightAngle - Math.RadToDeg(displacement.angle());
-    // } else {
-    //   // Face upwards by default if no movement occured
-    //   angle = rightAngle - 90;
-    // }
+      if (angle === 0) {
+        // right
+        face = "Side";
+      } else if (angle === 90) {
+        // up
+        face = "Back";
+      } else if (angle === 180) {
+        // left
+        face = "Side";
+        mirror = true;
+      } else {
+        // down
+        face = "Front";
+      }
+    } else {
+      face = "Front";
+      mirror = false;
+    }
 
-    // this.gameObject.setAngle(angle);
+    // Change face and mirror only if they changed from last frame
+    if (face !== this.currentFace || this.isMirrored !== mirror) {
+      this.image.setTexture(`${this.personName}_${face}-${this.personFrame}`);
+      this.image.setFlipX(mirror);
+
+      this.currentFace = face;
+      this.isMirrored = mirror;
+    }
   }
-
 
   public destroy() {
     this.motionController.destroy();
-    this.gameObject.destroy();
+    this.image.destroy();
   }
 
   public getTransform(): Transform {
-    return this.gameObject;
+    return this.image;
   }
 
   public getMotionController(): MotionController {
