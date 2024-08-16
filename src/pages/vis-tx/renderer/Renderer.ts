@@ -65,6 +65,10 @@ export class Renderer implements AcceptsCommands {
   public static preload(load: Loader.LoaderPlugin) {
     load.image("plane", "/sv-assets/Jet/Jet-01.png");
     load.image("person", "/sv-assets/PersonA/PersonA_Side-01.png");
+
+    load.image("house1", "/sv-assets/Tent/TentA.png");
+    load.image("house2", "/sv-assets/Tent/TentB.png");
+    load.image("house3", "/sv-assets/Tent/TentC.png");
   }
 
   // =========== Initialization ===========
@@ -88,9 +92,19 @@ export class Renderer implements AcceptsCommands {
     let left = 0;
     let top = 0;
 
-    const addHouse = (textureName: string) => {
+    let houseTextures = [
+      "house1",
+      "house2",
+      "house3",
+    ];
+
+    const nextTexture = () => {
+      return houseTextures[(left + top) % houseTextures.length];
+    }
+
+    const addHouse = () => {
       let spacingX = 0.25;
-      let spacingY = 1.5;
+      let spacingY = 2;
       let houseWidth = 1.625;
 
       let startX = 0.25;
@@ -102,7 +116,7 @@ export class Renderer implements AcceptsCommands {
       this.houses.push(
         new House(
           this.scene,
-          textureName,
+          nextTexture(),
           pixels(tileX),
           pixels(tileY),
           pixels(houseWidth)
@@ -117,12 +131,10 @@ export class Renderer implements AcceptsCommands {
       }
     };
 
-    let houseTexture = "house-1";
-
-    addHouse(houseTexture);
+    addHouse();
 
     for (const _iden of getAllIdentities()) {
-      addHouse(houseTexture);
+      addHouse();
     }
   }
 
