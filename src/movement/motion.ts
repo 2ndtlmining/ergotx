@@ -32,6 +32,7 @@ export class MotionController {
 
   private currentMotion: Motion | null;
   private onComplete: VoidCallback<void>;
+  private isPaused = false;
 
   constructor(gameObject: Transform) {
     this.gameObject = gameObject;
@@ -59,7 +60,15 @@ export class MotionController {
     this.onComplete = () => {};
   }
 
+  public setPaused(paused: boolean) {
+    this.isPaused = paused;
+  }
+
   public update() {
+    if (this.isPaused) {
+      return;
+    }
+
     if (this.currentMotion) {
       this.currentMotion._update();
     }

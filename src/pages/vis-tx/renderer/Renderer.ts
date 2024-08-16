@@ -7,7 +7,7 @@ import type { ThinVector } from "~/math/vector";
 import { formatNumber } from "~/utils/number";
 import { NUM_FUTURE_BLOCKS } from "~/constants/general";
 
-import { attachMotion, type Motion } from "~/movement/motion";
+import { attachMotion, SupportsMotion, type Motion } from "~/movement/motion";
 import { LinearMotion } from "~/movement/LinearMotion";
 
 import { getAllIdentities, identityOf } from "~/identities/Identity";
@@ -21,6 +21,7 @@ import { StatsDisplay } from "./actors/StatsDisplay";
 
 import { pixels } from "./sizing";
 import { waitingZone, lineUpRoad } from "./regions";
+import { Actor } from "./actors/Actor";
 
 const SPACING = 16;
 
@@ -47,9 +48,22 @@ export class Renderer implements AcceptsCommands {
   private runwayWidth: number;
   private runwayTop: number;
 
+  // Temp
+  private isPaused = false;
+  private get allActors(): (Actor & SupportsMotion)[] {
+    return [...this.personMap.values(), ...this.planes];
+  }
+
   constructor(scene: Scene) {
     this.scene = scene;
     this.init();
+
+    scene.input.keyboard?.on("keyup-SPACE", () => {
+      this.isPaused = !this.isPaused;
+      this.allActors.forEach(actor => {
+        actor.getMotionController().setPaused(this.isPaused);
+      });
+    });
   }
 
   private init() {
@@ -92,15 +106,11 @@ export class Renderer implements AcceptsCommands {
     let left = 0;
     let top = 0;
 
-    let houseTextures = [
-      "house1",
-      "house2",
-      "house3",
-    ];
+    let houseTextures = ["house1", "house2", "house3"];
 
     const nextTexture = () => {
       return houseTextures[(left + top) % houseTextures.length];
-    }
+    };
 
     const addHouse = () => {
       let spacingX = 0.25;
