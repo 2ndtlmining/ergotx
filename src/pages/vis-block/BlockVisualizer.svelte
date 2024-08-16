@@ -1,13 +1,17 @@
 <script lang="ts">
-  import { clearIntervalAsync, setIntervalAsync } from 'set-interval-async';
-  import { onMount } from 'svelte';
-  import { getBlocks, getBlocksAbove, getNetworkStats } from '~/ergoapi/apiconn';
-  import type { Block } from '~/types/ergo';
-  import { formatErg, formatNumber, parseNumber } from '~/utils/number';
+  import { clearIntervalAsync, setIntervalAsync } from "set-interval-async";
+  import { onMount } from "svelte";
+  import {
+    getBlocks,
+    getBlocksAbove,
+    getNetworkStats
+  } from "~/ergoapi/apiconn";
+  import type { Block } from "~/types/ergo";
+  import { formatErg, formatNumber, parseNumber } from "~/utils/number";
 
-  import { calculateScores, type Score } from './scores';
-  import { IconCube } from '@tabler/icons-svelte';
-  import clsx from 'clsx';
+  import { calculateScores, type Score } from "./scores";
+  import { IconCube, IconHash, IconHourglassLow, IconWeight } from "@tabler/icons-svelte";
+  import clsx from "clsx";
 
   // latest block at the end
   let blocks: Block[] = [];
@@ -15,8 +19,8 @@
   let timeSinceLastBlock: string = "N/A";
   let stats = {
     difficulty: 889324518244352,
-    hashRate: 8161565738708,
-  }
+    hashRate: 8161565738708
+  };
 
   async function fetchLastDayBlocks() {
     let chunk1Promise = getBlocks(500, 0, "height", "desc");
@@ -41,8 +45,7 @@
   }
 
   function updateBlocks() {
-    fetchNewBlocks().then((newBlocks) => {
-
+    fetchNewBlocks().then(newBlocks => {
       if (newBlocks.length > 0) {
         lastBlockSeenTime = new Date().getTime();
       }
@@ -60,8 +63,8 @@
 
     let formatted =
       lastBlockSeenTime === -1
-      ? "N/A"
-      : formatNumber((now - lastBlockSeenTime) / 1000, { mantissa: 0 });
+        ? "N/A"
+        : formatNumber((now - lastBlockSeenTime) / 1000, { mantissa: 0 });
 
     timeSinceLastBlock = formatted;
   }
@@ -70,8 +73,11 @@
     return;
 
     getNetworkStats().then(netStats => {
-      stats.hashRate = parseNumber(netStats?.['miningCost']?.['hashRate'], 0);
-      stats.difficulty = parseNumber(netStats?.['miningCost']?.['difficulty'], 0);
+      stats.hashRate = parseNumber(netStats?.["miningCost"]?.["hashRate"], 0);
+      stats.difficulty = parseNumber(
+        netStats?.["miningCost"]?.["difficulty"],
+        0
+      );
     });
 
     // Block fetcher
@@ -80,12 +86,12 @@
 
     // Block timer
     updateTimeSinceLastBlock();
-    let blockTimerId = setInterval(updateTimeSinceLastBlock, 1000) // every second;
+    let blockTimerId = setInterval(updateTimeSinceLastBlock, 1000); // every second;
 
     return () => {
       clearIntervalAsync(blockFetcherId);
       clearInterval(blockTimerId);
-    }
+    };
   });
 
   // =====================
@@ -93,37 +99,43 @@
   let scores: Score[] = [];
 
   $: scores = calculateScores(blocks);
-
 </script>
 
 <div class="p-4 overflow-auto w-full">
   <div class="flex gap-x-8 max-w-3xl">
-    <div class={clsx(
-      "flex flex-col justify-start items-center gap-y-4",
-      "bg-[#1f1f1f] shadow-lg shadow-[#1c1b1b] rounded-lg",
-      "px-10 py-6 flex-1"
-    )}>
-      <IconCube size={64} />
+    <div
+      class={clsx(
+        "flex flex-col justify-start items-center gap-y-2",
+        "bg-[#1f1f1f] shadow-lg shadow-[#1c1b1b] rounded-lg",
+        "px-10 py-6 flex-1",
+        // "skeleton h-44"
+      )}
+    >
+      <IconHourglassLow class="text-[#0AD3FF]" size={64} />
       <p class="text-center text-sm">Time Since Last Block</p>
-      <p class="mt-auto text-xl">{timeSinceLastBlock} s</p>
+      <p class="mt-auto font-bold text-xl">{timeSinceLastBlock} s</p>
     </div>
-    <div class={clsx(
-      "flex flex-col justify-start items-center gap-y-4",
-      "bg-[#1f1f1f] shadow-lg shadow-[#1c1b1b] rounded-lg",
-      "px-10 py-6 flex-1"
-    )}>
-      <IconCube size={64} />
+    <div
+      class={clsx(
+        "flex flex-col justify-start items-center gap-y-2",
+        "bg-[#1f1f1f] shadow-lg shadow-[#1c1b1b] rounded-lg",
+        "px-10 py-6 flex-1"
+      )}
+    >
+      <IconHash class="text-[#8ACB88]" size={64} />
       <p class="text-sm">Hash Rate</p>
-      <p class="mt-auto text-xl">{formatNumber(stats.hashRate / 1e12)} TH/s</p>
+      <p class="mt-auto font-bold text-xl">{formatNumber(stats.hashRate / 1e12)} TH/s</p>
     </div>
-    <div class={clsx(
-      "flex flex-col justify-start items-center gap-y-4",
-      "bg-[#1f1f1f] shadow-lg shadow-[#1c1b1b] rounded-lg",
-      "px-10 py-6 flex-1"
-    )}>
-      <IconCube size={64} />
+    <div
+      class={clsx(
+        "flex flex-col justify-start items-center gap-y-2",
+        "bg-[#1f1f1f] shadow-lg shadow-[#1c1b1b] rounded-lg",
+        "px-10 py-6 flex-1"
+      )}
+    >
+      <IconWeight class="text-[#FFBF46]" size={64} />
       <p class="text-sm">Difficulty</p>
-      <p class="mt-auto text-sm">{stats.difficulty}</p>
+      <p class="mt-auto font-bold text-sm">{stats.difficulty}</p>
     </div>
   </div>
 
@@ -143,9 +155,13 @@
           <tr>
             <td colspan={5}>
               <div class="flex justify-center">
-              <svg class="spinner-ring" viewBox="25 25 50 50" stroke-width="3">
-                <circle cx="50" cy="50" r="20" />
-              </svg>
+                <svg
+                  class="spinner-ring"
+                  viewBox="25 25 50 50"
+                  stroke-width="3"
+                >
+                  <circle cx="50" cy="50" r="20" />
+                </svg>
               </div>
             </td>
           </tr>
@@ -155,7 +171,11 @@
             <th>{index + 1}</th>
             <td>{score.miner.name}</td>
             <td>{score.numBlocks}</td>
-            <td>{formatNumber(100 * score.numBlocks / blocks.length, { mantissa: 2 })}%</td>
+            <td
+              >{formatNumber((100 * score.numBlocks) / blocks.length, {
+                mantissa: 2
+              })}%</td
+            >
             <td>{formatErg(score.totalFee)}</td>
           </tr>
         {/each}
