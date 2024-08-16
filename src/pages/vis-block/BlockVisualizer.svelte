@@ -24,8 +24,8 @@
   let lastBlockSeenTime = -1;
   let timeSinceLastBlock: string = "N/A";
   let stats = {
-    difficulty: 889324518244352,
-    hashRate: 8161565738708
+    difficulty: -1,
+    hashRate: -1
   };
   let statLoading = false;
 
