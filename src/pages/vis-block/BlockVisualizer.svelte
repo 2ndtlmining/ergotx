@@ -6,7 +6,7 @@
   import { formatErg, formatNumber, parseNumber } from '~/utils/number';
 
   import { calculateScores, type Score } from './scores';
-  import { IconCpu, IconCube } from '@tabler/icons-svelte';
+  import { IconCube } from '@tabler/icons-svelte';
   import clsx from 'clsx';
 
   // latest block at the end
@@ -14,8 +14,8 @@
   let lastBlockSeenTime = -1;
   let timeSinceLastBlock: string = "N/A";
   let stats = {
-    difficulty: 0,
-    hashRate: 0,
+    difficulty: 889324518244352,
+    hashRate: 8161565738708,
   }
 
   async function fetchLastDayBlocks() {
@@ -61,14 +61,14 @@
     let formatted =
       lastBlockSeenTime === -1
       ? "N/A"
-      : formatNumber((now - lastBlockSeenTime) / 1000, { mantissa: 0 }) +
-      " seconds ago";
+      : formatNumber((now - lastBlockSeenTime) / 1000, { mantissa: 0 });
 
     timeSinceLastBlock = formatted;
   }
 
   onMount(() => {
     return;
+
     getNetworkStats().then(netStats => {
       stats.hashRate = parseNumber(netStats?.['miningCost']?.['hashRate'], 0);
       stats.difficulty = parseNumber(netStats?.['miningCost']?.['difficulty'], 0);
@@ -99,31 +99,31 @@
 <div class="p-4 overflow-auto w-full">
   <div class="flex gap-x-8 max-w-3xl">
     <div class={clsx(
-      "flex flex-col justify-center items-center gap-y-4",
+      "flex flex-col justify-start items-center gap-y-4",
       "bg-[#1f1f1f] shadow-lg shadow-[#1c1b1b] rounded-lg",
       "px-10 py-6 flex-1"
     )}>
       <IconCube size={64} />
-      <p>Time Since <br /> Last Block</p>
-      <p>8.45 TH/s</p>
+      <p class="text-center text-sm">Time Since Last Block</p>
+      <p class="mt-auto text-xl">{timeSinceLastBlock} s</p>
     </div>
     <div class={clsx(
-      "flex flex-col justify-center items-center gap-y-4",
+      "flex flex-col justify-start items-center gap-y-4",
       "bg-[#1f1f1f] shadow-lg shadow-[#1c1b1b] rounded-lg",
       "px-10 py-6 flex-1"
     )}>
       <IconCube size={64} />
-      <p>Hash Rate</p>
-      <p>8.45 TH/s</p>
+      <p class="text-sm">Hash Rate</p>
+      <p class="mt-auto text-xl">{formatNumber(stats.hashRate / 1e12)} TH/s</p>
     </div>
     <div class={clsx(
-      "flex flex-col justify-center items-center gap-y-4",
+      "flex flex-col justify-start items-center gap-y-4",
       "bg-[#1f1f1f] shadow-lg shadow-[#1c1b1b] rounded-lg",
       "px-10 py-6 flex-1"
     )}>
       <IconCube size={64} />
-      <p>Hash Rate</p>
-      <p>8.45 TH/s</p>
+      <p class="text-sm">Difficulty</p>
+      <p class="mt-auto text-sm">{stats.difficulty}</p>
     </div>
   </div>
 
@@ -143,7 +143,7 @@
           <tr>
             <td colspan={5}>
               <div class="flex justify-center">
-              <svg class="spinner-ring" viewBox="25 25 50 50" stroke-width="5">
+              <svg class="spinner-ring" viewBox="25 25 50 50" stroke-width="3">
                 <circle cx="50" cy="50" r="20" />
               </svg>
               </div>
