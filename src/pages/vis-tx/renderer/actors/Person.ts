@@ -17,7 +17,7 @@ type Face = "Front" | "Side" | "Back";
 export class Person extends Actor implements SupportsMotion {
   public readonly tx: Transaction;
 
-  private personName = "PersonA";
+  private personName: string;
   private personFrame = "01";
 
   private currentFace: Face = "Side";
@@ -26,9 +26,10 @@ export class Person extends Actor implements SupportsMotion {
   private image: GameObjects.Image;
   private motionController: MotionController;
 
-  constructor(scene: Scene, tx: Transaction) {
+  constructor(scene: Scene, tx: Transaction, name: string) {
     super(scene);
     this.tx = tx;
+    this.personName = name;
 
     let image = this.scene.add.image(
       //
@@ -99,7 +100,7 @@ export class Person extends Actor implements SupportsMotion {
         face = "Front";
       }
     } else {
-      face = "Front";
+      face = "Back";
       mirror = false;
     }
 

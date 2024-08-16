@@ -25,6 +25,17 @@ import { Actor } from "./actors/Actor";
 
 const SPACING = 16;
 
+const personNames = [
+  //
+  "PersonA",
+  "PersonB",
+  "PersonC",
+  "PersonD",
+  "PersonE"
+];
+const faces = ["Front", "Side", "Back"];
+const frames = ["01"];
+
 export class Renderer implements AcceptsCommands {
   private scene: Scene;
 
@@ -83,14 +94,12 @@ export class Renderer implements AcceptsCommands {
 
     load.image("plane", "/sv-assets/Jet/Jet-01.png");
 
-    let person = "PersonA";
-    let faces = ["Front", "Side", "Back"];
-    let frames = ["01", "02", "03", "04"];
-
-    for (const face of faces) {
-      for (const frame of frames) {
-        let tex = `${person}_${face}-${frame}`;
-        load.image(tex, `/sv-assets/${person}/${tex}.png`);
+    for (const person of personNames) {
+      for (const face of faces) {
+        for (const frame of frames) {
+          let tex = `${person}_${face}-${frame}`;
+          load.image(tex, `/sv-assets/${person}/${tex}.png`);
+        }
       }
     }
   }
@@ -210,8 +219,7 @@ export class Renderer implements AcceptsCommands {
   // =========== Commands ===========
 
   private async cmdSpawn(tx: Transaction, placement: Placement | null) {
-    let person = new Person(this.scene, tx);
-    this.personMap.set(tx.id, person);
+    let person = this.createPerson(tx);
 
     let position: ThinVector;
     if (placement === null) {
@@ -372,6 +380,14 @@ export class Renderer implements AcceptsCommands {
     }
 
     return targetPosition;
+  }
+
+  private createPerson(tx: Transaction) {
+    let name = personNames[Math.floor(Math.random() * personNames.length)];
+
+    let person = new Person(this.scene, tx, name);
+    this.personMap.set(tx.id, person);
+    return person;
   }
 
   private getPerson(txId: string) {
