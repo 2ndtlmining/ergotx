@@ -24,7 +24,7 @@ export class LinearMotion extends Motion {
 
     let direction = Vector.fromObject(destination).subIp(source);
     let distToTarget = direction.length();
-    
+
     let displacementLength = SPEED * Time.DeltaTime;
 
     if (distToTarget <= MAX_DELTA_DIST || displacementLength > distToTarget) {

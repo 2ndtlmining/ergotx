@@ -22,7 +22,10 @@ type WalkHead = {
   position: ThinVector;
 };
 
-export function createWalkPoints(source: WalkHead, dest: WalkHead): ThinVector[] {
+export function createWalkPoints(
+  source: WalkHead,
+  dest: WalkHead
+): ThinVector[] {
   let pa = source.placement?.type ?? null;
   let pb = dest.placement!.type;
 

@@ -26,7 +26,7 @@ export class Vector implements ThinVector {
    * The y-coordinate of the vector.
    */
   public y: number;
-  
+
   /**
    * A small constant used to handle floating-point precision errors in calculations.
    */
@@ -74,7 +74,7 @@ export class Vector implements ThinVector {
     this.x = x ?? 0;
     this.y = y ?? 0;
   }
-  
+
   /**
    * Creates a new Vector from a given VectorLike object.
    * @param {ThinVector} v - The object containing `x` and `y` properties.
@@ -92,7 +92,7 @@ export class Vector implements ThinVector {
   public add(other: ThinVector): Vector {
     return new Vector(this.x + other.x, this.y + other.y);
   }
-  
+
   /**
    * Adds another vector to this vector in place, modifying this vector.
    * @param {Vector} other - The vector to add.
@@ -103,7 +103,7 @@ export class Vector implements ThinVector {
     this.y += other.y;
     return this;
   }
-  
+
   /**
    * Subtracts another vector from this vector and returns a new vector.
    * @param {Vector} other - The vector to subtract.
@@ -112,7 +112,7 @@ export class Vector implements ThinVector {
   public sub(other: ThinVector): Vector {
     return new Vector(this.x - other.x, this.y - other.y);
   }
-  
+
   /**
    * Subtracts another vector from this vector in place, modifying this vector.
    * @param {Vector} other - The vector to subtract.
@@ -123,7 +123,7 @@ export class Vector implements ThinVector {
     this.y -= other.y;
     return this;
   }
-  
+
   /**
    * Multiplies this vector by a scalar factor and returns a new vector.
    * @param {number} factor - The scalar factor to multiply by.
@@ -132,7 +132,7 @@ export class Vector implements ThinVector {
   public mul(factor: number): Vector {
     return new Vector(this.x * factor, this.y * factor);
   }
-  
+
   /**
    * Multiplies this vector by a scalar factor in place, modifying this vector.
    * @param {number} factor - The scalar factor to multiply by.
@@ -152,7 +152,7 @@ export class Vector implements ThinVector {
   public div(factor: number): Vector {
     return new Vector(this.x / factor, this.y / factor);
   }
-  
+
   /**
    * Divides this vector by a scalar factor in place, modifying this vector.
    * @param {number} factor - The scalar factor to divide by.
@@ -163,7 +163,7 @@ export class Vector implements ThinVector {
     this.y /= factor;
     return this;
   }
-  
+
   /**
    * Creates a clone of this vector.
    * @returns {Vector} A new vector with the same `x` and `y` values as this vector.
@@ -171,7 +171,7 @@ export class Vector implements ThinVector {
   public clone(): Vector {
     return new Vector(this.x, this.y);
   }
-  
+
   /**
    * Calculates the squared length (magnitude) of this vector.
    * @returns {number} The squared length of this vector.
@@ -179,7 +179,7 @@ export class Vector implements ThinVector {
   public lengthSq(): number {
     return this.x * this.x + this.y * this.y;
   }
-  
+
   /**
    * Calculates the length (magnitude) of this vector.
    * @returns {number} The length of this vector.
@@ -187,7 +187,7 @@ export class Vector implements ThinVector {
   public length(): number {
     return Math.sqrt(this.lengthSq());
   }
-  
+
   /**
    * Normalizes this vector (makes it a unit vector) and returns a new vector.
    * @returns {Vector} A new vector that is the normalized version of this vector.
@@ -201,7 +201,7 @@ export class Vector implements ThinVector {
       return new Vector(0, 0);
     }
   }
-  
+
   /**
    * Calculates the dot product of this vector and another vector.
    * @param {Vector} other - The other vector to calculate the dot product with.
@@ -210,7 +210,7 @@ export class Vector implements ThinVector {
   public dot(other: ThinVector): number {
     return this.x * other.x + this.y * other.y;
   }
-  
+
   /**
    * Calculates the angle of this vector relative to the positive x-axis.
    * @returns {number} The angle in radians between this vector and the positive x-axis.
@@ -218,7 +218,7 @@ export class Vector implements ThinVector {
   public angle(): number {
     return Math.atan2(this.y, this.x);
   }
-  
+
   /**
    * Sets the `x` and `y` components of this vector.
    * @param {number} x - The new x-coordinate.
@@ -261,7 +261,7 @@ export class Vector implements ThinVector {
     this.y = vector.y;
     return this;
   }
-  
+
   /**
    * Returns a string representation of this vector.
    */

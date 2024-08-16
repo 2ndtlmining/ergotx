@@ -61,7 +61,7 @@ export class Person extends Actor implements SupportsMotion {
     // person's movement:
     let displacement = afterPos.sub(beforePos);
     displacement.y *= -1; // flip sign as y goes downwards in canvas
-    
+
     let angle: number;
 
     if (displacement.lengthSq() !== 0) {
