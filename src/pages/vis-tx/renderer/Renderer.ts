@@ -77,12 +77,22 @@ export class Renderer implements AcceptsCommands {
   }
 
   public static preload(load: Loader.LoaderPlugin) {
-    load.image("plane", "/sv-assets/Jet/Jet-01.png");
-    load.image("person", "/sv-assets/PersonA/PersonA_Side-01.png");
-
     load.image("house1", "/sv-assets/Tent/TentA.png");
     load.image("house2", "/sv-assets/Tent/TentB.png");
     load.image("house3", "/sv-assets/Tent/TentC.png");
+
+    load.image("plane", "/sv-assets/Jet/Jet-01.png");
+
+    let person = "PersonA";
+    let dirs = ["Front", "Side", "Back"];
+    let frames = ["01", "02", "03", "04"];
+
+    for (const dir of dirs) {
+      for (const frame of frames) {
+        let tex = `${person}_${dir}-${frame}`;
+        load.image(tex, `/sv-assets/${person}/${tex}.png`);
+      }
+    }
   }
 
   // =========== Initialization ===========

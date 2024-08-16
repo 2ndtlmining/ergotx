@@ -22,7 +22,12 @@ export class Person extends Actor implements SupportsMotion {
     super(scene);
     this.tx = tx;
 
-    let image = this.scene.add.image(-1000, -1000, "person");
+    let image = this.scene.add.image(
+      //
+      -1000,
+      -1000,
+      "PersonA_Front-01"
+    );
     this.gameObject = image;
 
     image.setScale((2 * PERSON_RADIUS) / image.width);
@@ -74,6 +79,7 @@ export class Person extends Actor implements SupportsMotion {
 
     // this.gameObject.setAngle(angle);
   }
+
 
   public destroy() {
     this.motionController.destroy();
