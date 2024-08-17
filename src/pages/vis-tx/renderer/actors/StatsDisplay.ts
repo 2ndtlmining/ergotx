@@ -108,7 +108,6 @@ export class StatsDisplay {
   }
 
   public setBlockTime(millisecs: number) {
-    // this.blockTimeBox.setValue((millisecs / 1000).toFixed(0));
     let totalSeconds = Math.floor(millisecs / 1000);
 
     let minutes = Math.floor(totalSeconds / 60);
@@ -119,10 +118,12 @@ export class StatsDisplay {
       mantissa: 0
     };
 
-    let formatted = `${formatNumber(minutes, numStyle)} min ${formatNumber(
-      seconds,
-      numStyle
-    )} sec`;
+    let formatted = `${formatNumber(seconds, numStyle)} sec`;
+
+    if (minutes > 0) {
+      formatted = `${formatNumber(minutes, numStyle)} min ` + formatted;
+    }
+
     this.blockTimeBox.setValue(formatted);
   }
 
