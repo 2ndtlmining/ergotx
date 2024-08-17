@@ -3,7 +3,7 @@ import { pixels } from "../sizing";
 import { formatNumber } from "~/utils/number";
 
 class StatBox {
-  private surface: GameObjects.Rectangle;
+  private surface: GameObjects.Graphics;
   private rect: GameObjects.Rectangle;
   private labelText: GameObjects.Text;
   private valueText: GameObjects.Text;
@@ -25,10 +25,10 @@ class StatBox {
     this.inX = x + this.padX;
     this.inWidth = width - 2 * this.padX;
 
-    let surface = scene.add.rectangle(x, y, width, height);
+    let surface = scene.add.graphics();
     this.surface = surface;
-    surface.setOrigin(0, 0);
-    surface.setFillStyle(0x695112);
+    surface.fillStyle(0x695112, 1);
+    surface.fillRoundedRect(x, y, width, height, 10);
     surface.setDepth(3);
 
     let rect = scene.add.rectangle(this.inX, y, this.inWidth, height);
