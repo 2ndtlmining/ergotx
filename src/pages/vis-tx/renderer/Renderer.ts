@@ -107,16 +107,13 @@ export class Renderer implements AcceptsCommands {
   // =========== Initialization ===========
 
   private initStats() {
-    this.statsDisplay = new StatsDisplay(
-      this.scene,
-      // pixels(2),
-      // pixels(0.25),
-      // pixels(7),
-      // pixels(1)
-    );
+    this.statsDisplay = new StatsDisplay(this.scene);
 
-    this.lastBlockTime = -1; // -1 shows there is no last block yet.
     this.setMempoolSize(0);
+
+    // Assume that a block has just been found.
+    // This will always under-estimate, never over-estimate
+    this.lastBlockTime = new Date().getTime();
   }
 
   private initHouses() {
@@ -204,11 +201,8 @@ export class Renderer implements AcceptsCommands {
 
     this.mempoolSize = size;
 
+    this.statsDisplay.setMempoolSize(size);
     // console.log("Mempool size updated: " + size);
-
-    this.statsDisplay.mempoolSizeText.setText(
-      "Pending Transactions: " + this.mempoolSize
-    );
   }
 
   public setNewBlockTime() {
@@ -425,15 +419,7 @@ export class Renderer implements AcceptsCommands {
     // set last block time
     {
       let now = new Date().getTime();
-      let lastBlockTime = this.lastBlockTime;
-
-      let formatted =
-        lastBlockTime === -1
-          ? "N/A"
-          : formatNumber((now - lastBlockTime) / 1000, { mantissa: 0 }) +
-            " seconds ago";
-
-      this.statsDisplay.blockTimeText.setText("Last Block Time: " + formatted);
+      this.statsDisplay.setBlockTime(now - this.lastBlockTime);
     }
   }
 

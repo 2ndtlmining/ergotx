@@ -1,5 +1,6 @@
 import { GameObjects, Scene } from "phaser";
 import { pixels } from "../sizing";
+import { formatNumber } from "~/utils/number";
 
 class StatBox {
   private surface: GameObjects.Rectangle;
@@ -27,7 +28,6 @@ class StatBox {
     let surface = scene.add.rectangle(x, y, width, height);
     this.surface = surface;
     surface.setOrigin(0, 0);
-    // surface.setFillStyle(0xc2c3c4);
     surface.setFillStyle(0x695112);
     surface.setDepth(3);
 
@@ -39,7 +39,6 @@ class StatBox {
 
     let textStyle = {
       fontFamily: "Minecraft",
-      // color: "#D77F0E",
       color: "#ebb113",
       fontSize: 28
     };
@@ -49,7 +48,9 @@ class StatBox {
       .setOrigin(0, 0)
       .setDepth(3);
 
-    this.valueText = scene.add.text(this.inX, y + 65, value, textStyle).setDepth(3);
+    this.valueText = scene.add
+      .text(this.inX, y + 65, value, textStyle)
+      .setDepth(3);
 
     this.center(this.labelText);
     this.center(this.valueText);
@@ -73,121 +74,60 @@ class StatBox {
 }
 
 export class StatsDisplay {
-  public blockTimeText: GameObjects.Text;
-  public mempoolSizeText: GameObjects.Text;
-
   private blockTimeBox: StatBox;
-  private pendingTxBox: StatBox;
+  private mempoolSizeBox: StatBox;
 
-  constructor(
-    scene: Scene,
-  ) {
-    this.temp(scene);
-
+  constructor(scene: Scene) {
     let top = 0.25;
     let height = 1.6;
 
     this.blockTimeBox = new StatBox(
       scene,
-      "Last Block In", "00 min 00 sec",
-      pixels(0.75), pixels(top),
-      pixels(4), pixels(height)
+      "Last Block In",
+      "00 min 00 sec",
+      pixels(0.75),
+      pixels(top),
+      pixels(4),
+      pixels(height)
     );
 
-    this.pendingTxBox = new StatBox(
+    this.mempoolSizeBox = new StatBox(
       scene,
-      "Pending Txs", "0",
-      pixels(5.25), pixels(top),
-      pixels(4), pixels(height)
+      "Pending Txs",
+      "0",
+      pixels(5.25),
+      pixels(top),
+      pixels(4),
+      pixels(height)
     );
   }
 
-  private temp(scene: any) {
-    this.blockTimeText = scene.add.text(-1000, -1000, "", {
-      color: "white",
-      fontSize: 20
-    });
+  public setMempoolSize(size: number) {
+    // TODO
+    this.mempoolSizeBox.setValue(size.toString());
+  }
 
-    this.mempoolSizeText = scene.add.text(-1000, -1000, "", {
-      color: "white",
-      fontSize: 20
-    });
+  public setBlockTime(millisecs: number) {
+    // this.blockTimeBox.setValue((millisecs / 1000).toFixed(0));
+    let totalSeconds = Math.floor(millisecs / 1000);
+
+    let minutes = Math.floor(totalSeconds / 60);
+    let seconds = totalSeconds % 60;
+
+    let numStyle = {
+      pad: 2,
+      mantissa: 0
+    };
+
+    let formatted = `${formatNumber(minutes, numStyle)} min ${formatNumber(
+      seconds,
+      numStyle
+    )} sec`;
+    this.blockTimeBox.setValue(formatted);
   }
 
   public destroy() {
     this.blockTimeBox.destroy();
-    this.pendingTxBox.destroy();
+    this.mempoolSizeBox.destroy();
   }
 }
-
-/*
-constructor(
-    scene: Scene,
-    x: number,
-    y: number,
-    width: number,
-    height: number
-  ) {
-    {
-      let surface = scene.add.rectangle(50, 10, 400, 120);
-      surface.setOrigin(0, 0);
-      surface.setFillStyle(0xc2c3c4);
-      surface.setDepth(3);
-
-      let rect = scene.add.rectangle(50 + 20, 10, 400 - 40, 120);
-      rect.setOrigin(0, 0);
-      rect.setFillStyle(0x212121);
-      rect.setDepth(3);
-
-      let textStyle = {
-        fontFamily: "Minecraft",
-        color: "#D77F0E",
-        fontSize: 32,
-      };
-
-      scene.add.text(50 + 20 + 70, 10 + 20, "Last Block In", textStyle).setDepth(3);
-      scene.add.text(50 + 20 + 70, 10 + 60, "01 min 02 sec", textStyle).setDepth(3);
-    }
-
-    // -------------------------------------------------------------
-
-    {
-      let surface = scene.add.rectangle(500, 10, 400, 120);
-      surface.setOrigin(0, 0);
-      surface.setFillStyle(0xc2c3c4);
-      surface.setDepth(3);
-
-      let rect = scene.add.rectangle(500 + 20, 10, 400 - 40, 120);
-      rect.setOrigin(0, 0);
-      rect.setFillStyle(0x212121);
-      rect.setDepth(3);
-
-      let textStyle = {
-        fontFamily: "Minecraft",
-        color: "#D77F0E",
-        fontSize: 32,
-      };
-
-      scene.add.text(500 + 20 + 70, 10 + 20, "Last Block In", textStyle).setDepth(3);
-      scene.add.text(500 + 20 + 70, 10 + 60, "01 min 02 sec", textStyle).setDepth(3);
-    }
-
-    // -------------------------------------------------------------
-
-    this.blockTimeText = scene.add
-    .text(-1000, -1000, "", {
-      color: "white",
-      fontSize: 20
-    })
-    .setDepth(3);
-
-    this.mempoolSizeText = scene.add
-    .text(-1000, -1000, "", {
-      color: "white",
-      fontSize: 20
-    })
-    .setDepth(3);
-  }
-
-
-*/

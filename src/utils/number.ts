@@ -28,6 +28,8 @@ export function formatNumber(
     // Include commas as thousand separators in the integer part of the number
     // The default is true
     thousandSeparator?: boolean;
+
+    pad?: number;
   }
 ): string {
   if (num == null) {
@@ -63,6 +65,12 @@ export function formatNumber(
   if (thousandSeparator) {
     const parts = formattedNumber.split(".");
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    formattedNumber = parts.join(".");
+  }
+
+  if (opts?.pad) {
+    const parts = formattedNumber.split(".");
+    parts[0] = parts[0].padStart(opts.pad || 0, '0');
     formattedNumber = parts.join(".");
   }
 

@@ -78,7 +78,7 @@ export class CampScene extends BaseScene {
       this.appRenderer.setNewBlockTime();
     });
 
-    // updateService.start();
+    updateService.start();
 
     (<any>window).r = this.appRenderer;
     (<any>window).e = this.engine;
