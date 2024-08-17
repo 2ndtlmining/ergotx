@@ -82,8 +82,8 @@ export class Person extends Actor implements SupportsMotion {
 
     if (displacement.lengthSq() > 0) {
       let angle = window.Math.round(Math.RadToDeg(displacement.angle()));
-      angle = ((angle % 360) + 360) % 360; // Get in the range [0, 360)
       angle = window.Math.round(angle / 90) * 90; // Round to a multiple of 90deg
+      angle = ((angle % 360) + 360) % 360; // Get in the range [0, 360)
 
       if (angle === 0) {
         // right
