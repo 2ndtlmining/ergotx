@@ -2,6 +2,7 @@ import { GameObjects, Scene } from "phaser";
 import { pixels } from "../sizing";
 
 class StatBox {
+  private surface: GameObjects.Rectangle;
   private rect: GameObjects.Rectangle;
   private labelText: GameObjects.Text;
   private valueText: GameObjects.Text;
@@ -24,8 +25,10 @@ class StatBox {
     this.inWidth = width - 2 * this.padX;
 
     let surface = scene.add.rectangle(x, y, width, height);
+    this.surface = surface;
     surface.setOrigin(0, 0);
-    surface.setFillStyle(0xc2c3c4);
+    // surface.setFillStyle(0xc2c3c4);
+    surface.setFillStyle(0x695112);
     surface.setDepth(3);
 
     let rect = scene.add.rectangle(this.inX, y, this.inWidth, height);
@@ -36,7 +39,8 @@ class StatBox {
 
     let textStyle = {
       fontFamily: "Minecraft",
-      color: "#D77F0E",
+      // color: "#D77F0E",
+      color: "#ebb113",
       fontSize: 28
     };
 
@@ -59,6 +63,13 @@ class StatBox {
     this.valueText.setText(value);
     this.center(this.valueText);
   }
+
+  public destroy() {
+    this.surface.destroy();
+    this.rect.destroy();
+    this.labelText.destroy();
+    this.valueText.destroy();
+  }
 }
 
 export class StatsDisplay {
@@ -70,21 +81,24 @@ export class StatsDisplay {
 
   constructor(
     scene: Scene,
-    x: number,
-    y: number,
-    width: number,
-    height: number
   ) {
     this.temp(scene);
+
+    let top = 0.25;
+    let height = 1.6;
+
     this.blockTimeBox = new StatBox(
       scene,
       "Last Block In", "00 min 00 sec",
-      50, 10, 300, 125
+      pixels(0.75), pixels(top),
+      pixels(4), pixels(height)
     );
+
     this.pendingTxBox = new StatBox(
       scene,
-      "Pending Txs", "32",
-      500, 10, 300, 125
+      "Pending Txs", "0",
+      pixels(5.25), pixels(top),
+      pixels(4), pixels(height)
     );
   }
 
@@ -100,7 +114,10 @@ export class StatsDisplay {
     });
   }
 
-  public destroy() {}
+  public destroy() {
+    this.blockTimeBox.destroy();
+    this.pendingTxBox.destroy();
+  }
 }
 
 /*

@@ -109,10 +109,10 @@ export class Renderer implements AcceptsCommands {
   private initStats() {
     this.statsDisplay = new StatsDisplay(
       this.scene,
-      pixels(2),
-      pixels(0.25),
-      pixels(7),
-      pixels(1)
+      // pixels(2),
+      // pixels(0.25),
+      // pixels(7),
+      // pixels(1)
     );
 
     this.lastBlockTime = -1; // -1 shows there is no last block yet.
