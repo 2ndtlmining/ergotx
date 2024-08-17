@@ -63,7 +63,7 @@ export class CampScene extends BaseScene {
       updateService = new PollUpdateService();
     } else {
       // updateService = new PollUpdateService();
-      updateService = new ReplayUpdateService("/replays/replay-01.json");
+      updateService = new ReplayUpdateService("/replays/replay-02.json");
     }
 
     this.appRenderer = new Renderer(this);

@@ -20,7 +20,7 @@ export class Person extends Actor implements SupportsMotion {
   private personName: string;
   private personFrame = "01";
 
-  private currentFace: Face = "Side";
+  private currentFace: Face | null = null;
   private isMirrored = false;
 
   private image: GameObjects.Image;
@@ -100,7 +100,7 @@ export class Person extends Actor implements SupportsMotion {
         face = "Front";
       }
     } else {
-      face = "Back";
+      face = "Front";
       mirror = false;
     }
 
