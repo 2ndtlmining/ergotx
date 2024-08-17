@@ -5,6 +5,8 @@ import { formatNumber } from "~/utils/number";
 class StatBox {
   private surface: GameObjects.Graphics;
   private rect: GameObjects.Rectangle;
+  private contributeRect: GameObjects.Rectangle;
+  private contributeText: GameObjects.Text;
   private labelText: GameObjects.Text;
   private valueText: GameObjects.Text;
 
@@ -37,11 +39,31 @@ class StatBox {
     rect.setFillStyle(0x212121);
     rect.setDepth(3);
 
+    let ch = Math.round(height / 5);
+    let cy = y + height - ch;
+    let contributeRect = scene.add.rectangle(this.inX, cy, this.inWidth, ch);
+    this.contributeRect = contributeRect;
+    contributeRect.setOrigin(0, 0);
+    contributeRect.setFillStyle(0x28362b);
+    contributeRect.setDepth(3);
+    
     let textStyle = {
       fontFamily: "Minecraft",
       color: "#ebb113",
       fontSize: 28
     };
+    
+    let contributeText = scene.add.text(0, cy, "Click to Sponser", {
+      color: "#ffe600",
+      fontFamily: 'Inter',
+      fontSize: 20
+    });
+    this.contributeText = contributeText;
+    contributeText.setY(cy + (ch - contributeText.height) / 2);
+    contributeText.setDepth(3);
+    this.center(contributeText);
+    
+    contributeText.setInteractive({ cursor: 'pointer' });
 
     this.labelText = scene.add
       .text(this.inX, y + 25, label, textStyle)
@@ -68,6 +90,8 @@ class StatBox {
   public destroy() {
     this.surface.destroy();
     this.rect.destroy();
+    this.contributeRect.destroy();
+    this.contributeText.destroy();
     this.labelText.destroy();
     this.valueText.destroy();
   }
@@ -79,7 +103,7 @@ export class StatsDisplay {
 
   constructor(scene: Scene) {
     let top = 0.25;
-    let height = 1.6;
+    let height = 1.95;
 
     this.blockTimeBox = new StatBox(
       scene,
