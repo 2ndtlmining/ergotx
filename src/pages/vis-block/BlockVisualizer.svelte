@@ -137,7 +137,7 @@
       <thead>
         <tr>
           <th>Spot</th>
-          <th>Wallet</th>
+          <th>Miner</th>
           <th>Blocks</th>
           <th>Percentage</th>
           <th>Fee</th>
@@ -162,7 +162,14 @@
         {#each scores as score, index (score.minerId)}
           <tr animate:flip={{ duration: 450, easing: expoInOut }}>
             <th>{index + 1}</th>
-            <td>{score.miner.name}</td>
+            <td>
+              <!-- {score.miner.name} -->
+              <a
+                class="link link-primary"
+                target="_blank"
+                href={`https://explorer.ergoplatform.com/en/addresses/${score.miner.address}`}
+              >{score.miner.name}</a>
+            </td>
             <td>{score.numBlocks}</td>
             <td
               >{formatNumber((100 * score.numBlocks) / blocks.length, {
