@@ -162,8 +162,4 @@
   h4 {
     @apply font-bold whitespace-nowrap mr-8;
   }
-
-  * {
-    font-family: "Inter";
-  }
 </style>

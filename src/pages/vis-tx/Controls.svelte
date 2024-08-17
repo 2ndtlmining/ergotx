@@ -46,7 +46,7 @@
   $: updateSettings({ debugBlockActors });
 </script>
 
-<main>
+<main class="p-4">
   <p>
     FPS:
     {(Math.round(fps * 100) / 100).toFixed(2)}
@@ -119,10 +119,3 @@
     </label>
   </div>
 </main>
-
-<style lang="postcss">
-  main {
-    @apply p-4;
-    font-family: "Fira Code";
-  }
-</style>
