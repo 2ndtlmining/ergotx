@@ -199,7 +199,7 @@
         <!-- Stat Item -->
         <div class="flex items-center">
           <!-- Icon -->
-          <div class="rounded-full bg-[#0AD3FF]/10 text-[#0AD3FF] p-4">
+          <div class="rounded-full bg-[#ff4687]/10 text-[#ff4687] p-4">
             <IconBracketsContain size={24} />
           </div>
           <!-- /Icon -->
@@ -215,7 +215,7 @@
         <!-- Stat Item -->
         <div class="flex items-center">
           <!-- Icon -->
-          <div class="rounded-full bg-[#8ACB88]/10 text-[#8ACB88] p-4">
+          <div class="rounded-full bg-[#ff8d46]/10 text-[#ff8d46] p-4">
             <IconReceipt2 size={24} />
           </div>
           <!-- /Icon -->
@@ -231,7 +231,7 @@
         <!-- Stat Item -->
         <div class="flex items-center">
           <!-- Icon -->
-          <div class="rounded-full bg-[#FFBF46]/10 text-[#FFBF46] p-4">
+          <div class="rounded-full bg-[#6e46ff]/10 text-[#6e46ff] p-4">
             <IconBulbFilled size={24} />
           </div>
           <!-- /Icon -->
