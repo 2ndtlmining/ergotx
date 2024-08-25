@@ -7,19 +7,10 @@
     getNetworkStats
   } from "~/ergoapi/apiconn";
   import type { Block } from "~/types/ergo";
-  import { formatErg, formatNumber, parseNumber } from "~/utils/number";
+  import { formatNumber, parseNumber } from "~/utils/number";
 
   import { calculateScores, type Score } from "./scores";
-  import {
-    IconCube,
-    IconHash,
-    IconHourglassLow,
-    IconWeight
-  } from "@tabler/icons-svelte";
-  import clsx from "clsx";
-  import TopStat from "./TopStat.svelte";
-  import { expoInOut } from "svelte/easing";
-  import { flip } from "svelte/animate";
+
   import MineAnimation from "./MineAnimation.svelte";
   import AllStats from "./AllStats.svelte";
   import RankTable from "./RankTable.svelte";
@@ -82,7 +73,7 @@
 
   onMount(() => {
     statLoading = true;
-    return;
+    // return;
 
     getNetworkStats().then(netStats => {
       stats.hashRate = parseNumber(netStats?.["miningCost"]?.["hashRate"], 0);
@@ -107,14 +98,13 @@
     };
   });
 
-  // =====================
 
   let scores: Score[] = [];
 
   $: scores = calculateScores(blocks);
 </script>
 
-<div class="p-4 overflow-auto w-full">
+<!-- <div class="p-4 overflow-auto w-full">
   <AllStats
     {blocks}
     {timeSinceLastBlock}
@@ -122,7 +112,24 @@
     difficulty={stats.difficulty}
     hashRate={stats.hashRate}
   />
-  <!-- <div class="flex w-full overflow-x-auto gap-x-12 items-start mt-10"> -->
-    <RankTable {blocks} {scores} />
-  <!-- </div> -->
+  <RankTable {blocks} {scores} />
+  <div class="flex w-full overflow-x-auto gap-x-12 items-start mt-10">
+  </div>
+</div> -->
+
+<div class="overflow-hidden flex-1 flex flex-col">
+  <div class="h-72 max-h-[18rem] flex items-start gap-x-2">
+    <div class="flex-1 max-h-full overflow-y-auto p-1 shrink-0">
+      <RankTable blocks={blocks} scores={scores} />
+    </div>
+    <div class="flex-1 shrink-0 p-4">
+      <AllStats
+      {blocks}
+      {timeSinceLastBlock}
+      {statLoading}
+      difficulty={stats.difficulty}
+      hashRate={stats.hashRate}
+    />
+    </div>
+  </div>
 </div>
