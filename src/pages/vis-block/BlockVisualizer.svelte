@@ -20,6 +20,7 @@
   import TopStat from "./TopStat.svelte";
   import { expoInOut } from "svelte/easing";
   import { flip } from "svelte/animate";
+  import MineAnimation from "./MineAnimation.svelte";
 
   // latest block at the end
   let blocks: Block[] = [];
@@ -63,7 +64,6 @@
       let extra = Math.max(0, totalBlocks - 720);
 
       blocks = [...blocks, ...newBlocks].slice(extra);
-      // console.log(blocks);
     });
   }
 
@@ -79,6 +79,7 @@
   }
 
   onMount(() => {
+    return;
     statLoading = true;
 
     getNetworkStats().then(netStats => {
@@ -132,7 +133,7 @@
     </TopStat>
   </div>
 
-  <div class="flex w-full overflow-x-auto mt-10">
+  <div class="flex w-full overflow-x-auto mt-10 gap-x-12 items-start">
     <table class="table-compact table-zebra table max-w-3xl">
       <thead>
         <tr>
@@ -181,5 +182,8 @@
         {/each}
       </tbody>
     </table>
+    <div class="flex-1">
+      <MineAnimation />
+    </div>
   </div>
 </div>
