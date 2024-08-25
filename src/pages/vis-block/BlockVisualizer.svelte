@@ -101,25 +101,10 @@
   let scores: Score[] = [];
 
   $: scores = calculateScores(blocks);
-
-  let w, h;
 </script>
 
-<!-- <div class="p-4 overflow-auto w-full">
-  <AllStats
-    {blocks}
-    {timeSinceLastBlock}
-    {statLoading}
-    difficulty={stats.difficulty}
-    hashRate={stats.hashRate}
-  />
-  <RankTable {blocks} {scores} />
-  <div class="flex w-full overflow-x-auto gap-x-12 items-start mt-10">
-  </div>
-</div> -->
-
 <div class="overflow-hidden flex-1 flex flex-col">
-  <div class="h-72 max-h-[18rem] flex items-start gap-x-2">
+  <div class="h-full max-h-[25rem] flex items-start gap-x-2">
     <div class="flex-1 max-h-full overflow-y-auto p-1 shrink-0">
       <RankTable {blocks} {scores} />
     </div>

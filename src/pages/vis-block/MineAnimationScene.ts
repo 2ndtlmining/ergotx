@@ -13,8 +13,6 @@ export class MineAnimationScene extends Phaser.Scene {
     let winWidth = +this.game.config.width;
     let winHeight = +this.game.config.height;
 
-    // video.play();
-
     video.on('play', function() {
       let scale = winHeight / video.height;
       video.setScale(scale);
@@ -32,12 +30,6 @@ export class MineAnimationScene extends Phaser.Scene {
     // window.vi = idleVideo;
     
     idleVideo.play(true);
-    // actionVideo.play();
-    // actionVideo.pause();
-    
-    // idleVideo.on("complete", () => {
-    //   idleVideo.play();
-    // });
 
     this.input!.keyboard!.on("keydown-SPACE", () => {
       idleVideo.pause();
