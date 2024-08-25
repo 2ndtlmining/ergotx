@@ -21,6 +21,8 @@
   import { expoInOut } from "svelte/easing";
   import { flip } from "svelte/animate";
   import MineAnimation from "./MineAnimation.svelte";
+  import AllStats from "./AllStats.svelte";
+  import RankTable from "./RankTable.svelte";
 
   // latest block at the end
   let blocks: Block[] = [];
@@ -79,8 +81,8 @@
   }
 
   onMount(() => {
-    return;
     statLoading = true;
+    return;
 
     getNetworkStats().then(netStats => {
       stats.hashRate = parseNumber(netStats?.["miningCost"]?.["hashRate"], 0);
@@ -113,77 +115,14 @@
 </script>
 
 <div class="p-4 overflow-auto w-full">
-  <div class="flex gap-x-8 max-w-3xl">
-    <TopStat loading={blocks.length == 0}>
-      <IconHourglassLow class="text-[#0AD3FF]" size={64} />
-      <p class="text-center text-sm">Time Since Last Block</p>
-      <p class="mt-auto font-bold text-xl">{timeSinceLastBlock} s</p>
-    </TopStat>
-    <TopStat loading={statLoading}>
-      <IconHash class="text-[#8ACB88]" size={64} />
-      <p class="text-sm">Hash Rate</p>
-      <p class="mt-auto font-bold text-xl">
-        {formatNumber(stats.hashRate / 1e12)} TH/s
-      </p>
-    </TopStat>
-    <TopStat loading={statLoading}>
-      <IconWeight class="text-[#FFBF46]" size={64} />
-      <p class="text-sm">Difficulty</p>
-      <p class="mt-auto font-bold text-sm">{stats.difficulty}</p>
-    </TopStat>
-  </div>
-
-  <div class="flex w-full overflow-x-auto mt-10 gap-x-12 items-start">
-    <table class="table-compact table-zebra table max-w-3xl">
-      <thead>
-        <tr>
-          <th>Spot</th>
-          <th>Miner</th>
-          <th>Blocks</th>
-          <th>Percentage</th>
-          <th>Fee</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#if blocks.length == 0}
-          <tr>
-            <td colspan={5}>
-              <div class="flex justify-center">
-                <svg
-                  class="spinner-ring"
-                  viewBox="25 25 50 50"
-                  stroke-width="3"
-                >
-                  <circle cx="50" cy="50" r="20" />
-                </svg>
-              </div>
-            </td>
-          </tr>
-        {/if}
-        {#each scores as score, index (score.minerId)}
-          <tr animate:flip={{ duration: 450, easing: expoInOut }}>
-            <th>{index + 1}</th>
-            <td>
-              <!-- {score.miner.name} -->
-              <a
-                class="link link-primary"
-                target="_blank"
-                href={`https://explorer.ergoplatform.com/en/addresses/${score.miner.address}`}
-              >{score.miner.name}</a>
-            </td>
-            <td>{score.numBlocks}</td>
-            <td
-              >{formatNumber((100 * score.numBlocks) / blocks.length, {
-                mantissa: 2
-              })}%</td
-            >
-            <td>{formatErg(score.totalFee)}</td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
-    <div class="flex-1">
-      <MineAnimation />
-    </div>
-  </div>
+  <AllStats
+    {blocks}
+    {timeSinceLastBlock}
+    {statLoading}
+    difficulty={stats.difficulty}
+    hashRate={stats.hashRate}
+  />
+  <!-- <div class="flex w-full overflow-x-auto gap-x-12 items-start mt-10"> -->
+    <RankTable {blocks} {scores} />
+  <!-- </div> -->
 </div>
