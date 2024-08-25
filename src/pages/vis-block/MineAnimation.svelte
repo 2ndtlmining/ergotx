@@ -10,6 +10,7 @@
   let containerHeight: number = 0;
 
   onMount(() => {
+    return;
     let game = new Phaser.Game({
       type: Phaser.CANVAS,
       canvas: canvas!,

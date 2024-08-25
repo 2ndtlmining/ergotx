@@ -12,8 +12,9 @@
   import { calculateScores, type Score } from "./scores";
 
   import MineAnimation from "./MineAnimation.svelte";
-  import AllStats from "./AllStats.svelte";
+  import GlobalStats from "./GlobalStats.svelte";
   import RankTable from "./RankTable.svelte";
+  import { IconHash, IconHourglass, IconWeight } from "@tabler/icons-svelte";
 
   // latest block at the end
   let blocks: Block[] = [];
@@ -73,7 +74,7 @@
 
   onMount(() => {
     statLoading = true;
-    // return;
+    return;
 
     getNetworkStats().then(netStats => {
       stats.hashRate = parseNumber(netStats?.["miningCost"]?.["hashRate"], 0);
@@ -104,18 +105,70 @@
 </script>
 
 <div class="overflow-hidden flex-1 flex flex-col">
-  <div class="h-full max-h-[25rem] flex items-start gap-x-2">
+  <div class="h-full max-h-[26rem] flex items-start gap-x-2">
     <div class="flex-1 max-h-full overflow-y-auto p-1 shrink-0">
       <RankTable {blocks} {scores} />
     </div>
     <div class="flex-1 shrink-0 p-4">
-      <AllStats
+      <!-- <GlobalStats
         {blocks}
         {timeSinceLastBlock}
         {statLoading}
         difficulty={stats.difficulty}
         hashRate={stats.hashRate}
-      />
+      /> -->
+
+      <div class="w-full border-y-2 flex border-[#39393d]">
+
+        <!-- Stat Item -->
+        <div class="flex-1 shrink-0 py-3 flex items-center">
+          <!-- Icon -->
+          <div class="rounded-full bg-[#0AD3FF]/10 text-[#0AD3FF] p-4">
+            <IconHourglass size={24} />
+          </div>
+          <!-- /Icon -->
+          <!-- Body -->
+          <div class="self-stretch ml-2 py-2 space-y-1">
+            <h1 class="text-xs font-medium">Last Block</h1>
+            <p class="font-semibold">16:01</p>
+          </div>
+          <!-- /Body -->
+        </div>
+        <!-- /Stat Item -->
+
+        <!-- Stat Item -->
+        <div class="flex-1 shrink-0 py-3 flex items-center">
+          <!-- Icon -->
+          <div class="rounded-full bg-[#8ACB88]/10 text-[#8ACB88] p-4">
+            <IconHash size={24} />
+          </div>
+          <!-- /Icon -->
+          <!-- Body -->
+          <div class="self-stretch ml-2 py-2 space-y-1">
+            <h1 class="text-xs font-medium">Hash Rate</h1>
+            <p class="font-semibold">8.56 TH/s</p>
+          </div>
+          <!-- /Body -->
+        </div>
+        <!-- /Stat Item -->
+
+        <!-- Stat Item -->
+        <div class="flex-1 shrink-0 py-3 flex items-center">
+          <!-- Icon -->
+          <div class="rounded-full bg-[#FFBF46]/10 text-[#FFBF46] p-4">
+            <IconWeight size={24} />
+          </div>
+          <!-- /Icon -->
+          <!-- Body -->
+          <div class="self-stretch ml-2 py-2 space-y-2.5">
+            <h1 class="text-xs font-medium">Difficulty</h1>
+            <p class="font-semibold text-xs">12479384717648714</p>
+          </div>
+          <!-- /Body -->
+        </div>
+        <!-- /Stat Item -->
+
+      </div>
     </div>
   </div>
   <div class="flex-1">
