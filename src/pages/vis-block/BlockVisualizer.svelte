@@ -14,7 +14,7 @@
   import MineAnimation from "./MineAnimation.svelte";
   import GlobalStats from "./GlobalStats.svelte";
   import RankTable from "./RankTable.svelte";
-  import { IconHash, IconHourglass, IconWeight } from "@tabler/icons-svelte";
+  import { IconBracketsContain, IconBulbFilled, IconHash, IconHourglass, IconReceipt2, IconWeight } from "@tabler/icons-svelte";
 
   // latest block at the end
   let blocks: Block[] = [];
@@ -109,7 +109,7 @@
     <div class="flex-1 max-h-full overflow-y-auto p-1 shrink-0">
       <RankTable {blocks} {scores} />
     </div>
-    <div class="flex-1 shrink-0 p-4">
+    <div class="flex-1 shrink-0 p-4 space-y-4">
       <!-- <GlobalStats
         {blocks}
         {timeSinceLastBlock}
@@ -118,12 +118,11 @@
         hashRate={stats.hashRate}
       /> -->
 
-      <div class="w-full border-y-2 grid grid-cols-[repeat(3,1fr)] border-[#39393d] pb-4">
-
+      <div
+        class="w-full border-y-2 grid grid-cols-[repeat(3,1fr)] border-[#39393d] pb-4"
+      >
         <div class="col-span-3 flex justify-between mt-2 mb-2 px-1">
-          <p class="text-xs font-bold opacity-70">
-            Global Stats
-          </p>
+          <p class="text-xs font-bold opacity-70">Global Stats</p>
         </div>
 
         <!-- Stat Item -->
@@ -173,7 +172,77 @@
           <!-- /Body -->
         </div>
         <!-- /Stat Item -->
+      </div>
 
+      <!--  -->
+      <!--  -->
+      <!--  -->
+      <!--  -->
+      <!-- SECOND ONE -->
+      <!--  -->
+      <!--  -->
+      <!--  -->
+      <!--  -->
+      <div
+        class="w-full border-y-2 grid grid-cols-[repeat(3,1fr)] border-[#39393d] pb-4"
+      >
+        <div class="col-span-3 flex justify-between mt-2 mb-2 px-1">
+          <p class="text-xs font-bold opacity-70">Last Block Stats</p>
+          <p class="text-xs">
+            <span class="font-bold opacity-70">Miner:</span>
+            <a class="link link-primary font-normal text-xs" href="#/">
+              SigmaPool
+            </a>
+          </p>
+        </div>
+
+        <!-- Stat Item -->
+        <div class="flex items-center">
+          <!-- Icon -->
+          <div class="rounded-full bg-[#0AD3FF]/10 text-[#0AD3FF] p-4">
+            <IconBracketsContain size={24} />
+          </div>
+          <!-- /Icon -->
+          <!-- Body -->
+          <div class="self-stretch ml-2 py-2 space-y-1">
+            <h1 class="text-xs font-medium">Transactions</h1>
+            <p class="font-semibold">161</p>
+          </div>
+          <!-- /Body -->
+        </div>
+        <!-- /Stat Item -->
+
+        <!-- Stat Item -->
+        <div class="flex items-center">
+          <!-- Icon -->
+          <div class="rounded-full bg-[#8ACB88]/10 text-[#8ACB88] p-4">
+            <IconReceipt2 size={24} />
+          </div>
+          <!-- /Icon -->
+          <!-- Body -->
+          <div class="self-stretch ml-2 py-2 space-y-1">
+            <h1 class="text-xs font-medium">Fee</h1>
+            <p class="font-semibold">4.5 <small>nanoErg</small></p>
+          </div>
+          <!-- /Body -->
+        </div>
+        <!-- /Stat Item -->
+
+        <!-- Stat Item -->
+        <div class="flex items-center">
+          <!-- Icon -->
+          <div class="rounded-full bg-[#FFBF46]/10 text-[#FFBF46] p-4">
+            <IconBulbFilled size={24} />
+          </div>
+          <!-- /Icon -->
+          <!-- Body -->
+          <div class="self-stretch ml-2 py-2 space-y-1">
+            <h1 class="text-xs font-medium">Size Utilization</h1>
+            <p class="font-semibold">54%</p>
+          </div>
+          <!-- /Body -->
+        </div>
+        <!-- /Stat Item -->
       </div>
     </div>
   </div>
