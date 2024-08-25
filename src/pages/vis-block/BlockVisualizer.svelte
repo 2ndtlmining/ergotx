@@ -118,10 +118,16 @@
         hashRate={stats.hashRate}
       /> -->
 
-      <div class="w-full border-y-2 flex border-[#39393d]">
+      <div class="w-full border-y-2 grid grid-cols-[repeat(3,1fr)] border-[#39393d] pb-4">
+
+        <div class="col-span-3 flex justify-between mt-2 mb-2 px-1">
+          <p class="text-xs font-bold opacity-70">
+            Global Stats
+          </p>
+        </div>
 
         <!-- Stat Item -->
-        <div class="flex-1 shrink-0 py-3 flex items-center">
+        <div class="flex items-center">
           <!-- Icon -->
           <div class="rounded-full bg-[#0AD3FF]/10 text-[#0AD3FF] p-4">
             <IconHourglass size={24} />
@@ -137,7 +143,7 @@
         <!-- /Stat Item -->
 
         <!-- Stat Item -->
-        <div class="flex-1 shrink-0 py-3 flex items-center">
+        <div class="flex items-center">
           <!-- Icon -->
           <div class="rounded-full bg-[#8ACB88]/10 text-[#8ACB88] p-4">
             <IconHash size={24} />
@@ -153,7 +159,7 @@
         <!-- /Stat Item -->
 
         <!-- Stat Item -->
-        <div class="flex-1 shrink-0 py-3 flex items-center">
+        <div class="flex items-center">
           <!-- Icon -->
           <div class="rounded-full bg-[#FFBF46]/10 text-[#FFBF46] p-4">
             <IconWeight size={24} />
