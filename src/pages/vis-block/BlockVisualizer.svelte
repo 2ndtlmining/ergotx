@@ -84,19 +84,6 @@
   $: scores = calculateScores(blocks);
   $: lastBlock = blocks.length ? blocks[blocks.length - 1] : null;
 
-  // let lastBlock: Block | null = {
-  //   id: "8bb676388eb65c2314352ee01bb4587083fc61cf6c0716435572ec67e5ee6e75",
-  //   height: 1338305,
-  //   transactionsCount: 7,
-  //   miner: {
-  //     address:
-  //       "88dhgzEuTXaQQRxJaryYegLaDAfBKL29nSjdJwPZVvnEEU1wNBfEiPH2DwkpUSRYRn9yexBtutiXtQYP",
-  //     name: "utiXtQYP"
-  //   },
-  //   size: 29302,
-  //   minerReward: 24000000000
-  // };
-
   onMount(() => {
     statLoading = true;
     // return;
