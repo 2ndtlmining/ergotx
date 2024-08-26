@@ -32,8 +32,8 @@ export interface Block {
     address: string;
     name: string;
   };
-  size: number;
-  minerReward: number;
+  size: number; // In bytes
+  minerReward: number; // In nano ergs
 }
 
 export interface TransactedBlock extends Block {

@@ -6,6 +6,7 @@
   import { formatErg, formatNumber } from "~/utils/number";
 
   import type { Score } from './scores';
+  import { exploreAddressUrl } from "~/ergoapi/apiconn";
 
   export let blocks: Block[];
   export let scores: Score[];
@@ -42,7 +43,7 @@
           <a
             class="link link-primary"
             target="_blank"
-            href={`https://explorer.ergoplatform.com/en/addresses/${score.miner.address}`}
+            href={exploreAddressUrl(score.miner.address)}
           >
             {score.miner.name}
           </a>

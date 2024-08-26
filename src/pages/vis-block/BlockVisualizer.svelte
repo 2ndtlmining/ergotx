@@ -2,19 +2,28 @@
   import { clearIntervalAsync, setIntervalAsync } from "set-interval-async";
   import { onMount } from "svelte";
   import {
+    exploreAddressUrl,
     getBlocks,
     getBlocksAbove,
+    getBlockTransactions,
     getNetworkStats
   } from "~/ergoapi/apiconn";
-  import type { Block } from "~/types/ergo";
-  import { formatNumber, parseNumber } from "~/utils/number";
+  import type { Block, TransactedBlock } from "~/types/ergo";
+  import { formatErg, formatNumber, parseNumber } from "~/utils/number";
 
   import { calculateScores, type Score } from "./scores";
 
   import MineAnimation from "./MineAnimation.svelte";
   import GlobalStats from "./GlobalStats.svelte";
   import RankTable from "./RankTable.svelte";
-  import { IconBracketsContain, IconBulbFilled, IconHash, IconHourglass, IconReceipt2, IconWeight } from "@tabler/icons-svelte";
+  import {
+    IconBracketsContain,
+    IconBulbFilled,
+    IconHash,
+    IconHourglass,
+    IconReceipt2,
+    IconWeight
+  } from "@tabler/icons-svelte";
 
   // latest block at the end
   let blocks: Block[] = [];
@@ -72,9 +81,25 @@
     timeSinceLastBlock = formatted;
   }
 
+  $: scores = calculateScores(blocks);
+  $: lastBlock = blocks.length ? blocks[blocks.length - 1] : null;
+
+  // let lastBlock: Block | null = {
+  //   id: "8bb676388eb65c2314352ee01bb4587083fc61cf6c0716435572ec67e5ee6e75",
+  //   height: 1338305,
+  //   transactionsCount: 7,
+  //   miner: {
+  //     address:
+  //       "88dhgzEuTXaQQRxJaryYegLaDAfBKL29nSjdJwPZVvnEEU1wNBfEiPH2DwkpUSRYRn9yexBtutiXtQYP",
+  //     name: "utiXtQYP"
+  //   },
+  //   size: 29302,
+  //   minerReward: 24000000000
+  // };
+
   onMount(() => {
     statLoading = true;
-    return;
+    // return;
 
     getNetworkStats().then(netStats => {
       stats.hashRate = parseNumber(netStats?.["miningCost"]?.["hashRate"], 0);
@@ -98,10 +123,6 @@
       clearInterval(blockTimerId);
     };
   });
-
-  let scores: Score[] = [];
-
-  $: scores = calculateScores(blocks);
 </script>
 
 <div class="overflow-hidden flex-1 flex flex-col">
@@ -110,14 +131,6 @@
       <RankTable {blocks} {scores} />
     </div>
     <div class="flex-1 shrink-0 p-4 space-y-4">
-      <!-- <GlobalStats
-        {blocks}
-        {timeSinceLastBlock}
-        {statLoading}
-        difficulty={stats.difficulty}
-        hashRate={stats.hashRate}
-      /> -->
-
       <div
         class="w-full border-y-2 grid grid-cols-[repeat(3,1fr)] border-[#39393d] pb-4"
       >
@@ -135,7 +148,7 @@
           <!-- Body -->
           <div class="self-stretch ml-2 py-2 space-y-1">
             <h1 class="text-xs font-medium">Last Block</h1>
-            <p class="font-semibold">16:01</p>
+            <p class="font-semibold">{timeSinceLastBlock} s</p>
           </div>
           <!-- /Body -->
         </div>
@@ -151,7 +164,7 @@
           <!-- Body -->
           <div class="self-stretch ml-2 py-2 space-y-1">
             <h1 class="text-xs font-medium">Hash Rate</h1>
-            <p class="font-semibold">8.56 TH/s</p>
+            <p class="font-semibold">{formatNumber(stats.hashRate / 1e12)} TH/s</p>
           </div>
           <!-- /Body -->
         </div>
@@ -167,7 +180,7 @@
           <!-- Body -->
           <div class="self-stretch ml-2 py-2 space-y-2.5">
             <h1 class="text-xs font-medium">Difficulty</h1>
-            <p class="font-semibold text-xs">12479384717648714</p>
+            <p class="font-semibold text-xs">{formatNumber(stats.difficulty / 1e6, { thousandSeparator: false })} M</p>
           </div>
           <!-- /Body -->
         </div>
@@ -188,12 +201,18 @@
       >
         <div class="col-span-3 flex justify-between mt-2 mb-2 px-1">
           <p class="text-xs font-bold opacity-70">Last Block Stats</p>
-          <p class="text-xs">
-            <span class="font-bold opacity-70">Miner:</span>
-            <a class="link link-primary font-normal text-xs" href="#/">
-              SigmaPool
-            </a>
-          </p>
+          {#if lastBlock}
+            <p class="text-xs">
+              <span class="font-bold opacity-70">Miner:</span>
+              <a
+                class="link link-primary font-normal text-xs"
+                target="_blank"
+                href={exploreAddressUrl(lastBlock.miner.address)}
+              >
+                {lastBlock.miner.name}
+              </a>
+            </p>
+          {/if}
         </div>
 
         <!-- Stat Item -->
@@ -206,7 +225,7 @@
           <!-- Body -->
           <div class="self-stretch ml-2 py-2 space-y-1">
             <h1 class="text-xs font-medium">Transactions</h1>
-            <p class="font-semibold">161</p>
+            <p class="font-semibold">{lastBlock?.transactionsCount ?? 0}</p>
           </div>
           <!-- /Body -->
         </div>
@@ -222,7 +241,9 @@
           <!-- Body -->
           <div class="self-stretch ml-2 py-2 space-y-1">
             <h1 class="text-xs font-medium">Fee</h1>
-            <p class="font-semibold">4.5 <small>nanoErg</small></p>
+            <p class="font-semibold">
+              {formatErg(lastBlock?.minerReward ?? 0)}
+            </p>
           </div>
           <!-- /Body -->
         </div>
@@ -238,7 +259,9 @@
           <!-- Body -->
           <div class="self-stretch ml-2 py-2 space-y-1">
             <h1 class="text-xs font-medium">Size Utilization</h1>
-            <p class="font-semibold">54%</p>
+            <p class="font-semibold">
+              {formatNumber((100 * (lastBlock?.size ?? 0)) / 8e6)}%
+            </p>
           </div>
           <!-- /Body -->
         </div>

@@ -104,3 +104,9 @@ export async function getOracleData() {
   let result = JSON.parse(jsonString);
   return result;
 }
+
+/* ================== */
+
+export function exploreAddressUrl(address: string) {
+  return `https://explorer.ergoplatform.com/en/addresses/${address}`;
+}
