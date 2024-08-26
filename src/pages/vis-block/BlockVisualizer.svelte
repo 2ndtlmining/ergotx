@@ -33,6 +33,8 @@
   };
   let statLoading = false;
 
+  let animation: MineAnimation | null;
+
   async function fetchLastDayBlocks() {
     let chunk1Promise = getBlocks(500, 0, "height", "desc");
     let chunk2Promise = getBlocks(220, 500, "height", "desc");
@@ -59,6 +61,9 @@
     fetchNewBlocks().then(newBlocks => {
       if (newBlocks.length > 0) {
         lastBlockSeenTime = new Date().getTime();
+        if (blocks.length > 0) {
+          animation?.playBlockFound();
+        }
       }
 
       let totalBlocks = blocks.length + newBlocks.length;
@@ -255,6 +260,6 @@
     </div>
   </div>
   <div class="flex-1">
-    <MineAnimation />
+    <MineAnimation bind:this={animation} />
   </div>
 </div>
