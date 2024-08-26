@@ -5,16 +5,14 @@
     exploreAddressUrl,
     getBlocks,
     getBlocksAbove,
-    getBlockTransactions,
     getNetworkStats
   } from "~/ergoapi/apiconn";
-  import type { Block, TransactedBlock } from "~/types/ergo";
+  import type { Block } from "~/types/ergo";
   import { formatErg, formatNumber, parseNumber } from "~/utils/number";
 
   import { calculateScores, type Score } from "./scores";
 
   import MineAnimation from "./MineAnimation.svelte";
-  import GlobalStats from "./GlobalStats.svelte";
   import RankTable from "./RankTable.svelte";
   import {
     IconBracketsContain,
@@ -99,7 +97,7 @@
 
     // Block fetcher
     updateBlocks();
-    let blockFetcherId = setIntervalAsync(updateBlocks, 2 * 60 * 1000); // every 2 minutes
+    let blockFetcherId = setIntervalAsync(updateBlocks, 20 * 1000);
 
     // Block timer
     updateTimeSinceLastBlock();
