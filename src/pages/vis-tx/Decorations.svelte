@@ -80,14 +80,13 @@
     "flex items-center gap-x-2"
   )}
   on:click={() => {
-    if (false && activeWindows.find(win => win.details.type === "stats"))
+    if (activeWindows.find(win => win.details.type === "stats"))
       // Do not open a stats window if another one is open
       return;
 
     createWindow({
       title: "Stats",
-      // details: { type: "stats" },
-      details: { type: "sponser-ergo" },
+      details: { type: "stats" },
       initialPosition: { x: 150, y: -50 },
       initialSize: { width: 470, height: 370 }
     });

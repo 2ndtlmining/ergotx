@@ -1,6 +1,9 @@
-import { GameObjects, Scene } from "phaser";
+import { GameObjects, Input, Scene } from "phaser";
 import { pixels } from "../sizing";
 import { formatNumber } from "~/utils/number";
+import { VoidCallback } from "~/types/utility";
+
+import { createWindow } from "../../Decorations.svelte";
 
 class StatBox {
   private surface: GameObjects.Graphics;
@@ -13,6 +16,8 @@ class StatBox {
   private padX: number;
   private inX: number;
   private inWidth: number;
+
+  private onContribute: VoidCallback | null = null;
 
   constructor(
     scene: Scene,
@@ -46,6 +51,11 @@ class StatBox {
     contributeRect.setOrigin(0, 0);
     contributeRect.setFillStyle(0x28362b);
     contributeRect.setDepth(3);
+    contributeRect.setInteractive({ cursor: "pointer" });
+    
+    contributeRect.on(Input.Events.POINTER_UP, () => {
+      this.onContribute?.();
+    });
     
     let textStyle = {
       fontFamily: "Minecraft",
@@ -63,7 +73,6 @@ class StatBox {
     contributeText.setDepth(3);
     this.center(contributeText);
     
-    contributeText.setInteractive({ cursor: 'pointer' });
 
     this.labelText = scene.add
       .text(this.inX, y + 25, label, textStyle)
@@ -85,6 +94,10 @@ class StatBox {
   public setValue(value: string) {
     this.valueText.setText(value);
     this.center(this.valueText);
+  }
+  
+  public setOnContribute(callback: VoidCallback) {
+    this.onContribute = callback;
   }
 
   public destroy() {
@@ -124,6 +137,15 @@ export class StatsDisplay {
       pixels(4),
       pixels(height)
     );
+
+    this.blockTimeBox.setOnContribute(() => {
+      createWindow({
+        details: { type: "sponser-ergo" },
+        title: "Sponser",
+        initialPosition: { x: 130, y: 200 },
+        initialSize: { width: 500, height: 500 }
+      });
+    });
   }
 
   public setMempoolSize(size: number) {

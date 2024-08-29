@@ -13,8 +13,12 @@
       Thank you for your generosity!
     </h3>
     
-    <p class="text-center max-w-sm mt-3">
+    <p class="text-center max-w-md mt-3">
       Your support means the world to us. If you'd like to contribute, please donate to the following Ergo address:
+    </p>
+
+    <p class="mt-5 addr text font-bold bg-black/20 p-4 rounded-md">
+      88dhgzEuTXaUPpNAbKL7UeNUFEcjkoqW6ev5P1hkynBmG4L5baYdZ8rSPYCDNmvwBLiJR7ABjndPhqGm
     </p>
   </div>
   
@@ -23,12 +27,22 @@
       infinite
       y={[0, 0.1]}
       x={[-5, 5]}
-      amount={100}
+      amount={150}
       fallDistance="170px"
+      delay={[50, 1300]}
       duration={1700}
       size={15}
     /> 
   </div>
   
 </main>
+
+<style>
+  .addr {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
+    word-break: break-all;
+  }
+</style>
 
