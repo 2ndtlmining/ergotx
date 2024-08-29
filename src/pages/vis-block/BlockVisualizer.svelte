@@ -9,8 +9,9 @@
   } from "~/ergoapi/apiconn";
   import type { Block } from "~/types/ergo";
   import { formatErg, formatNumber, parseNumber } from "~/utils/number";
+  import { identityOfAddr } from '~/identities/Identity';
 
-  import { calculateScores, type Score } from "./scores";
+  import { calculateScores } from "./scores";
 
   import MineAnimation from "./MineAnimation.svelte";
   import RankTable from "./RankTable.svelte";
@@ -86,6 +87,7 @@
 
   $: scores = calculateScores(blocks);
   $: lastBlock = blocks.length ? blocks[blocks.length - 1] : null;
+  $: lastBlockMinerName = (lastBlock && identityOfAddr(lastBlock?.miner.address)?.name) || lastBlock?.miner.name;
 
   onMount(() => {
     statLoading = true;
@@ -199,7 +201,8 @@
                 target="_blank"
                 href={exploreAddressUrl(lastBlock.miner.address)}
               >
-                {lastBlock.miner.name}
+                <!-- {lastBlock.miner.name} -->
+                {lastBlockMinerName}
               </a>
             </p>
           {/if}
@@ -260,6 +263,6 @@
     </div>
   </div>
   <div class="flex-1">
-    <MineAnimation bind:this={animation} />
+    <!-- <MineAnimation bind:this={animation} /> -->
   </div>
 </div>

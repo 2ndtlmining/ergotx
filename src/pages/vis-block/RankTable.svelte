@@ -4,12 +4,15 @@
 
   import type { Block } from '~/types/ergo';
   import { formatErg, formatNumber } from "~/utils/number";
+  import { identityOfAddr } from '~/identities/Identity';
 
   import type { Score } from './scores';
   import { exploreAddressUrl } from "~/ergoapi/apiconn";
 
   export let blocks: Block[];
   export let scores: Score[];
+
+  console.log(scores);
 
 </script>
 
@@ -36,16 +39,16 @@
       </tr>
     {/if}
     {#each scores as score, index (score.minerId)}
+      {@const iden = identityOfAddr(score.miner.address)}
       <tr animate:flip={{ duration: 450, easing: expoInOut }}>
         <th>{index + 1}</th>
         <td>
-          <!-- {score.miner.name} -->
           <a
             class="link link-primary"
             target="_blank"
             href={exploreAddressUrl(score.miner.address)}
           >
-            {score.miner.name}
+            {iden?.name ?? score.miner.name}
           </a>
         </td>
         <td>{score.numBlocks}</td>
