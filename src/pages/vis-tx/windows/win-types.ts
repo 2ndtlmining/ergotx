@@ -4,12 +4,14 @@ import type { IRect } from "~/math/rect";
 export type StatsWindowDetails = { type: "stats" };
 export type TxWindowDetails = { type: "tx"; txId: string };
 export type BlockWindowDetails = { type: "block" };
+export type SponserErgoWindowDetails = { type: "sponser-ergo" };
 
 // prettier-ignore
 export type WindowDetails =
   | StatsWindowDetails
   | TxWindowDetails
-  | BlockWindowDetails;
+  | BlockWindowDetails
+  | SponserErgoWindowDetails;
 
 export interface WindowEntry {
   id: number;

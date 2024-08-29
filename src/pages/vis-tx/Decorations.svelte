@@ -35,6 +35,7 @@
   import FloatingWindow from "./windows/FloatingWindow.svelte";
   import StatWindow from "./windows/StatWindow.svelte";
   import TransactionWindow from "./windows/TransactionWindow.svelte";
+  import SponserErgoWindow from "./windows/SponserErgoWindow.svelte";
 
   let activeWindows: WindowEntry[] = [];
 
@@ -61,9 +62,11 @@
     {#if winEntry.details.type === "stats"}
       <StatWindow />
     {:else if winEntry.details.type === "tx"}
-       <TransactionWindow txId={winEntry.details.txId} />
+      <TransactionWindow txId={winEntry.details.txId} />
     {:else if winEntry.details.type === "block"}
       Block info
+    {:else if winEntry.details.type === "sponser-ergo"}
+      <SponserErgoWindow />
     {/if}
   </FloatingWindow>
 {/each}
@@ -77,13 +80,14 @@
     "flex items-center gap-x-2"
   )}
   on:click={() => {
-    if (activeWindows.find(win => win.details.type === "stats"))
+    if (false && activeWindows.find(win => win.details.type === "stats"))
       // Do not open a stats window if another one is open
       return;
 
     createWindow({
       title: "Stats",
-      details: { type: "stats" },
+      // details: { type: "stats" },
+      details: { type: "sponser-ergo" },
       initialPosition: { x: 150, y: -50 },
       initialSize: { width: 470, height: 370 }
     });
