@@ -45,7 +45,11 @@ export function getIdentityAt(index: number): Readonly<Identity> {
 
 /* =================== */
 
-register("Spectrum FI", []);
-register("Rosen Bridge", []);
-register("Duckpools", []);
+// register("Spectrum FI", []);
+// register("Rosen Bridge", []);
+// register("Duckpools", []);
 // register("Sigma FI", []);
+
+for (const entry of addressBook) {
+  register(entry.name, entry.addresses);
+}
