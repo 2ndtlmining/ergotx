@@ -1,6 +1,11 @@
 <script lang="ts">
   import { IconTrophyFilled } from "@tabler/icons-svelte";
   import { Confetti } from "svelte-confetti";
+  
+  import {
+    sponserErgoAddress,
+    sponserEmail,
+  } from '@conf/sponser';
 
   export let contentType: 'ergo' | 'email';
 </script>
@@ -26,9 +31,9 @@
 
     <p class="mt-5 addr text font-bold bg-black/20 p-4 rounded-md">
       {#if contentType == "ergo"}
-        88dhgzEuTXaUPpNAbKL7UeNUFEcjkoqW6ev5P1hkynBmG4L5baYdZ8rSPYCDNmvwBLiJR7ABjndPhqGm
+        {sponserErgoAddress}
       {:else}
-        sponser@ergotx.com
+        {sponserEmail}
       {/if}
     </p>
   </div>
@@ -45,7 +50,6 @@
       size={15}
     /> 
   </div>
-  
 </main>
 
 <style>
