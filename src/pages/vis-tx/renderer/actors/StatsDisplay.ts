@@ -140,7 +140,16 @@ export class StatsDisplay {
 
     this.blockTimeBox.setOnContribute(() => {
       createWindow({
-        details: { type: "sponser-ergo" },
+        details: { type: "sponser", contentType: "ergo" },
+        title: "Sponser",
+        initialPosition: { x: 130, y: 200 },
+        initialSize: { width: 500, height: 500 }
+      });
+    });
+    
+    this.mempoolSizeBox.setOnContribute(() => {
+      createWindow({
+        details: { type: "sponser", contentType: "email" },
         title: "Sponser",
         initialPosition: { x: 130, y: 200 },
         initialSize: { width: 500, height: 500 }

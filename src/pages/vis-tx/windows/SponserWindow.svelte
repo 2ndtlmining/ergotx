@@ -1,6 +1,8 @@
-<script>
+<script lang="ts">
   import { IconTrophyFilled } from "@tabler/icons-svelte";
-  import { Confetti } from "svelte-confetti"
+  import { Confetti } from "svelte-confetti";
+
+  export let contentType: 'ergo' | 'email';
 </script>
 
 <main class="relative">
@@ -10,15 +12,24 @@
     </div>
 
     <h3 class="font-semibold text-lg mt-4 text-center">
-      Thank you for your generosity!
+      Thank you for your support!
     </h3>
     
     <p class="text-center max-w-md mt-3">
-      Your support means the world to us. If you'd like to contribute, please donate to the following Ergo address:
+      Your support means the world to us.
+      {#if contentType == "ergo"}
+        If you'd like to contribute, please donate to the following Ergo address:
+      {:else}
+        If you'd like to contribute, please reach out at the following email:
+      {/if}
     </p>
 
     <p class="mt-5 addr text font-bold bg-black/20 p-4 rounded-md">
-      88dhgzEuTXaUPpNAbKL7UeNUFEcjkoqW6ev5P1hkynBmG4L5baYdZ8rSPYCDNmvwBLiJR7ABjndPhqGm
+      {#if contentType == "ergo"}
+        88dhgzEuTXaUPpNAbKL7UeNUFEcjkoqW6ev5P1hkynBmG4L5baYdZ8rSPYCDNmvwBLiJR7ABjndPhqGm
+      {:else}
+        sponser@ergotx.com
+      {/if}
     </p>
   </div>
   

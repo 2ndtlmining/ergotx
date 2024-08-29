@@ -35,7 +35,7 @@
   import FloatingWindow from "./windows/FloatingWindow.svelte";
   import StatWindow from "./windows/StatWindow.svelte";
   import TransactionWindow from "./windows/TransactionWindow.svelte";
-  import SponserErgoWindow from "./windows/SponserErgoWindow.svelte";
+  import SponserWindow from "./windows/SponserWindow.svelte";
 
   let activeWindows: WindowEntry[] = [];
 
@@ -65,8 +65,8 @@
       <TransactionWindow txId={winEntry.details.txId} />
     {:else if winEntry.details.type === "block"}
       Block info
-    {:else if winEntry.details.type === "sponser-ergo"}
-      <SponserErgoWindow />
+    {:else if winEntry.details.type === "sponser"}
+      <SponserWindow contentType={winEntry.details.contentType} />
     {/if}
   </FloatingWindow>
 {/each}
