@@ -157,9 +157,11 @@ export class Renderer implements AcceptsCommands {
       }
     };
 
-    addHouse();
+    // addHouse();
+    const numHouses = 4;
 
-    for (const _iden of getAllIdentities()) {
+    // for (const _iden of getAllIdentities()) {
+    for (let i = 0; i < numHouses; ++i) {
       addHouse();
     }
   }
@@ -337,12 +339,16 @@ export class Renderer implements AcceptsCommands {
 
   // =========== Common ===========
 
-  private getSpawnPosition(tx: Transaction) {
-    let identity = identityOf(tx);
+  private getSpawnPosition(_tx: Transaction) {
+    /* let identity = identityOf(tx);
 
     // 0th is default/fallback house, the remanining map to
     // to registered identities
     let index = identity === null ? 0 : identity.index + 1;
+    */
+
+    // For now we choose a random house
+    let index = Math.floor(Math.random() * this.houses.length);
 
     return this.houses[index].getSpawnPosition();
   }

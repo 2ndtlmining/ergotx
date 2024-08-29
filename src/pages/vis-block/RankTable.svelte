@@ -11,9 +11,6 @@
 
   export let blocks: Block[];
   export let scores: Score[];
-
-  console.log(scores);
-
 </script>
 
 <table class="table-compact table-zebra table">

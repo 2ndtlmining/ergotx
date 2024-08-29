@@ -32,7 +32,7 @@ export function identityOfAddr(address: string): Readonly<Identity> | null {
     return iden.addresses.has(address)
   }) ?? null;
 }
-(<any>window).identityOfAddr = identityOfAddr;
+// (<any>window).identityOfAddr = identityOfAddr;
 
 export function getAllIdentities(): Array<Readonly<Identity>> {
   return [...registeredTxIdentities];
