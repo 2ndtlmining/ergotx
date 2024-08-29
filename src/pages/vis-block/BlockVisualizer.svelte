@@ -263,6 +263,6 @@
     </div>
   </div>
   <div class="flex-1">
-    <!-- <MineAnimation bind:this={animation} /> -->
+    <MineAnimation bind:this={animation} />
   </div>
 </div>
