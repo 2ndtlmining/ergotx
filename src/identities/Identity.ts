@@ -1,4 +1,5 @@
 import { Transaction } from "~/types/ergo";
+import addressBook from "@conf/address-book.json";
 
 export interface Identity {
   name: string;
