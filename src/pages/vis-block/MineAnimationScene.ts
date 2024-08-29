@@ -37,7 +37,7 @@ export class MineAnimationScene extends Phaser.Scene {
     idleVideo.play(true);
 
     // this.input!.keyboard!.on("keydown-SPACE", () => {
-    this.emitter.on('blockFound', () => {
+    this.emitter.on("blockFound", () => {
       idleVideo.pause();
       actionVideo.seekTo(0);
       actionVideo.play();

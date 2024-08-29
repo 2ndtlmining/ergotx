@@ -42,7 +42,6 @@ export class CampScene extends BaseScene {
     this.load.image("hanger", "/army-assets/hanger.png");
     this.load.image("grill", "/army-assets/grill.png");
 
-
     Renderer.preload(this.load);
   }
 

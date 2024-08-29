@@ -52,27 +52,26 @@ class StatBox {
     contributeRect.setFillStyle(0x28362b);
     contributeRect.setDepth(3);
     contributeRect.setInteractive({ cursor: "pointer" });
-    
+
     contributeRect.on(Input.Events.POINTER_UP, () => {
       this.onContribute?.();
     });
-    
+
     let textStyle = {
       fontFamily: "Minecraft",
       color: "#ebb113",
       fontSize: 28
     };
-    
+
     let contributeText = scene.add.text(0, cy, "Click to Sponser", {
       color: "#ffe600",
-      fontFamily: 'Inter',
+      fontFamily: "Inter",
       fontSize: 20
     });
     this.contributeText = contributeText;
     contributeText.setY(cy + (ch - contributeText.height) / 2);
     contributeText.setDepth(3);
     this.center(contributeText);
-    
 
     this.labelText = scene.add
       .text(this.inX, y + 25, label, textStyle)
@@ -95,7 +94,7 @@ class StatBox {
     this.valueText.setText(value);
     this.center(this.valueText);
   }
-  
+
   public setOnContribute(callback: VoidCallback) {
     this.onContribute = callback;
   }
@@ -146,7 +145,7 @@ export class StatsDisplay {
         initialSize: { width: 500, height: 500 }
       });
     });
-    
+
     this.mempoolSizeBox.setOnContribute(() => {
       createWindow({
         details: { type: "sponser", contentType: "email" },

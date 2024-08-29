@@ -20,18 +20,20 @@ function register(name: string, addresses: string[]) {
 
 export function identityOf(tx: Transaction): Readonly<Identity> | null {
   for (const input of tx.inputs) {
-    let found = registeredTxIdentities.find(iden => iden.addresses.has(input.address)) ?? null;
-    if (found)
-      return found;
+    let found =
+      registeredTxIdentities.find(iden => iden.addresses.has(input.address)) ??
+      null;
+    if (found) return found;
   }
   return null;
 }
 
-
 export function identityOfAddr(address: string): Readonly<Identity> | null {
-  return registeredTxIdentities.find(iden => {
-    return iden.addresses.has(address)
-  }) ?? null;
+  return (
+    registeredTxIdentities.find(iden => {
+      return iden.addresses.has(address);
+    }) ?? null
+  );
 }
 // (<any>window).identityOfAddr = identityOfAddr;
 

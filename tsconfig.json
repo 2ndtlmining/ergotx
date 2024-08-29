@@ -32,5 +32,11 @@
       }
     ]
   },
-  "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "conf/*.ts", "conf/**/*"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.js",
+    "src/**/*.svelte",
+    "conf/*.ts",
+    "conf/**/*"
+  ]
 }

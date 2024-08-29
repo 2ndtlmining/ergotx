@@ -70,7 +70,7 @@ export function formatNumber(
 
   if (opts?.pad) {
     const parts = formattedNumber.split(".");
-    parts[0] = parts[0].padStart(opts.pad || 0, '0');
+    parts[0] = parts[0].padStart(opts.pad || 0, "0");
     formattedNumber = parts.join(".");
   }
 
