@@ -1,18 +1,17 @@
 <script>
   import {
-    Icon3dRotate,
     IconAwardFilled,
-    IconBrandFacebook,
     IconBrandFacebookFilled,
     IconBrandGithubFilled,
-    IconBrandInstagram,
-    IconBrandX,
-    IconCube,
+    IconBrandYoutubeFilled,
     IconCube3dSphere,
-
+    IconMailFilled,
     IconPlayerTrackNextFilled
-
   } from "@tabler/icons-svelte";
+
+  import { Link } from "svelte-routing";
+
+  import * as contact from "@conf/contact";
 </script>
 
 <div class="w-72 shadow-lg shadow-[#887f7f]">
@@ -27,53 +26,71 @@
     </section>
 
     <section class="sidebar-content h-fit min-h-[20rem] overflow-visible px-4">
-      <ul class="menu-items">
-        <li class="menu-item">
+      <div class="menu-items">
+        <Link to="/tx" class="menu-item">
           <IconAwardFilled />
           <span>Visualizer TX</span>
-        </li>
+        </Link>
 
-        <li class="menu-item">
+        <Link to="/blocks" class="menu-item">
           <IconCube3dSphere />
           <span>Visualizer Blocks</span>
-        </li>
-      </ul>
+        </Link>
+      </div>
     </section>
-    {#if true}
-      <section class="sidebar-footer p-4 h-full justify-end bg-gray-2">
-        <div class="bg-[#807777]/20 p-4 rounded-md">
-          <h1 class="text-white font-semibold text-sm">Follow Us</h1>
 
-          <div class="mt-4 mb-2 flex items-start gap-x-2">
-            <a href="#" class="btn btn-sm btn-circle">
-              <IconBrandFacebookFilled size={20} />
-            </a>
-            <a href="#" class="btn btn-sm btn-circle">
-              <IconBrandInstagram size={20} />
-            </a>
-            <a href="#" class="btn btn-sm btn-circle">
-              <IconBrandX size={20} />
-            </a>
-            <a href="#" class="btn btn-sm btn-circle">
-              <IconBrandGithubFilled size={20} />
-            </a>
-          </div>
+    <section class="sidebar-footer p-4 h-full justify-end bg-gray-2">
+      <div class="bg-[#807777]/20 p-4 rounded-md">
+        <h1 class="text-white font-semibold text-sm">Follow Us</h1>
+
+        <div class="mt-4 mb-2 flex items-start gap-x-2">
+          <a
+            href={contact.facebook}
+            target="_blank"
+            class="btn btn-sm btn-circle"
+          >
+            <IconBrandFacebookFilled size={20} />
+          </a>
+          <a
+            href={contact.youtube}
+            target="_blank"
+            class="btn btn-sm btn-circle"
+          >
+            <IconBrandYoutubeFilled size={20} />
+          </a>
+          <a
+            href={`mailto:${contact.email}`}
+            target="_blank"
+            class="btn btn-sm btn-circle"
+          >
+            <IconMailFilled size={20} />
+          </a>
+          <a
+            href={contact.github}
+            target="_blank"
+            class="btn btn-sm btn-circle"
+          >
+            <IconBrandGithubFilled size={20} />
+          </a>
         </div>
-      </section>
-    {/if}
+      </div>
+    </section>
   </aside>
 </div>
 
 <div class="flex-1 relative overflow-y-auto pat">
   <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
     <div class="p-4 bg-[#5046461f] text-black flex flex-col">
-      <button class="btn btn-secondary btn-xl gap-x-4">
+      <Link to="/tx" class="btn btn-secondary btn-xl gap-x-4">
         <span class="font-bold">Lauch</span>
         <IconPlayerTrackNextFilled size={28} />
-      </button>
+      </Link>
 
       <label class="flex items-center gap-x-2 mt-4">
-        <input type="checkbox" class="switch switch-bordered-warning switch-md" />
+        <input
+          type="checkbox"
+          class="switch switch-bordered-warning switch-md"
+        />
         <span class="text-[#c9c2c2] font-medium">Auto lauch</span>
       </label>
     </div>
