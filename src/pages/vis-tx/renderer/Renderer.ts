@@ -22,6 +22,7 @@ import { StatsDisplay } from "./actors/StatsDisplay";
 import { pixels } from "./sizing";
 import { waitingZone, lineUpRoad } from "./regions";
 import { Actor } from "./actors/Actor";
+import { isProduction } from "~/utils";
 
 const SPACING = 16;
 
@@ -69,12 +70,14 @@ export class Renderer implements AcceptsCommands {
     this.scene = scene;
     this.init();
 
-    scene.input.keyboard?.on("keyup-SPACE", () => {
-      this.isPaused = !this.isPaused;
-      this.allActors.forEach(actor => {
-        actor.getMotionController().setPaused(this.isPaused);
+    if (!isProduction()) {
+      scene.input.keyboard?.on("keyup-SPACE", () => {
+        this.isPaused = !this.isPaused;
+        this.allActors.forEach(actor => {
+          actor.getMotionController().setPaused(this.isPaused);
+        });
       });
-    });
+    }
   }
 
   private init() {

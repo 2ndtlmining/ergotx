@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@fontsource/inter": "^5.0.20",
-    "@tabler/icons-svelte": "^3.11.0",
+    "@tabler/icons-svelte": "^3.14.0",
     "clsx": "^2.1.1",
     "color": "^4.2.3",
     "eventemitter3": "^5.0.1",
