@@ -1,5 +1,6 @@
 <script>
   import {
+    Icon3dRotate,
     IconAwardFilled,
     IconBrandFacebook,
     IconBrandFacebookFilled,
@@ -7,11 +8,14 @@
     IconBrandInstagram,
     IconBrandX,
     IconCube,
-    IconCube3dSphere
+    IconCube3dSphere,
+
+    IconPlayerTrackNextFilled
+
   } from "@tabler/icons-svelte";
 </script>
 
-<div class="w-72 shadow-md shadow-black">
+<div class="w-72 shadow-lg shadow-[#887f7f]">
   <aside class="sidebar h-full justify-start">
     <section class="sidebar-title items-center p-4 pb-2">
       <div class="flex flex-col">
@@ -60,12 +64,27 @@
   </aside>
 </div>
 
-<div class="flex-1 overflow-y-auto pat"></div>
+<div class="flex-1 relative overflow-y-auto pat">
+  <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+    <div class="p-4 bg-[#5046461f] text-black flex flex-col">
+      <button class="btn btn-secondary btn-xl gap-x-4">
+        <span class="font-bold">Lauch</span>
+        <IconPlayerTrackNextFilled size={28} />
+      </button>
+
+      <label class="flex items-center gap-x-2 mt-4">
+        <input type="checkbox" class="switch switch-bordered-warning switch-md" />
+        <span class="text-[#c9c2c2] font-medium">Auto lauch</span>
+      </label>
+    </div>
+  </div>
+</div>
 
 <style>
   .pat {
-    background-color: rgb(0, 0, 0);
-    opacity: 0.3;
+    /* background-color: rgba(0, 0, 0); */
+    background-color: rgba(41, 37, 37, 0.712);
+
     background-image: linear-gradient(
         30deg,
         #4c4848 12%,
