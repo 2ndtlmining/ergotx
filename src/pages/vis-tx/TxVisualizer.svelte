@@ -41,15 +41,17 @@
   });
 </script>
 
-<div id="canvas_container">
-  <canvas bind:this={canvas} id="main_canvas"></canvas>
-  <Decorations />
+<div class="flex-1 flex justify-center">
+  <div id="canvas_container">
+    <canvas bind:this={canvas} id="main_canvas"></canvas>
+    <Decorations />
+  </div>
 </div>
 
 <!-- Controls -->
-<div class="flex-1">
+<!-- <div class="flex-1">
   <Controls />
-</div>
+</div> -->
 
 <style>
   #canvas_container {
