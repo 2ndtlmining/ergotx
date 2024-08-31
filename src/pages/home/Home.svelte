@@ -9,9 +9,19 @@
     IconPlayerTrackNextFilled
   } from "@tabler/icons-svelte";
 
-  import { Link } from "svelte-routing";
+  import { Link, navigate } from "svelte-routing";
 
   import * as contact from "@conf/contact";
+  import Autolaunch, { getShouldAutolaunch } from "./Autolaunch.svelte";
+  import { onMount } from "svelte";
+
+  onMount(() => {
+    if (getShouldAutolaunch()) {
+      navigate("/tx", {
+        replace: true
+      });
+    }
+  });
 </script>
 
 <div class="w-72 shadow-lg shadow-[#887f7f]">
@@ -81,18 +91,12 @@
 <div class="flex-1 relative overflow-y-auto pat">
   <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
     <div class="p-4 bg-[#5046461f] text-black flex flex-col">
-      <Link to="/tx" class="btn btn-secondary btn-xl gap-x-4">
+      <Link to="/tx" class="btn btn-secondary btn-xl gap-x-4 mb-4">
         <span class="font-bold">Lauch</span>
         <IconPlayerTrackNextFilled size={28} />
       </Link>
 
-      <label class="flex items-center gap-x-2 mt-4">
-        <input
-          type="checkbox"
-          class="switch switch-bordered-warning switch-md"
-        />
-        <span class="text-[#c9c2c2] font-medium">Auto lauch</span>
-      </label>
+      <Autolaunch />
     </div>
   </div>
 </div>
