@@ -52,10 +52,6 @@
 </div>
 
 <style>
-  :global(#root) {
-    display: flex;
-  }
-
   #canvas_container {
     position: relative;
     overflow: hidden;
