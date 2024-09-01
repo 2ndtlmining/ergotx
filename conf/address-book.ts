@@ -42,5 +42,11 @@ export const addressBook: AddressBookItem[] = [
     addresses: [
       "88dhgzEuTXaQQRxJaryYegLaDAfBKL29nSjdJwPZVvnEEU1wNBfEiPH2DwkpUSRYRn9yexBtutiXtQYP"
     ]
+  },
+  {
+    name: "Wooly Pooly",
+    addresses: [
+      "88dhgzEuTXaQ2HPUskY3hvgMA5uCbQWwZNPbMC1Hem9zM2V9U7KMah7LYWS4Hm4WECGuc22nofdQbHbY"
+    ]
   }
 ];
