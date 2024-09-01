@@ -18,7 +18,8 @@ export class ValuePriorityStrategy implements AssembleStrategy {
     let remainingSize = MAX_BLOCK_SIZE;
     let i = 0;
     
-    transactions.sort((txA, txB) => {
+    // Note: The original array must not be mutated
+    transactions = [...transactions].sort((txA, txB) => {
       return txTotalFee(txB) - txTotalFee(txA);
     });
     
