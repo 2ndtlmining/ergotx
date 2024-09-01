@@ -2,7 +2,7 @@ import type { AcceptsCommands, Command } from "./Command";
 import type { UpdateService } from "../updates/UpdateService";
 
 import type { AssembleStrategy } from "./assemble/AssembleStrategy";
-import { DefaultAssembleStrategy } from "./assemble/DefaultAssembleStrategy";
+import { ValuePriorityStrategy } from "./assemble/ValuePriorityStrategy";
 
 import type { Tick } from "./Tick";
 import { Assembly } from "./assemble/Assembly";
@@ -33,7 +33,7 @@ export class Engine extends AppEmitter<EngineEvents> {
   ) {
     super();
     this.currentAssembly = Assembly.empty();
-    this.assembleStrategy = new DefaultAssembleStrategy();
+    this.assembleStrategy = new ValuePriorityStrategy();
 
     this.cmdExecutor = cmdExecutor;
     this.isIdle = true;
