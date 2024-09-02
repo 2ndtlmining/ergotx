@@ -1,7 +1,7 @@
 <script>
   import {
     IconAwardFilled,
-    IconBrandFacebookFilled,
+    IconBrandXFilled,
     IconBrandGithubFilled,
     IconBrandYoutubeFilled,
     IconCube3dSphere,
@@ -55,11 +55,11 @@
 
         <div class="mt-4 mb-2 flex items-start gap-x-2">
           <a
-            href={contact.facebook}
+            href={contact.twitter}
             target="_blank"
             class="btn btn-sm btn-circle"
           >
-            <IconBrandFacebookFilled size={20} />
+            <IconBrandXFilled size={20} />
           </a>
           <a
             href={contact.youtube}

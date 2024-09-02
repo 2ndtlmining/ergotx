@@ -192,7 +192,11 @@
         class="w-full border-y-2 grid grid-cols-[repeat(3,1fr)] border-[#39393d] pb-4"
       >
         <div class="col-span-3 flex justify-between mt-2 mb-2 px-1">
-          <p class="text-xs font-bold opacity-70">Last Block Stats</p>
+          <p class="text-xs font-bold opacity-70">Last Block Stats: 
+            <a class="link link-primary font-normal text-xs" target="_blank" href="https://explorer.ergoplatform.com/en/latest-blocks">
+      {lastBlock?.height ?? 0}
+            </a>
+          </p>
           {#if lastBlock}
             <p class="text-xs">
               <span class="font-bold opacity-70">Miner:</span>

@@ -1,4 +1,4 @@
 export const sponserErgoAddress =
-  "88dhgzEuTXaUPpNAbKL7UeNUFEcjkoqW6ev5P1hkynBmG4L5baYdZ8rSPYCDNmvwBLiJR7ABjndPhqGm";
+  "9hxk8tPN8RsbbeCYChBKJmBjNSEqcNcJW68gHJBBYnmAfDfZW9g";
 
-export const sponserEmail = "sponser@ergotx.com";
+export const sponserEmail = "2ndtlmining@gmail.com";
