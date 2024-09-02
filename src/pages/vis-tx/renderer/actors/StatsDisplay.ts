@@ -63,7 +63,7 @@ class StatBox {
       fontSize: 28
     };
 
-    let contributeText = scene.add.text(0, cy, "Click to Sponser", {
+    let contributeText = scene.add.text(0, cy, "Click to Sponsor", {
       color: "#ffe600",
       fontFamily: "Inter",
       fontSize: 20
@@ -140,7 +140,7 @@ export class StatsDisplay {
     this.blockTimeBox.setOnContribute(() => {
       createWindow({
         details: { type: "sponser", contentType: "ergo" },
-        title: "Sponser",
+        title: "Sponsor",
         initialPosition: { x: 130, y: 200 },
         initialSize: { width: 500, height: 500 }
       });
@@ -149,7 +149,7 @@ export class StatsDisplay {
     this.mempoolSizeBox.setOnContribute(() => {
       createWindow({
         details: { type: "sponser", contentType: "email" },
-        title: "Sponser",
+        title: "Sponsor",
         initialPosition: { x: 130, y: 200 },
         initialSize: { width: 500, height: 500 }
       });
