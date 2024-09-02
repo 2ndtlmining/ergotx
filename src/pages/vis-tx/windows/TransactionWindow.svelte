@@ -59,7 +59,9 @@
         <IconCurrencyDollar />
       </span> -->
         <h4>ID</h4>
-        <span class="value">{info.id}</span>
+          <a class="value" href={`https://explorer.ergoplatform.com/en/transactions/${info.id}`} target="_blank">
+    {info.id}
+          </a>
       </div>
 
       <div class="stat">
