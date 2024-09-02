@@ -6,9 +6,7 @@
     getUnconfirmedTransaction
   } from "~/ergoapi/apiconn";
   import { formatErg } from "~/utils/number";
-
   export let txId: string;
-
   async function fetchInfo() {
     let tx: Transaction | null = null;
 
