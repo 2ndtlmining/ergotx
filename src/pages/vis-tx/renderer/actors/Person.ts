@@ -49,7 +49,7 @@ export class Person extends Actor implements SupportsMotion {
       createWindow({
         details: { type: "tx", txId: tx.id },
         title: "Transaction Info",
-        initialPosition: { x: 130, y: 130 },
+        initialPosition: { x: 130, y: 170 },
         initialSize: { width: 450, height: 450 }
       });
     });
