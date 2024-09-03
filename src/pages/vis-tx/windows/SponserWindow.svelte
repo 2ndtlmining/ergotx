@@ -23,7 +23,7 @@
     <p class="text-center max-w-md mt-3">
       Your support means the world to us.
       {#if contentType == "ergo"}
-        If you'd like to contribute, please donate to the following Ergo address:
+        If you'd like to contribute, please donate to the following Sigmanaut Ergo address:
       {:else}
         If you'd like to contribute, please reach out at the following email:
       {/if}
