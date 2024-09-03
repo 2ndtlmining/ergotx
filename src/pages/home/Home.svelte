@@ -17,9 +17,7 @@
 
   onMount(() => {
     if (getShouldAutolaunch()) {
-      navigate("/tx", {
-        replace: true
-      });
+      navigate("/tx");
     }
   });
 </script>
