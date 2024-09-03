@@ -1,4 +1,6 @@
-# ErgoTx
+
+
+# [ErgoTx](https://ergotx.io)
 
 This application is built to run in docker and to show the transactions and blocks on Ergo.
 It has 2 main features today:

@@ -96,12 +96,14 @@
         <IconClockRecord />
       </span>
       <h4>Average Block Time</h4>
-      <span class="value"
-        >{stats.averageBlockTime
-          ? formatNumber(stats.averageBlockTime * MILLISECOND_TO_MINUTE) +
-            " min"
-          : "N/A"}</span
-      >
+      <span class="value">
+        {stats.averageBlockTime
+          ? `${Math.floor(stats.averageBlockTime * MILLISECOND_TO_MINUTE)} min
+      ${Math.floor((stats.averageBlockTime * MILLISECOND_TO_MINUTE) % 1 * 60)} sec`
+          : "N/A"}
+</span>
+
+
     </div>
 
     <div class="stat">
