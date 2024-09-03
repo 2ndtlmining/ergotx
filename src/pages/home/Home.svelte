@@ -92,7 +92,7 @@
   <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
     <div class="p-4 bg-[#5046461f] text-black flex flex-col">
       <Link to="/tx" class="btn btn-secondary btn-xl gap-x-4 mb-4">
-        <span class="font-bold">Lauch</span>
+        <span class="font-bold">Launch</span>
         <IconPlayerTrackNextFilled size={28} />
       </Link>
 
