@@ -8,7 +8,7 @@ export const addressBook: AddressBookItem[] = [
     ]
   },
   {
-    name: "2miners",
+    name: "2Miners",
     addresses: [
       "88dhgzEuTXaRQTX5KNdnaWTTX7fEZVEQRn6qP4MJotPuRnS3QpoJxYpSaXoU1y7SHp8ZXMp92TH22DBY"
     ]
@@ -38,9 +38,21 @@ export const addressBook: AddressBookItem[] = [
     ]
   },
   {
-    name: "Sigmanauts",
+    name: "Sigmanauts Old",
     addresses: [
       "88dhgzEuTXaQQRxJaryYegLaDAfBKL29nSjdJwPZVvnEEU1wNBfEiPH2DwkpUSRYRn9yexBtutiXtQYP"
+    ]
+  },
+  {
+    name: "Sigmanauts Test",
+    addresses: [
+      "88dhgzEuTXaURRtbHKSWj9b4tDFLxnjpvTm8RMjhaQsyGbPLzjVSZcpgwR3usDCqcD1qV4CLfsPky8D8"
+    ]
+  },
+  {
+    name: "Sigmanauts Mining Pool",
+    addresses: [
+      "88dhgzEuTXaQDYikoEkCMEPRxDiYnVRfiqhf3uLcMhbTPrTrrc7wkyF5LFMmgJyT4mPa6ucnmk3QTeUo"
     ]
   },
   {
