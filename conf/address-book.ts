@@ -50,6 +50,12 @@ export const addressBook: AddressBookItem[] = [
     ]
   },
   {
+    name: "Sigmanauts SR",
+    addresses: [
+      "88dhgzEuTXaQDYikoEkCMEPRxDiYnVRfiqhf3uLcMhbTPrTrrc7wkyF5LFMmgJyT4mPa6ucnmk3QTeUo"
+    ]
+  },
+  {
     name: "Wooly Pooly",
     addresses: [
       "88dhgzEuTXaQ2HPUskY3hvgMA5uCbQWwZNPbMC1Hem9zM2V9U7KMah7LYWS4Hm4WECGuc22nofdQbHbY"
